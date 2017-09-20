@@ -1,0 +1,19 @@
+### Use this file as a template for a real configuration file
+net = { '127.0.0.1', '::1' }
+trust_anchors.file = '/vagrant/Tests/oct10/trust-anchor-dnskey'
+modules.load('hints')
+hints.root({
+['a.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['b.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['c.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['d.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['e.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['f.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['g.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['h.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['i.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['j.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['k.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['l.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' },
+['m.some-servers.p53.'] = { '192.241.239.5', '2604:a880:1:20::3c0f:b001' }
+})

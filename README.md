@@ -28,9 +28,9 @@ The VMs are all accessed using the "root" user only.
 
 ## Other Documents
 
-Please see [the technical plan](file:technical-plan.md) for an overview of the technical parts of the testbed.
+Please see [the technical plan](technical-plan.md) for an overview of the technical parts of the testbed.
 
-Please see [the setup and running guide](file:setup-and-running.md) for steps on how to create the testbed and run tests.
+Please see [the setup and running guide](setup-and-running.md) for steps on how to create the testbed and run tests.
 
 ## License
 

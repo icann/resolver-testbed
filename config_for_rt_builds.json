@@ -1,0 +1,486 @@
+{
+
+	"builds": {
+		"knot-resolver-1.3.1":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.3.1.tar.xz",
+			"conf_type": "knot",
+			"make_str": "!knotresmake",
+			"start": "!knotstart"
+			},
+
+		"knot-resolver-1.3.0":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.3.0.tar.xz",
+			"conf_type": "knot",
+			"make_str": "!knotresmake",
+			"start": "!knotstart"
+			},
+
+		"knot-resolver-1.2.6":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.6.tar.xz",
+			"conf_type": "knot",
+			"make_str": "!knotresmake",
+			"start": "!knotstart"
+			},
+
+		"knot-resolver-1.2.5":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.5.tar.xz",
+			"conf_type": "knot",
+			"make_str": "!knotresmake",
+			"start": "!knotstart"
+			},
+
+		"knot-resolver-1.2.4":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.4.tar.xz",
+			"conf_type": "knot",
+			"make_str": "!knotresmake",
+			"start": "!knotstart"
+			},
+
+		"knot-resolver-1.2.3":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.3.tar.xz",
+			"conf_type": "knot",
+			"make_str": "!knotresmake",
+			"start": "!knotstart"
+			},
+
+		"knot-resolver-1.2.2":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.2.tar.xz",
+			"conf_type": "knot",
+			"make_str": "!knotresmake",
+			"start": "!knotstart"
+			},
+
+		"knot-resolver-1.2.1":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.1.tar.xz",
+			"conf_type": "knot",
+			"make_str": "!knotresmake",
+			"start": "!knotstart"
+			},
+
+		"knot-resolver-1.2.0":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.0.tar.xz",
+			"conf_type": "knot",
+			"make_str": "!knotresmake",
+			"start": "!knotstart"
+			},
+
+		"bind-9.11.2":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.11.2/bind-9.11.2.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.11.1":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.11.1/bind-9.11.1.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.11.0":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.11.0/bind-9.11.0.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.10.6":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.10.6/bind-9.10.6.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.10.5":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.10.5/bind-9.10.5.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.10.3":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.10.3/bind-9.10.3.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.10.0":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.10.0/bind-9.10.0.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.9.11":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.9.11/bind-9.9.11.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.9.10":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.9.10/bind-9.9.10.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.9.5":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.9.5/bind-9.9.5.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.9.0":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.9.0/bind-9.9.0.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.8.8":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.8.8/bind-9.8.8.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.8.4":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.8.4/bind-9.8.4.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.8.0":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.8.0/bind-9.8.0.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.7.7":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.7.7/bind-9.7.7.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.7.4":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.7.4/bind-9.7.4.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.6-ESV-R11":
+			{ "url": "https://ftp.isc.org/isc/bind9/9.6-ESV-R11/bind-9.6-ESV-R11.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.6.3":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.6.3/bind-9.6.3.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.5.2":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.5.2/bind-9.5.2.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.4.3":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.4.3/bind-9.4.3.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.3.6":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.3.6/bind-9.3.6.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"bind-9.2.9":
+			{ "url": "ftp://ftp.isc.org//isc/bind9/9.2.9/bind-9.2.9.tar.gz",
+			"conf_type": "bind9",
+			"make_str": "!bind9make",
+			"start": "!bind9start"
+			},
+
+		"unbound-1.6.4":
+			{ "url": "http://unbound.net/downloads/unbound-1.6.4.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.6.3":
+			{ "url": "http://unbound.net/downloads/unbound-1.6.3.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.6.2":
+			{ "url": "http://unbound.net/downloads/unbound-1.6.2.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.6.1":
+			{ "url": "http://unbound.net/downloads/unbound-1.6.1.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.6.0":
+			{ "url": "http://unbound.net/downloads/unbound-1.6.0.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.5.10":
+			{ "url": "http://unbound.net/downloads/unbound-1.5.10.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.5.9":
+			{ "url": "http://unbound.net/downloads/unbound-1.5.9.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.5.8":
+			{ "url": "http://unbound.net/downloads/unbound-1.5.8.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.4.22":
+			{ "url": "http://unbound.net/downloads/unbound-1.4.22.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.4.21":
+			{ "url": "http://unbound.net/downloads/unbound-1.4.21.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.4.20":
+			{ "url": "http://unbound.net/downloads/unbound-1.4.20.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"unbound-1.3.4":
+			{ "url": "http://unbound.net/downloads/unbound-1.3.4.tar.gz",
+			"conf_type": "unbound",
+			"make_str": "!unboundmake",
+			"start": "!unboundstart"
+			},
+
+		"pdns-recursor-4.0.6":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.6.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns4make",
+			"start": "!pdns4start"
+			},
+
+		"pdns-recursor-4.0.5":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.5.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns4make",
+			"start": "!pdns4start"
+			},
+
+		"pdns-recursor-4.0.4":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.4.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns4make",
+			"start": "!pdns4start"
+			},
+
+		"pdns-recursor-4.0.3":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.3.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns4make",
+			"start": "!pdns4start"
+			},
+
+		"pdns-recursor-4.0.2":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.2.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns4make",
+			"start": "!pdns4start"
+			},
+
+		"pdns-recursor-4.0.1":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.1.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns4make",
+			"start": "!pdns4start"
+			},
+
+		"pdns-recursor-4.0.0":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.0.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns4make",
+			"start": "!pdns4start"
+			},
+
+		"pdns-recursor-3.7.4":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.7.4.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.7.3":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.7.3.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.7.2":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.7.2.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.7.1":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.7.1.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.6.4":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.6.4.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.6.3":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.6.3.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.6.2":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.6.2.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.6.1":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.6.1.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.6.0":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.6.0.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.5.3":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.5.3.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.5.2":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.5.2.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.5.1":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.5.1.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.5":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.5.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.3":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.3.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			},
+
+		"pdns-recursor-3.2":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.2.tar.bz2",
+			"conf_type": "pdns",
+			"make_str": "!pdns3make",
+			"start": "!pdns3start"
+			}
+
+},
+
+	"templates": {
+		"!bind9make": "./configure --prefix=PREFIX_GOES_HERE && make && make install",
+		"!unboundmake": "./configure --prefix=PREFIX_GOES_HERE && make && make install",
+		"!pdns3make": "./configure && SYSCONFDIR=PREFIX_GOES_HERE/etc/powerdns make -e && DESTDIR=PREFIX_GOES_HERE make -e install",
+		"!pdns4make": "./configure && SYSCONFDIR=PREFIX_GOES_HERE/etc/powerdns make -e && DESTDIR=PREFIX_GOES_HERE make -e install",
+		"!knotresmake": "make PREFIX=PREFIX_GOES_HERE LDFLAGS=\"-Wl,-rpath=/PREFIX_GOES_HERE/lib\" && make install PREFIX=PREFIX_GOES_HERE",
+		"!bind9start": "PREFIX_GOES_HERE/sbin/named -c CONF_FILE_NAME",
+		"!unboundstart": "PREFIX_GOES_HERE/sbin/unbound -c CONF_FILE_NAME",
+		"!pdns3start": [ "cp CONF_FILE_NAME PREFIX_GOES_HERE/usr/etc/recursor.conf",
+			"PREFIX_GOES_HERE/usr/sbin/pdns_recursor --daemon --config-dir=PREFIX_GOES_HERE/usr/etc"
+			],
+		"!pdns4start": [ "cp CONF_FILE_NAME PREFIX_GOES_HERE/usr/local/etc/recursor.conf",
+			"PREFIX_GOES_HERE/usr/local/sbin/pdns_recursor --daemon --config-dir=PREFIX_GOES_HERE/usr/local/etc"
+			],
+		"!knotstart": "PREFIX_GOES_HERE/sbin/kresd -f 1 -c CONF_FILE_NAME &"
+	},
+
+	"bases": {
+		"common": ["LC_ALL=C.UTF-8 add-apt-repository -y ppa:cz.nic-labs/knot-dns && LC_ALL=C.UTF-8 add-apt-repository -y ppa:cz.nic-labs/knot-resolver",
+			"apt update",
+			"apt install -y libknot-dev",
+			"apt install -y libssl-dev pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
+			"apt install -y libldns-dev libexpat-dev libboost-dev" ]
+	},
+	
+}

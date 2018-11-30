@@ -1,0 +1,13 @@
+{
+	"gatway_vm": {
+		"clone_info": [
+			"--nic1 hostonly --hostonlyadapter4 vboxnet0"
+			"--nic2 intnet --intnet1 resnet",
+			"--nic3 intnet --intnet2 servnet",
+			"--nic4 bridged --bridgeadapter3 BRIDGEADAPTER",
+		]
+	}, 
+	"servers_vm": {}, 
+	"resolvers-vm": {}
+}
+

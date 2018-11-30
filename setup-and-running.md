@@ -1,0 +1,62 @@
+# Setting up and Running the Resolver Testbed
+
+## Setup
+
+The steps can be summarized as:
+
+0. Build the base VM image in VirtualBox
+0. Clone this VM for other VMs in the testbed
+0. Push configurations out to the VMs
+0. Run tests
+
+The last two steps can be repeated as the configurations change for different testing.
+
+## Building the Base VM Image
+
+* Get the recent Debiain image from `http://cdimage.debian.org/cdimage/release/current/amd64/iso-cd/debian-9.5.0-amd64-netinst.iso`
+
+* Choose which SSH keys you will use for logging into the VMs on the testbed.
+This needs to have the private key _not_ password-protected, so you might want to create a new keypair for the testbed.
+To ease installation, you might put this as an authized_keys file on a locally-managed web server.
+
+* Start Virtualbox
+	* Machine&rarr;New
+		* Name: debian950-base
+		* Memory: 2048M
+		* Drive: VDI, dynamically-allocated, 20 gig
+
+* Before booting, change settings
+	* System&rarr;Motherboard: Uncheck floppy
+	* System&rarr;Motherboard: Pointing Device: PS2 Mouse, 
+	* System&rarr;Processor: 2 CPUs
+	* Storage&rarr;Controller: IDE: Channge "empty" to attach the Debian ISO from above
+	* Network&rarr;Adatper 1: Attached to "Bridged Adapter" on the NIC for your computer that leads to the Internet
+	* Ports&rarr;USB: off
+
+* Boot the new `debian950-base` VM
+	* Use Non-graphical installation, and use the default choices other than what is listed here
+		* Hostname: debian950-base
+		* Domain name: don't enter one
+		* Root password: this will be used for all interaction with all VMs, so use a strong one
+		* User: Any name, any password (this user will not be used in the testbed)
+		* Disk partitioning: Guided, use entire disk, all files in one partition
+		* Software selection
+			* Unselect "Debian desktop environment"
+			* Unselect "print server"
+			* Select SSH server
+
+* After automatic reboot
+	* Log in as root with the password created above
+	* `apt update`
+	* `apt -y upgrade`
+	* `mkdir .ssh`
+	* `chmod 700 .ssh`
+	* `cd .ssh`
+	* Install the authorized_keys file, possibly by getting it off of the locally-administered web server
+	* `chmod 600 authorized_keys`
+	* `sudo shutdown -h now`
+
+## Clone the Base VM Image to the other VMs
+
+@@ MORE STUFF GOES HERE
+

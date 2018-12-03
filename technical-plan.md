@@ -6,7 +6,8 @@
 
 ## Network Layout
 
-![Network diagram](testbed-layout.png =794x262)
+<img src="testbed-layout.png">
+
 <!-- =1058x350 -->
 
  * control network: host-only (**vboxnet0**)

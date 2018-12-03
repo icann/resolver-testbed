@@ -13,6 +13,7 @@ PROG_DIR = os.path.abspath(os.getcwd())
 LOG_FILE = "{}/log_resolver_testbed.txt".format(PROG_DIR)
 LOCAL_CONFIG = "{}/local_config.txt".format(PROG_DIR)
 BUILD_CONFIG = "{}/build_config.json".format(PROG_DIR)
+CLONE_BASENAME = "debian960-base"
 
 VM_INFO = {
     "gateway-vm": {
@@ -21,7 +22,7 @@ VM_INFO = {
     "servers-vm": {
         "control_addr": "192.168.56.3"
     },
-    "resovers-vm": {
+    "resolvers-vm": {
         "control_addr": "192.168.56.4"
     }
 }
@@ -39,8 +40,6 @@ setup_vm <vmname>    Sets up a VM for the first time;
 '''.strip()
 
 # Do very early check for contents of the directory that we're running in
-if not os.path.exists("{}/Local".format(PROG_DIR)):
-    exit("The current directory does not have a Local/ subdirectory, which is needed for logs and other files. Exiting.")
 LOG_FORMAT = logging.Formatter("%(message)s")
 LOG_HANDLER = logging.FileHandler(LOG_FILE)
 LOG_HANDLER.setFormatter(LOG_FORMAT)
@@ -125,7 +124,7 @@ def startup_and_config():
         c.read(LOCAL_CONFIG)
     except:
         die("The configuration in {} was malformed.".format(LOCAL_CONFIG))
-    if not "resolver" in c.sections:
+    if not "resolver" in c.sections():
         die("The configuration in {} does not have a [resolver]section.".format(LOCAL_CONFIG))
     this_local_config = {}
     for this_key in c["resolver"]:
@@ -133,19 +132,19 @@ def startup_and_config():
     # Be sure the required configuration bits are there
     if not this_local_config.get("local_internet_interface"):
         die("The configuration in {} did not include a local_internet_interface item.".format(LOCAL_CONFIG))
-    if this_local_config["local_internet_interface"]:
+    if not this_local_config["local_internet_interface"]:
         die("The configuration in {} had a blank local_internet_interface item.".format(LOCAL_CONFIG))
     # Make sure that vboxmanage is available
-    try:
-        subprocess.check_call("VBoxManage --version", shell=True)
-    except:
+    p = subprocess.Popen("VBoxManage --version >/dev/null 2>/dev/null", shell=True)
+    ret_val = p.wait()
+    if ret_val > 0:
         die("Could not run VBoxManage during sanity check.")
     # Make sure the three VMs at least exist
     for this_vm_name in VM_INFO:
-        try:
-            subprocess.check_call("VBoxManage showvminfo {}".format(this_vm_name))
-        except:
-            die("Could not find {} in the VirtualBox inventory.".format(this_vm_name))
+        p = subprocess.Popen("VBoxManage showvminfo {} >/dev/null 2>/dev/null".format(this_vm_name), shell=True)
+        ret_val = p.wait()
+        if ret_val > 0:
+            die("Could not find '{}' in the VirtualBox inventory.".format(this_vm_name))
     # Add VM_INFO to the local configuration
     this_local_config["vm_info"] = {}
     for this_key in VM_INFO:
@@ -153,14 +152,21 @@ def startup_and_config():
     # Finish up initialization
     return this_local_config
 
-def do_setup_vm(this_vm):
+def do_setup_vm(in_vm_list):
     ''' Do initial setup on a VM; dies if the VM is not ready '''
-    if this_vm == "" or (" " in this_vm):
+    if len(in_vm_list) != 1:
         die("The setup_vm command takes one argument: the name of the VM")
-    vm_list = (rt_config["vm_info"]).keys()
-    if not this_vm in vm_list:
-        die("The argument to setup_vm must be a VM name from '{}'".format(" ".join(vm_list)))
-    ######### More here
+    this_vm = in_vm_list[0]
+    ok_vm_list = list((rt_config["vm_info"]).keys())
+    if not this_vm in ok_vm_list:
+        die("The argument to setup_vm must be a VM name from '{}'".format(" ".join(ok_vm_list)))
+    # Be sure this is running on an VM, not the control host
+    this_hostname = subprocess.getoutput("hostname")
+    if this_hostname != CLONE_BASENAME:
+        if this_hostname in ok_vm_list:
+            die("This host's hostname is {}, which indicates it has already been set up.".format(this_hostname))
+        else:
+            die("Weird: this hosts hostname is {}, which is not expected.".format(this_hostname))
     # Change the hostname to this_vm
     # Add the /etc/hosts/interfaces file
     # Do VM-specific setup
@@ -187,4 +193,5 @@ if __name__ == "__main__":
     elif cmd == "setup_vm":
         do_setup_vm(cmd_args)
     # We're done, so exit
+    log("## Finished run")
     exit()

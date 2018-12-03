@@ -63,7 +63,8 @@ To ease installation, you might put this as an authized_keys file on a locally-m
 	* General machine preparation
 		* `apt update`
 		* `apt -y upgrade`
-		* `apt -y install build-essential git`
+		* `apt -y install build-essential git python3-pip`
+		* `pip3 install fabric`
 	* Get the project repo so that the VMs can be set up easily
 		* `git clone https://github.com/icann/resolver-testbed.git`
 	* Set up SSH for automated logging in

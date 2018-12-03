@@ -1,9 +1,4 @@
-log_*
-debug_*
-Bases/
-Sources/
 Local/
-Tests/pdns-confs
-*.pcap
-nohup.out
+local_config.txt
+log_*
 

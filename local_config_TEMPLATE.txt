@@ -1,0 +1,10 @@
+# This file is the template for the local_config.txt file.
+#   The template is part of the git repo, the actual file is not.
+
+# This config file has one required section: [resolver]
+[resolver]
+
+# local_internet_interface is required. The value is the device
+# name on the control host that is used to get to the Internet.
+local_internet_interface = SOME_DEVICE_NAME
+

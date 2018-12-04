@@ -50,7 +50,7 @@ To ease installation, you might put this as an authized_keys file on a locally-m
 			* All files in one partition
 		* Configure the package manager
 			* No additional CDs
-			* Any mirror is fine; Use the default
+			* Any mirror is fine; you can use the default
 			* Popularity contest: No
 		* Software selection
 			* Unselect "Debian desktop environment"

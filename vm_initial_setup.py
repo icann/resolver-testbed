@@ -8,7 +8,7 @@ import os, subprocess, sys, shutil
 # Some program-wide constants
 PROG_DIR = os.path.abspath(os.getcwd())
 CLONE_BASENAME = "debian960-base"
-OK_VM_LIST = [ "gateway-vm", "servers-vm", "control_addr" ]
+OK_VM_LIST = [ "gateway-vm", "servers-vm", "resolvers-vm" ]
 
 def die(in_str):
     ''' log then exit  '''

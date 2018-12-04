@@ -29,14 +29,11 @@ VM_INFO = {
 
 CLI_COMMANDS = [
 "help",
-"setup_vm"
 ]
 
 HELP_TEXT = '''
 Available commands for rt.py are:
 help                 Show this text
-setup_vm <vmname>    Sets up a VM for the first time;
-                     must be run as roon on the VM itself
 '''.strip()
 
 # Do very early check for contents of the directory that we're running in
@@ -134,26 +131,6 @@ def startup_and_config():
     # Finish up initialization
     return this_local_config
 
-def do_setup_vm(in_vm_list):
-    ''' Do initial setup on a VM; dies if the VM is not ready '''
-    if len(in_vm_list) != 1:
-        die("The setup_vm command takes one argument: the name of the VM")
-    this_vm = in_vm_list[0]
-    ok_vm_list = list((rt_config["vm_info"]).keys())
-    if not this_vm in ok_vm_list:
-        die("The argument to setup_vm must be a VM name from '{}'".format(" ".join(ok_vm_list)))
-    # Be sure this is running on an VM, not the control host
-    this_hostname = subprocess.getoutput("hostname")
-    if this_hostname != CLONE_BASENAME:
-        if this_hostname in ok_vm_list:
-            die("This host's hostname is {}, which indicates it has already been set up.".format(this_hostname))
-        else:
-            die("Weird: this hosts hostname is {}, which is not expected.".format(this_hostname))
-    # Change the hostname to this_vm
-    # Add the /etc/hosts/interfaces file
-    # Do VM-specific setup
-    
-
 # Run the main program
 if __name__ == "__main__":
     log("## Starting run on date {}".format(time.strftime("%Y-%m-%d")))
@@ -172,8 +149,6 @@ if __name__ == "__main__":
     # Figure out which command it was
     if cmd == "help":
         show_help()
-    elif cmd == "setup_vm":
-        do_setup_vm(cmd_args)
     # We're done, so exit
     log("## Finished run")
     exit()

@@ -39,7 +39,7 @@ if __name__ == "__main__":
     try:
         shutil.copy(this_interfaces_file, "/etc/network/interfaces")
     except:
-        die("Could not copy {} to {}.".format(this_interfaces_file, "/etc/network/interfaces")
+        die("Could not copy {} to {}.".format(this_interfaces_file, "/etc/network/interfaces"))
     # For gateway-vm, add the firewall rules
     ################################## More goes here
     # Change the hostname to this_vm

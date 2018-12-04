@@ -114,26 +114,6 @@ def startup_and_config():
     # Be sure we are running from the directory the program is in
     if sys.argv[0] != "./rt.py":
         die("This program must be run as ./rt.py so that all the additional files are found.")
-    # Make sure certain files exist
-    for this_file in [LOCAL_CONFIG, BUILD_CONFIG]:
-        if not os.path.exists(this_file):
-            die("{} was not found, but that file is needed.".format(this_file))
-    # Parse the configuration
-    c = configparser.ConfigParser()
-    try:
-        c.read(LOCAL_CONFIG)
-    except:
-        die("The configuration in {} was malformed.".format(LOCAL_CONFIG))
-    if not "resolver" in c.sections():
-        die("The configuration in {} does not have a [resolver]section.".format(LOCAL_CONFIG))
-    this_local_config = {}
-    for this_key in c["resolver"]:
-        this_local_config[this_key] = c["resolver"][this_key]
-    # Be sure the required configuration bits are there
-    if not this_local_config.get("local_internet_interface"):
-        die("The configuration in {} did not include a local_internet_interface item.".format(LOCAL_CONFIG))
-    if not this_local_config["local_internet_interface"]:
-        die("The configuration in {} had a blank local_internet_interface item.".format(LOCAL_CONFIG))
     # Make sure that vboxmanage is available
     p = subprocess.Popen("VBoxManage --version >/dev/null 2>/dev/null", shell=True)
     ret_val = p.wait()
@@ -145,6 +125,8 @@ def startup_and_config():
         ret_val = p.wait()
         if ret_val > 0:
             die("Could not find '{}' in the VirtualBox inventory.".format(this_vm_name))
+    # Keep the configuration info here; this could expand in the future
+    this_local_config = {}
     # Add VM_INFO to the local configuration
     this_local_config["vm_info"] = {}
     for this_key in VM_INFO:

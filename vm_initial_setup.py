@@ -43,9 +43,9 @@ if __name__ == "__main__":
     # For gateway-vm, cause the NAT rules to be automatically executed on startup
     if in_vm_name == "gateway-vm":
         try:
-            shutil.copy("{}/config-files/nat-on-gateway-vm.sh", "/etc/rc.local")
+            shutil.copy("{}/config-files/nat-on-gateway-vm.sh".format(PROG_DIR), "/etc/rc.local")
         except:
-            die("Could not copy {} to {}.".format("{}/config-files/nat-on-gateway-vm.sh", "/etc/rc.local"))
+            die("Could not copy {} to {}.".format("{}/config-files/nat-on-gateway-vm.sh".format(PROG_DIR), "/etc/rc.local"))
         try:
             subprocess.call("systemctl daemon-reload", shell=True)
         except:

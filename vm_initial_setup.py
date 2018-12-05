@@ -41,7 +41,19 @@ if __name__ == "__main__":
     except:
         die("Could not copy {} to {}.".format(this_interfaces_file, "/etc/network/interfaces"))
     # For gateway-vm, cause the NAT rules to be automatically executed on startup
-    ################################## More goes here
+    if in_vm_name == "gateway-vm":
+        try:
+            shutil.copy("{}/config-files/nat-on-gateway-vm.sh", "/etc/rc.local")
+        except:
+            die("Could not copy {} to {}.".format("{}/config-files/nat-on-gateway-vm.sh", "/etc/rc.local"))
+        try:
+            subprocess.call("systemctl daemon-reload", shell=True)
+        except:
+            die("Could not run 'systemctl daemon-reload'.")
+        try:
+            subprocess.call("systemctl start rc-local", shell=True)
+        except:
+            die("Could not run 'systemctl start rc-local'.")
     # Change the hostname to this_vm for future boots
     try:
         f = open("/etc/hostname", mode="wt")

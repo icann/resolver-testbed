@@ -90,6 +90,10 @@ All clones are full clones because they are faster.
 	* Network &rarr; Adatper 2: Attached to "Internal Network" _resnet_
 	* Network &rarr; Adatper 3: Attached to "Internal Network" _servnet_
 	* Network &rarr; Adatper 4: Attached to "Bridged Adapter" on the NIC for your computer that leads to the Internet
+* Start the VM
+* Log in as root
+* Give the command `/root/resolver-testbed/vm_initial_setup.py gateway-vm`
+* Reboot
 
 ### Root Servers VM
 
@@ -100,6 +104,10 @@ All clones are full clones because they are faster.
 * Machine &rarr; Settings
 	* Network &rarr; Adatper 1: Attached to "Host-only Adapter" _vboxnet0_
 	* Network &rarr; Adatper 2: Attached to "Internal Network" _servnet_
+* Start the VM
+* Log in as root
+* Give the command `/root/resolver-testbed/vm_initial_setup.py servers-vm`
+* Reboot
 
 ### Resolver Systems
 
@@ -110,4 +118,8 @@ All clones are full clones because they are faster.
 * Machine &rarr; Settings
 	* Network &rarr; Adatper 1: Attached to "Host-only Adapter" _vboxnet0_
 	* Network &rarr; Adatper 2: Attached to "Internal Network" _resnet_
+* Start the VM
+* Log in as root
+* Give the command `/root/resolver-testbed/vm_initial_setup.py resolvers-vm`
+* Reboot
 

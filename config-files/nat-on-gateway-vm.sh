@@ -1,3 +1,5 @@
+#!/bin/sh -e
+
 # Be sure forwarding is on
 sysctl -q net.ipv4.ip_forward=1
 

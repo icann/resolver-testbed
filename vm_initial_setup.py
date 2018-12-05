@@ -49,5 +49,4 @@ if __name__ == "__main__":
         f.close()
     except:
         die("Failed to write out /etc/hostname.")
-    die("Finished setting up {}. Reboot to bring up the new settings.".format(in_vm_name)
-    
+    die("Finished setting up {}. Reboot to bring up the new settings.".format(in_vm_name))

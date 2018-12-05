@@ -6,7 +6,7 @@ Run on freshly-made resolvers to install things that are needed
 import os, subprocess, sys, shutil
 
 # Some program-wide constants
-PROG_DIR = os.path.abspath(os.getcwd())
+PROG_DIR = "/root/resolver-testbed"
 CLONE_BASENAME = "debian960-base"
 OK_VM_LIST = [ "gateway-vm", "servers-vm", "resolvers-vm" ]
 
@@ -40,14 +40,14 @@ if __name__ == "__main__":
         shutil.copy(this_interfaces_file, "/etc/network/interfaces")
     except:
         die("Could not copy {} to {}.".format(this_interfaces_file, "/etc/network/interfaces"))
-    # For gateway-vm, add the firewall rules
+    # For gateway-vm, cause the NAT rules to be automatically executed on startup
     ################################## More goes here
-    # Change the hostname to this_vm
+    # Change the hostname to this_vm for future boots
     try:
         f = open("/etc/hostname", mode="wt")
         f.write("{}\n".format(in_vm_name))
         f.close()
     except:
         die("Failed to write out /etc/hostname.")
-    die("Finished. Reboot to bring up the new settings.")
+    die("Finished setting up {}. Reboot to bring up the new settings.".format(in_vm_name)
     

@@ -105,7 +105,7 @@ All clones are full clones because they are faster.
 
 * Select debian96-base in the VirtualBox UI
 * Machine &rarr; Clone
-	* Name: resovers-vm
+	* Name: resolvers-vm
 	* Clone type: Full clone
 * Machine &rarr; Settings
 	* Network &rarr; Adatper 1: Attached to "Host-only Adapter" _vboxnet0_

@@ -1,19 +1,21 @@
 # Technical Plan for the Resolver Testbed
 
-@@ Using VirtualBox first, can extend to Workstation/Fusion later
+The testbed is designed to use VirtualBox for virtual machines (VMs) because it is free, cross-platform, and works
+reasonably well for the current design (as far as we know now).
 
-@@ Uses multiple networks to segregate traffic so that packet captures are cleaner
+The overall design is to use multiple VMs and multiple networks to segregate traffic so that packet captures are cleaner.
 
 ## Network Layout
 
-<img src="testbed-layout.png">
+<img src="testbed-layout.png" width=700px>
 
-<!-- =1058x350 -->
+The network names given here are the names used in VirtualBox.
+Each interface on each VM has a two-letter mneumonic that indicates the VM and the network.
 
- * control network: host-only (**vboxnet0**)
- * resolvers network: internal (**resnet**)
- * servers network: internal  (**servnet**)
- * Internet: bridged, addresses from DHCP
+ * control network is host-only, **vboxnet0**, 192.168.56.x/24
+ * resolvers network is internal, **resnet**, 172.20.x.x/24
+ * servers network is internal, **servnet**, 172.21.x.x/16
+ * Internet is bridged on the same external as the control host, with addresses from DHCP
  
 ## Control Host
 
@@ -48,6 +50,9 @@ gateway-vm has four NICs:
 ### Root Servers VM
 
 **servers-vm** is all the simulated root servers on a single VM.
+The tentative plan is to have 13 IPv4 and 13 IPv6 addresses on the VM
+with one copy of BIND running as an authoritative server listening to
+all 26 addresses. 
 
 servers-vm has two NICs:
 

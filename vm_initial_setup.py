@@ -28,7 +28,7 @@ if __name__ == "__main__":
     this_hostname = subprocess.getoutput("hostname")
     if this_hostname != CLONE_BASENAME:
         if this_hostname in OK_VM_LIST:
-            die("This host's hostname is {}, which indicates it has already been set up.".format(this_hostname))
+            die("This host's hostname is {}, which indicates it has already been set up. Reset it to {} and reboot if you want to reinstall.".format(this_hostname, CLONE_BASENAME))
         else:
             die("Weird: this hosts hostname is {}, which is not expected.".format(this_hostname))
     print("Setting up {}".format(in_vm_name))

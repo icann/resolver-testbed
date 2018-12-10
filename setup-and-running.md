@@ -35,7 +35,7 @@ To ease installation, you might put this as an authized_keys file on a locally-m
 	* System &rarr; Motherboard: Pointing Device: PS2 Mouse, 
 	* System &rarr; Processor: 2 CPUs
 	* Storage &rarr; Controller: IDE: Channge "empty" to attach the Debian ISO from above
-	* Network &rarr; Adatper 1: Attached to "Bridged Adapter" on the NIC for your computer that leads to the Internet
+	* Network &rarr; Adatper 1: Attached to "NAT"
 	* Ports &rarr; USB: off
 
 * Boot the new `debian960-base` VM

@@ -35,6 +35,7 @@ CLI_COMMANDS = [
 HELP_TEXT = '''
 Available commands for rt.py are:
 help                 Show this text
+check_vms            Run simple checks on the VMs
 '''.strip()
 
 # Do very early check for contents of the directory that we're running in
@@ -99,7 +100,7 @@ def cmd_to_vm(cmds_to_run, vm_name):
 
 def is_vm_running(vm_name):
     ''' Check if the VM is running; die if not '''
-    p = subprocess.Popen("VBoxManage runningvms", stdout=subprocess.PIPE, shell=True)  
+    p = subprocess.Popen("VBoxManage list runningvms", stdout=subprocess.PIPE, shell=True)  
     ret_val = p.wait()
     if ret_val > 0:
         die("VBoxManage runningvms failed to run.")

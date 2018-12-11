@@ -2,6 +2,7 @@
 
 # Be sure forwarding is on
 sysctl -q net.ipv4.ip_forward=1
+sysctl -q net.ipv6.ip_forward=1
 
 # Clear old settings
 iptables -F
@@ -12,7 +13,7 @@ iptables -X
 # Be sure lo is allowed
 iptables -A INPUT -i lo -j ACCEPT
 
-# Set the forwarding
+# Set the IPv4 forwarding
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A FORWARD -i enp0s10 -o enp0s8 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A FORWARD -i enp0s10 -o enp0s9 -m state --state ESTABLISHED,RELATED -j ACCEPT

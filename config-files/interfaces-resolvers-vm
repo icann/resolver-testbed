@@ -11,4 +11,3 @@ iface enp0s8 inet static
 address 172.20.1.2
 netmask 24
 gateway 172.20.1.1
-dns-nameservers 8.8.4.4

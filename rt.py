@@ -106,7 +106,7 @@ def is_vm_running(vm_name):
     if not vm_name in the_running_vms:
         die("{} is not in the list of running VMs: '{}'.".format(vm_name, " ".join(the_running_vms)))
 
-def startup_and_config():
+def startup_and_config_general():
     ''' Make sure everything on the control host is set up correctly, and die if it is not; returns local configuration '''
     # Be sure we are running from the directory the program is in
     if sys.argv[0] != "./rt.py":
@@ -131,6 +131,14 @@ def startup_and_config():
     # Finish up initialization
     return this_local_config
 
+def sanity_check_vms():
+    ''' See if the VMs are running and have the expected things on them; fix silently if that's easy '''
+    for this_vm in rt_config["vm_info"]:
+        log("Starting {}".format(this_vm))
+        is_vm_running(this_vm)
+    ################ MORE GOES HERE ###################
+    return True
+
 # Run the main program
 if __name__ == "__main__":
     log("## Starting run on date {}".format(time.strftime("%Y-%m-%d")))
@@ -138,7 +146,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         show_help()
         die("There were no arguments on the command line.")
-    rt_config = startup_and_config()  # Get the config, and make sure everything is set up correctly
+    rt_config = startup_and_config_general()  # Get the config, and make sure everything is set up correctly
     # Get the command
     cmd = sys.argv[1]
     cmd_args = sys.argv[2:]
@@ -149,6 +157,9 @@ if __name__ == "__main__":
     # Figure out which command it was
     if cmd == "help":
         show_help()
+    elif cmd == "check_vms":
+        if sanity_check_vms():
+            log("VMs are running as expected")
     # We're done, so exit
     log("## Finished run")
     exit()

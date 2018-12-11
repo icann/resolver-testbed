@@ -34,6 +34,7 @@ if __name__ == "__main__":
             die("Weird: this hosts hostname is {}, which is not expected.".format(this_hostname))
     print("Setting up {}".format(in_vm_name))
     # Add the /etc/hosts/interfaces file
+    print("Adding /etc/hosts/interfaces")
     this_interfaces_file = "{}/config-files/interfaces-{}".format(PROG_DIR, in_vm_name)
     if not os.path.exists(this_interfaces_file):
         die("The file {} does not exist, so cannot update this system.".format(this_interfaces_file))
@@ -42,6 +43,7 @@ if __name__ == "__main__":
     except:
         die("Could not copy {} to {}.".format(this_interfaces_file, "/etc/network/interfaces"))
     # For gateway-vm, cause the NAT rules to be automatically executed on startup
+    print("Making /etc/rc.local for NAT and forwarding")
     if in_vm_name == "gateway-vm":
         try:
             shutil.copy("{}/config-files/nat-on-gateway-vm.sh".format(PROG_DIR), "/etc/rc.local")
@@ -55,16 +57,19 @@ if __name__ == "__main__":
             subprocess.call("systemctl start rc-local", shell=True)
         except:
             die("Could not run 'systemctl start rc-local'.")
-    # Force /etc/resolv.conf to have our desired open resolver because systemd can be stupid
-    try:
-        subprocess.call("echo 'nameserver 8.8.4.4' > /etc/resolv.conf", shell=True)
-    except:
-        die("Could not fill /etc/resolv.conf with new nameserver info.")
+    # Force /etc/resolv.conf for servers-vm and resolvers-vm to have our desired open resolver because systemd can be stupid
+    if in_vm_name in ("servers-vm", "resolvers-vm"):
+        print("Adding /etc/resolv.conf")
+        try:
+            subprocess.call("echo 'nameserver 8.8.4.4' > /etc/resolv.conf", shell=True)
+        except:
+            die("Could not fill /etc/resolv.conf with new nameserver info.")
     # Change the hostname to this_vm for future boots
+    print("Changing /etc/hostname")
     try:
         f = open("/etc/hostname", mode="wt")
         f.write("{}\n".format(in_vm_name))
         f.close()
     except:
         die("Failed to write out /etc/hostname.")
-    die("Finished setting up {}. Reboot to bring up the new settings.".format(in_vm_name))
+    print("Finished setting up {}. Reboot to bring up the new settings.".format(in_vm_name))

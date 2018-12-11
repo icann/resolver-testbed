@@ -5,6 +5,9 @@ reasonably well for the current design (as far as we know now).
 
 The overall design is to use multiple VMs and multiple networks to segregate traffic so that packet captures are cleaner.
 
+The initial plan only covers IPv4. The requirements for IPv6 will include an IPv6 gateway on the control host or
+on the network on which the control host resides; this might restrict some testing.
+
 ## Network Layout
 
 <img src="testbed-layout.png" width=700px>

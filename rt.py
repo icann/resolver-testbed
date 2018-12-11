@@ -106,7 +106,8 @@ def is_vm_running(vm_name):
         die("VBoxManage runningvms failed to run.")
     the_running_vms_text = (p.stdout.read()).decode("latin-1").strip().split()
     try:
-        the_running_vms_text.index(vm_name):
+        the_running_vms_text.index(vm_name)
+    except:
         die("{} is not in the list of running VMs: '{}'.".format(vm_name, " ".join(the_running_vms_text)))
 
 def startup_and_config_general():

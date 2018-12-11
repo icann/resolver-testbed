@@ -28,7 +28,8 @@ if __name__ == "__main__":
     this_hostname = subprocess.getoutput("hostname")
     if this_hostname != CLONE_BASENAME:
         if this_hostname in OK_VM_LIST:
-            die("This host's hostname is {}, which indicates it has already been set up. Reset it to {} and reboot if you want to reinstall.".format(this_hostname, CLONE_BASENAME))
+            die("This host's hostname is {}, which indicates it has already been set up.\n".format(this_hostname) \
+                + "Reset the hostname to {} and reboot if you want to reinstall.".format(CLONE_BASENAME))
         else:
             die("Weird: this hosts hostname is {}, which is not expected.".format(this_hostname))
     print("Setting up {}".format(in_vm_name))
@@ -54,6 +55,11 @@ if __name__ == "__main__":
             subprocess.call("systemctl start rc-local", shell=True)
         except:
             die("Could not run 'systemctl start rc-local'.")
+    # Force /etc/resolv.conf to have our desired open resolver because systemd can be stupid
+    try:
+        subprocess.call("echo 'nameserver 8.8.4.4' > /etc/resolv.conf", shell=True)
+    except:
+        die("Could not fill /etc/resolv.conf with new nameserver info.")
     # Change the hostname to this_vm for future boots
     try:
         f = open("/etc/hostname", mode="wt")

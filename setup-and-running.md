@@ -19,7 +19,10 @@ The last two steps can be repeated as the configurations change for different te
 This needs to have the private key _not_ password-protected, so you might want to create a new keypair for the testbed.
 To ease installation, you might put this as an authized_keys file on a locally-managed web server.
 
-* Start Virtualbox
+* In VirtualBox, choose File &rarr; Host Network Manager and make sure that vboxnet0 is defined. If it is not,
+click the "Create" button to define it.
+
+* Start VirtualBox
 	* Machine &rarr; New
 		* Name: debian960-base
 		* Type: Linux
@@ -89,7 +92,7 @@ All clones are full clones because they are faster.
 	* Network &rarr; Adatper 1: Attached to "Host-only Adapter" _vboxnet0_
 	* Network &rarr; Adatper 2: Attached to "Internal Network" _resnet_
 	* Network &rarr; Adatper 3: Attached to "Internal Network" _servnet_
-	* Network &rarr; Adatper 4: Attached to "Bridged Adapter" on the NIC for your computer that leads to the Internet
+	* Network &rarr; Adatper 4: Attached to "NAT"
 * Start the VM
 * Log in as root
 * Give the command `/root/resolver-testbed/vm_initial_setup.py gateway-vm`

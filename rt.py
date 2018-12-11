@@ -63,7 +63,7 @@ def die(in_str):
 def show_help():
     print(HELP_TEXT)
 
-def cmd_to_vm(cmds_to_run, vm_name):
+def cmd_to_vm(cmd_to_run, vm_name):
     ''' Runs a list of commands on a named VM. Returns list of [ success_boolean, output_text ] '''
     if not vm_name in VM_INFO:
         die("Attempt to run on {}, which is not a valid VM".format(vm_name))
@@ -77,26 +77,18 @@ def cmd_to_vm(cmds_to_run, vm_name):
     except:
         die("Could not open an SSH connection to {}.".format(vm_name))
     # Is this the right VM?
-    try:
-        ret_text = fabconn.run("hostname")
-    except Exception as this_e:
-        die("Could not run hostname on {}: '{}'".format(vm_name, this_e))
-    if ret_text.strip() != vm_name:
-        die("The host at {} is not {}: '{}'".format(this_control_address, vm_name, ret_text.strip()))
-    # Find the commands
-    #   The argument can be a list or a string
-    if isinstance(cmds_to_run, list):
-        commands_list = cmds_to_run
-    elif isinstance(cmds_to_run, str):
-        commands_list = [ cmds_to_run ]
+    ret_hostname = fabconn.run("hostname", hide=True)
+    if ret_hostname.failed:
+        die("Could not run hostname on {}".format(vm_name))
+    ret_text = ret_hostname.stdout
+    if ret_text.rstrip() != vm_name:
+        die("The host at {} is not {}: '{}'".format(this_control_address, vm_name, ret_text))
+    # Run the command
+    ret_main_cmd = fabconn.run(cmd_to_run, hide=True, warn=True)
+    if ret_main_cmd.failed:
+        return "Error: {}".format(ret_main_cmd.stderr.strip())
     else:
-        die("The command going to cmd_to_vm has to be a list or a string.")
-    # Run the commands
-    for this_command in commands_list:
-        try:
-            ret_text = fabconn.run(this_command)
-        except Exception as this_e:
-            die("Could not run '{}' on {}: '{}'".format(this_command, vm_name, this_e))
+        return ret_main_cmd.stdout.strip()
 
 def is_vm_running(vm_name):
     ''' Check if the VM is running; die if not '''
@@ -104,11 +96,12 @@ def is_vm_running(vm_name):
     ret_val = p.wait()
     if ret_val > 0:
         die("VBoxManage runningvms failed to run.")
-    the_running_vms_text = (p.stdout.read()).decode("latin-1").strip().split()
-    try:
-        the_running_vms_text.index(vm_name)
-    except:
-        die("{} is not in the list of running VMs: '{}'.".format(vm_name, " ".join(the_running_vms_text)))
+    running_vms_lines = (p.stdout.read()).decode("latin-1").strip().split("\n")
+    running_vms = []
+    for this_line in running_vms_lines:
+        running_vms.append(this_line[1:this_line.find('"', 2)])
+    if not vm_name in running_vms:
+        die("{} is not in the list of running VMs: '{}'.".format(vm_name, " ".join(running_vms)))
 
 def startup_and_config_general():
     ''' Make sure everything on the control host is set up correctly, and die if it is not; returns local configuration '''
@@ -138,8 +131,18 @@ def startup_and_config_general():
 def sanity_check_vms():
     ''' See if the VMs are running and have the expected things on them; fix silently if that's easy '''
     for this_vm in rt_config["vm_info"]:
-        log("Starting {}".format(this_vm))
+        log("Starting sanity check on {}".format(this_vm))
         is_vm_running(this_vm)
+        # Make a Target directory if it not already there
+        this_ret = cmd_to_vm("ls ~/Target", this_vm)
+        if "No such file or directory" in this_ret:
+            inner_ret = cmd_to_vm("mkdir ~/Target", this_vm)
+            log("Created ~/Target on {}".format(this_vm))
+        # Make a Source directory if it not already there
+        this_ret = cmd_to_vm("ls ~/Source", this_vm)
+        if "No such file or directory" in this_ret:
+            inner_ret = cmd_to_vm("mkdir ~/Source", this_vm)
+            log("Created ~/Source on {}".format(this_vm))
     ################ MORE GOES HERE ###################
     return True
 

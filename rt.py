@@ -29,6 +29,7 @@ VM_INFO = {
 
 CLI_COMMANDS = [
 "help",
+"check_vms"
 ]
 
 HELP_TEXT = '''

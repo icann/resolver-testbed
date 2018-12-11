@@ -104,9 +104,10 @@ def is_vm_running(vm_name):
     ret_val = p.wait()
     if ret_val > 0:
         die("VBoxManage runningvms failed to run.")
-    the_running_vms = (p.stdout.read()).decode("latin-1").strip().split()
-    if not vm_name in the_running_vms:
-        die("{} is not in the list of running VMs: '{}'.".format(vm_name, " ".join(the_running_vms)))
+    the_running_vms_text = (p.stdout.read()).decode("latin-1").strip().split()
+    try:
+        the_running_vms_text.index(vm_name):
+        die("{} is not in the list of running VMs: '{}'.".format(vm_name, " ".join(the_running_vms_text)))
 
 def startup_and_config_general():
     ''' Make sure everything on the control host is set up correctly, and die if it is not; returns local configuration '''

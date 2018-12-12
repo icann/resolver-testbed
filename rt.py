@@ -64,7 +64,7 @@ def show_help():
     print(HELP_TEXT)
 
 def cmd_to_vm(cmd_to_run, vm_name):
-    ''' Runs a list of commands on a named VM. Returns list of [ success_boolean, output_text ] '''
+    ''' Runs a command on a named VM. Returns success_boolean, output_text '''
     if not vm_name in VM_INFO:
         die("Attempt to run on {}, which is not a valid VM".format(vm_name))
     is_vm_running(vm_name)
@@ -86,9 +86,9 @@ def cmd_to_vm(cmd_to_run, vm_name):
     # Run the command
     ret_main_cmd = fabconn.run(cmd_to_run, hide=True, warn=True)
     if ret_main_cmd.failed:
-        return "Error: {}".format(ret_main_cmd.stderr.strip())
+        return False, "Error: {}".format(ret_main_cmd.stderr.strip())
     else:
-        return ret_main_cmd.stdout.strip()
+        return True, ret_main_cmd.stdout.strip()
 
 def is_vm_running(vm_name):
     ''' Check if the VM is running; die if not '''
@@ -129,22 +129,19 @@ def startup_and_config_general():
     return this_local_config
 
 def sanity_check_vms():
-    ''' See if the VMs are running and have the expected things on them; fix silently if that's easy '''
+    ''' See if the VMs are running and have the expected things on them; fix silently if that's easy, otherwise die '''
     for this_vm in rt_config["vm_info"]:
         log("Starting sanity check on {}".format(this_vm))
         is_vm_running(this_vm)
-        # Make a Target directory if it not already there
-        this_ret = cmd_to_vm("ls ~/Target", this_vm)
-        if "No such file or directory" in this_ret:
-            inner_ret = cmd_to_vm("mkdir ~/Target", this_vm)
-            log("Created ~/Target on {}".format(this_vm))
-        # Make a Source directory if it not already there
-        this_ret = cmd_to_vm("ls ~/Source", this_vm)
-        if "No such file or directory" in this_ret:
-            inner_ret = cmd_to_vm("mkdir ~/Source", this_vm)
-            log("Created ~/Source on {}".format(this_vm))
-    ################ MORE GOES HERE ###################
-    return True
+        # Make a Source and Target directory if it not already there
+        for this_dir in ("~/Source", "~/Target"):
+            this_ret, this_str = cmd_to_vm("ls {}".format(this_dir), this_vm)
+            if not this_ret:
+                if "No such file or directory" in this_str:
+                    inner_ret = cmd_to_vm("mkdir {}".format(this_dir), this_vm)
+                    log("Created {} on {}".format(this_dir, this_vm))
+                else:
+                    die("When trying to create '{}', got '{}'".format(this_dir, this_str))
 
 # Run the main program
 if __name__ == "__main__":
@@ -165,8 +162,8 @@ if __name__ == "__main__":
     if cmd == "help":
         show_help()
     elif cmd == "check_vms":
-        if sanity_check_vms():
-            log("VMs are running as expected")
+        sanity_check_vms()
+        log("VMs are running as expected")
     # We're done, so exit
     log("## Finished run")
     exit()

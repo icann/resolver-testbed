@@ -5,13 +5,12 @@ See https://github.com/icann/resolver-testbed for more information
 Must be run in the same directory as the config files
 '''
 
-import os, subprocess, sys, time, logging, configparser
+import os, subprocess, sys, time, logging, json
 import fabric
 
 # Some program-wide constants
 PROG_DIR = os.path.abspath(os.getcwd())
 LOG_FILE = "{}/log_resolver_testbed.txt".format(PROG_DIR)
-LOCAL_CONFIG = "{}/local_config.txt".format(PROG_DIR)
 BUILD_CONFIG = "{}/build_config.json".format(PROG_DIR)
 CLONE_BASENAME = "debian960-base"
 
@@ -125,6 +124,21 @@ def startup_and_config_general():
     this_local_config["vm_info"] = {}
     for this_key in VM_INFO:
         this_local_config["vm_info"][this_key] = VM_INFO[this_key]
+    # Add BUILD_CONFIG to the local configuration
+    try:
+        build_f = open(BUILD_CONFIG, mode="rt")
+    except:
+        die("Could not find {}.".format(BUILD_CONFIG))
+    try:
+        build_input = json.load(build_f)
+    except:
+        die("The JSON in {} is broken.".format(BUILD_CONFIG))
+    # Sanity check the input
+    if not (("builds" in build_input) and ("templates" in build_input) and ("bases" in build_input)):
+        die("{} does not have the right components.".format(BUILD_CONFIG))
+    if not ("bind-for-auth" in build_input["builds"]):
+        die('{} does not have builds["bind-for-auth"].'.format(BUILD_CONFIG))
+    this_local_config["build_info"] = build_input
     # Finish up initialization
     return this_local_config
 
@@ -142,6 +156,12 @@ def sanity_check_vms():
                     log("Created {} on {}".format(this_dir, this_vm))
                 else:
                     die("When trying to create '{}', got '{}'".format(this_dir, this_str))
+        # Be sure that BIND is built on servers-vm
+        if this_vm == "servers-vm":
+            this_ret, this_str = cmd_to_vm("ls Target/bind-for-auth", this_vm)
+            if not this_ret:
+                log("bind-for-auth does not exist on servers-vm, building now.")
+                ################### MORE GOES HERE
 
 # Run the main program
 if __name__ == "__main__":

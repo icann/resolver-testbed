@@ -193,3 +193,25 @@ if __name__ == "__main__":
     # We're done, so exit
     log("## Finished run")
     exit()
+
+''' Still to do:
+- Build the resolvers on resolvers-vm
+
+- Start a test on resovers-vm
+  - Be sure that the resolver cache is empy
+  - Generate a test instance name
+  - Start dnstap on gateway-vm
+  - Start the test
+  - During the test, collect cache dumps
+  - During the test, collect system log changes
+  - Finish the test
+  - Stop dnstap on gateway-vm
+  - Collect the dnstap files from gateway-vm
+  
+- Start a test on something with less tooling than resovers-vm
+  - Generate a test instance name
+  - Start dnstap on gateway-vm
+  - Stop dnstap on gateway-vm
+  - Collect the dnstap files from gateway-vm
+
+'''

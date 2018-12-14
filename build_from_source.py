@@ -73,6 +73,10 @@ if __name__ == "__main__":
             image_make_str = build_config_dict["templates"][image_make_str]
         else:
             die("{} has a make string of {}, but there is no equivalent for that.".format(image_name, image_make_str))
+    # Get the compressed file into SOURCE_DIR
+    # Uncompress into image_name
+    # Change PREFIX_GOES_HERE in image_make_str into SOURCE_DIR/image_name
+    # Make
     #################### More goes here ###################
     log("## Finished run")
     exit()

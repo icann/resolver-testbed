@@ -2,130 +2,67 @@
 
 	"builds": {
 		"knot-resolver-3.1.0":
-			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-3.1.0.tar.xz",
-			"make_str": "!knotresmake",
-			"start": "!knotstart"
-			},
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-3.1.0.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
 
 		"knot-resolver-2.4.1":
-			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-2.4.1.tar.xz",
-			"make_str": "!knotresmake",
-			"start": "!knotstart"
-			},
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-2.4.1.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
 
 		"knot-resolver-1.5.3":
-			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.5.3.tar.xz",
-			"make_str": "!knotresmake",
-			"start": "!knotstart"
-			},
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.5.3.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
 
 		"knot-resolver-1.3.3":
-			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.3.3.tar.xz",
-			"make_str": "!knotresmake",
-			"start": "!knotstart"
-			},
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.3.3.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
 
 		"knot-resolver-1.2.6":
-			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.6.tar.xz",
-			"make_str": "!knotresmake",
-			"start": "!knotstart"
-			},
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.6.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
 
 		"bind-9.13.4":
-			{ "url": "https://ftp.isc.org/isc/bind9/9.13.4/bind-9.13.4.tar.gz",
-			"make_str": "!bind9make",
-			"start": "!bind9start"
-			},
+			{ "url": "https://ftp.isc.org/isc/bind9/9.13.4/bind-9.13.4.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
 		"bind-9.12.3":
-			{ "url": "https://ftp.isc.org/isc/bind9/9.12.3/bind-9.12.3.tar.gz",
-			"make_str": "!bind9make",
-			"start": "!bind9start"
-			},
+			{ "url": "https://ftp.isc.org/isc/bind9/9.12.3/bind-9.12.3.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
 		"bind-9.11.5":
-			{ "url": "https://ftp.isc.org/isc/bind9/9.11.5/bind-9.11.5.tar.gz",
-			"make_str": "!bind9make",
-			"start": "!bind9start"
-			},
+			{ "url": "https://ftp.isc.org/isc/bind9/9.11.5/bind-9.11.5.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
 		"bind-9.10.8":
-			{ "url": "https://ftp.isc.org/isc/bind9/9.10.8/bind-9.10.8.tar.gz",
-			"make_str": "!bind9make",
-			"start": "!bind9start"
-			},
+			{ "url": "https://ftp.isc.org/isc/bind9/9.10.8/bind-9.10.8.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
 		"bind-9.9.11":
-			{ "url": "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz",
-			"make_str": "!bind9make",
-			"start": "!bind9start"
-			},
+			{ "url": "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
 		"unbound-1.8.3":
-			{ "url": "http://unbound.net/downloads/unbound-1.8.3.tar.gz",
-			"make_str": "!unboundmake",
-			"start": "!unboundstart"
-			},
+			{ "url": "http://unbound.net/downloads/unbound-1.8.3.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
 
 		"unbound-1.7.3":
-			{ "url": "http://unbound.net/downloads/unbound-1.7.3.tar.gz",
-			"make_str": "!unboundmake",
-			"start": "!unboundstart"
-			},
+			{ "url": "http://unbound.net/downloads/unbound-1.7.3.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
 
 		"unbound-1.6.8":
-			{ "url": "http://unbound.net/downloads/unbound-1.6.8.tar.gz",
-			"make_str": "!unboundmake",
-			"start": "!unboundstart"
-			},
+			{ "url": "http://unbound.net/downloads/unbound-1.6.8.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
 
 		"unbound-1.5.10":
-			{ "url": "http://unbound.net/downloads/unbound-1.5.10.tar.gz",
-			"make_str": "!unboundmake",
-			"start": "!unboundstart"
-			},
+			{ "url": "http://unbound.net/downloads/unbound-1.5.10.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
 
 		"unbound-1.4.22":
-			{ "url": "http://unbound.net/downloads/unbound-1.4.22.tar.gz",
-			"make_str": "!unboundmake",
-			"start": "!unboundstart"
-			},
+			{ "url": "http://unbound.net/downloads/unbound-1.4.22.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
 
 		"unbound-1.3.4":
-			{ "url": "http://unbound.net/downloads/unbound-1.3.4.tar.gz",
-			"make_str": "!unboundmake",
-			"start": "!unboundstart"
-			},
+			{ "url": "http://unbound.net/downloads/unbound-1.3.4.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
 
 		"pdns-recursor-4.1.8":
-			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.8.tar.bz2",
-			"make_str": "!pdns4make",
-			"start": "!pdns4start"
-			},
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.8.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },
 
 		"pdns-recursor-4.0.9":
-			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2",
-			"make_str": "!pdns4make",
-			"start": "!pdns4start"
-			},
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },
 
 		"pdns-recursor-3.7.4":
-			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.7.4.tar.bz2",
-			"make_str": "!pdns3make",
-			"start": "!pdns3start"
-			},
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.7.4.tar.bz2", "make_str": "!pdns3make", "start": "!pdns3start" },
 
 		"pdns-recursor-3.6.4":
-			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.6.4.tar.bz2",
-			"make_str": "!pdns3make",
-			"start": "!pdns3start"
-			},
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.6.4.tar.bz2", "make_str": "!pdns3make", "start": "!pdns3start" },
 
 		"bind-for-auth":
-			{ "url": "https://ftp.isc.org/isc/bind9/9.12.3/bind-9.12.3.tar.gz",
-			"make_str": "!bind9make",
-			"start": "!bind9start"
-			}
+			{ "url": "https://ftp.isc.org/isc/bind9/9.12.3/bind-9.12.3.tar.gz", "make_str": "!bind9make", "start": "!bind9start" }
 
 	},
 
@@ -144,15 +81,6 @@
 			"PREFIX_GOES_HERE/usr/local/sbin/pdns_recursor --daemon --config-dir=PREFIX_GOES_HERE/usr/local/etc"
 			],
 		"!knotstart": "PREFIX_GOES_HERE/sbin/kresd -f 1 -c CONF_FILE_NAME &"
-	},
-
-	"bases": {
-		"full-base": ["LC_ALL=C.UTF-8 add-apt-repository -y ppa:cz.nic-labs/knot-dns && LC_ALL=C.UTF-8 add-apt-repository -y ppa:cz.nic-labs/knot-resolver",
-			"apt update",
-			"apt install -y libknot-dev",
-			"apt install -y libssl-dev pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
-			"apt install -y libldns-dev libexpat-dev libboost-dev" ],
-		"bind-for-auth-base": [ "apt install -y libssl-dev" ]
 	}
 	
 }

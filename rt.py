@@ -13,6 +13,12 @@ PROG_DIR = os.path.abspath(os.getcwd())
 LOG_FILE = "{}/log_resolver_testbed.txt".format(PROG_DIR)
 BUILD_CONFIG = "{}/build_config.json".format(PROG_DIR)
 CLONE_BASENAME = "debian960-base"
+SERVER_LIBRARIES = ["LC_ALL=C.UTF-8 add-apt-repository -y ppa:cz.nic-labs/knot-dns && LC_ALL=C.UTF-8 add-apt-repository -y ppa:cz.nic-labs/knot-resolver",
+    "apt update",
+    "apt install -y libknot-dev",
+    "apt install -y libssl-dev pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
+    "apt install -y libldns-dev libexpat-dev libboost-dev" ]
+
 
 VM_INFO = {
     "gateway-vm": {
@@ -147,21 +153,21 @@ def sanity_check_vms():
     for this_vm in rt_config["vm_info"]:
         log("Starting sanity check on {}".format(this_vm))
         is_vm_running(this_vm)
-        # Make a Source and Target directory if it not already there
-        for this_dir in ("~/Source", "~/Target"):
-            this_ret, this_str = cmd_to_vm("ls {}".format(this_dir), this_vm)
+        # On servers-vm, install all the stuff for building if it isn't already there
+        if this_vm == "servers-vm":
+            this_ret, this_str = cmd_to_vm("apt list --installed", this_vm)
             if not this_ret:
-                if "No such file or directory" in this_str:
-                    inner_ret = cmd_to_vm("mkdir {}".format(this_dir), this_vm)
-                    log("Created {} on {}".format(this_dir, this_vm))
-                else:
-                    die("When trying to create '{}', got '{}'".format(this_dir, this_str))
+                die("Could not run 'apt list' on servers-vm.")
+            if not "libknot" in this_str:
+                log("Did not find libknot on servers-vm, so installing libraries.")
+                for this_line in SERVER_LIBRARIES:
+                    this_ret, this_str = cmd_to_vm(this_line, this_vm)
+                log("Finished instsalling libraries on servers-vm,")
         # Be sure that BIND is built on servers-vm
         if this_vm == "servers-vm":
             this_ret, this_str = cmd_to_vm("ls Target/bind-for-auth", this_vm)
             if not this_ret:
                 log("bind-for-auth does not exist on servers-vm, building now.")
-                ################### MORE GOES HERE
 
 # Run the main program
 if __name__ == "__main__":

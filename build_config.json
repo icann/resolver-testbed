@@ -59,7 +59,7 @@
 			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.7.4.tar.bz2", "make_str": "!pdns3make", "start": "!pdns3start" },
 
 		"pdns-recursor-3.6.4":
-			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.6.4.tar.bz2", "make_str": "!pdns3make", "start": "!pdns3start" },
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.6.4.tar.bz2", "make_str": "!pdns3make", "start": "!pdns3start" }
 
 	},
 

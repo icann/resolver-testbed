@@ -82,7 +82,7 @@ if __name__ == "__main__":
     if p_ret > 0:
         die("wget failed with '{}'.".format(p.stderr.read()))
     # Uncompress into package_name
-    p = subprocess.Popen("tar -xf {}", shell=True)
+    p = subprocess.Popen("tar -xf {}".format(os.path.basename(package_url)), shell=True)
     p_ret = p.wait()
     if p_ret > 0:
         die("tar -xf failed with '{}'.".format(p.stderr.read()))

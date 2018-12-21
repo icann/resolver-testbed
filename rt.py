@@ -80,7 +80,7 @@ def cmd_to_vm(cmd_to_run, vm_name):
     try:
         fabconn.open()
     except:
-        die("Could not open an SSH connection to {}.".format(vm_name))
+        die("Could not open an SSH connection to {} on {}.".format(vm_name, this_control_address))
     # Is this the right VM?
     ret_hostname = fabconn.run("hostname", hide=True)
     if ret_hostname.failed:

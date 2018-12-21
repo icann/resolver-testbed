@@ -6,12 +6,13 @@ The steps can be summarized as:
 
 0. Build the base VM image in VirtualBox
 0. Clone this VM for other VMs in the testbed
+0. Do initial setup from the control host
 0. Push configurations out to the VMs
 0. Run tests
 
 The last two steps can be repeated as the configurations change for different testing.
 
-## Building the Base VM Image
+## Building the Base VM Image on the Control Host
 
 * Get the recent Debiain image from `http://cdimage.debian.org/cdimage/release/current/amd64/iso-cd/debian-9.6.0-amd64-netinst.iso`
 
@@ -126,3 +127,8 @@ All clones are full clones because they are faster.
 * Give the command `/root/resolver-testbed/vm_initial_setup.py resolvers-vm`
 * Reboot
 
+## Do the Initial Setup and Sanity Checks on the Control Host
+
+* Get the testbed repo: `git clone https://github.com/icann/resolver-testbed.git`
+* Change into that directory: `cd resolver-testbed`
+* Check that the VMs are running, and add things initially if needed: `./rt.py check_vms`

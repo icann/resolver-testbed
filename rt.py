@@ -174,7 +174,7 @@ def sanity_check_vms():
             this_ret, this_str = cmd_to_vm("ls Target/bind-for-auth", this_vm)
             if not this_ret:
                 log("bind-for-auth does not exist on servers-vm, building now.")
-                this_ret, this_str = cmd_to_vm("/root/resolver-testbed/build_from_source.py bind-for-auth", this_vm)
+                this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py bind-for-auth", this_vm)
                 if not this_ret:
                     die("Could not build bind-for-auth: {}".format(this_str))
 

@@ -5,8 +5,7 @@ See https://github.com/icann/resolver-testbed for more information
 Must be run in the same directory as the config files
 '''
 
-import os, subprocess, sys, time, logging, json
-import fabric
+import os, subprocess, sys, time, json
 
 # Some program-wide constants
 PROG_DIR = os.path.abspath(os.getcwd())
@@ -61,11 +60,11 @@ if __name__ == "__main__":
         die("The name '{}' was not found in the builds configuration:\n{}\n".format(package_name, all_builds))
     try:
         package_url = build_config_dict["builds"][package_name]["url"]
-    else:
+    except:
         die("There is no URL for {}.".format(package_name))
     try:
         package_make_str = build_config_dict["builds"][package_name]["make_str"]
-    else:
+    except:
         die("There is no make string for {}.".format(package_name))
     # Replace the make string abbreviation (starts with "!") with the full string
     if package_make_str.startswith("!"):
@@ -94,7 +93,7 @@ if __name__ == "__main__":
     try:
         os.chdir(package_source_dir)
     except:
-        die("Could not chdir into {}".format(package_source_dir)
+        die("Could not chdir into {}".format(package_source_dir))
     # Change PREFIX_GOES_HERE in package_make_str into TARGET_DIR/package_name
     full_make_str = package_make_str.replace("PREFIX_GOES_HERE", "{}/{}".format(TARGET_DIR, package_source_dir))
     # Make

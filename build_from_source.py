@@ -100,7 +100,10 @@ if __name__ == "__main__":
     full_make_str = package_make_str.replace("PREFIX_GOES_HERE", "{}/{}".format(TARGET_DIR, package_source_dir))
     log("Making with '{}'".format(full_make_str))
     # Make
-    #################### More goes here ###################
+    p = subprocess.Popen(full_make_str, stderr=subprocess.PIPE, shell=True)
+    p_ret = p.wait()
+    if p_ret > 0:
+        die("making failed with '{}'.".format(p.stderr.read()))
     log("## Finished run")
     exit()
 

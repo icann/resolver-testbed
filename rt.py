@@ -148,8 +148,6 @@ def startup_and_config_general():
     # Sanity check the input
     if not (("builds" in build_input) and ("templates" in build_input)):
         die("{} does not have the right components.".format(BUILD_CONFIG))
-    if not ("bind-for-auth" in build_input["builds"]):
-        die('{} does not have builds["bind-for-auth"].'.format(BUILD_CONFIG))
     this_local_config["build_info"] = build_input
     # Finish up initialization
     return this_local_config
@@ -171,12 +169,12 @@ def sanity_check_vms():
                 log("Finished instsalling libraries on servers-vm,")
         # Be sure that BIND is built on servers-vm
         if this_vm == "servers-vm":
-            this_ret, this_str = cmd_to_vm("ls Target/bind-for-auth", this_vm)
+            this_ret, this_str = cmd_to_vm("ls Target/bind-9.12.3", this_vm)
             if not this_ret:
-                log("bind-for-auth does not exist on servers-vm, building now.")
-                this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py bind-for-auth", this_vm)
+                log("bind-9.12.3 does not exist on servers-vm, building now, may take a few minutes.")
+                this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py bind-9.12.3", this_vm)
                 if not this_ret:
-                    die("Could not build bind-for-auth: {}".format(this_str))
+                    die("Could not build bind-9.12.3: {}".format(this_str))
 
 # Run the main program
 if __name__ == "__main__":

@@ -61,9 +61,6 @@
 		"pdns-recursor-3.6.4":
 			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.6.4.tar.bz2", "make_str": "!pdns3make", "start": "!pdns3start" },
 
-		"bind-for-auth":
-			{ "url": "https://ftp.isc.org/isc/bind9/9.12.3/bind-9.12.3.tar.gz", "make_str": "!bind9make", "start": "!bind9start" }
-
 	},
 
 	"templates": {

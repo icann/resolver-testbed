@@ -44,8 +44,6 @@ if __name__ == "__main__":
     # Sanity check the input
     if not (("builds" in build_config_dict) and ("templates" in build_config_dict)):
         die("{} does not have the right components.".format(BUILD_CONFIG))
-    if not ("bind-for-auth" in build_config_dict["builds"]):
-        die('{} does not have builds["bind-for-auth"].'.format(BUILD_CONFIG))
     # Be sure that the needed directories are there
     for this_dir in (SOURCE_DIR, TARGET_DIR):
         if not os.path.exists(this_dir):

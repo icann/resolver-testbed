@@ -72,22 +72,24 @@ if __name__ == "__main__":
             package_make_str = build_config_dict["templates"][package_make_str]
         else:
             die("{} has a make string of {}, but there is no equivalent for that.".format(package_name, package_make_str))
-    # Get the compressed file into SOURCE_DIR
     try:
         os.chdir(SOURCE_DIR)
     except:
         die("Could not chdir to {}.".format(SOURCE_DIR))
+    # Get the compressed file into SOURCE_DIR
+    log("Getting {}".format(package_url))
     p = subprocess.Popen("wget {}".format(package_url), stderr=subprocess.PIPE, shell=True)
     p_ret = p.wait()
     if p_ret > 0:
         die("wget failed with '{}'.".format(p.stderr.read()))
     # Uncompress into package_name
+    log("Uncompressing {}".format(os.path.basename(package_url)))
     p = subprocess.Popen("tar -xf {}".format(os.path.basename(package_url)), shell=True)
     p_ret = p.wait()
     if p_ret > 0:
         die("tar -xf failed with '{}'.".format(p.stderr.read()))
     # Verify that the expected directory exists, then chdir there
-    package_source_dir = os.path.splitext(os.path.basename(package_url))[0]
+    package_source_dir = (os.path.splitext(os.path.basename(package_url))[0]).replace(".tar", "")
     if not os.path.exists(package_source_dir):
         die("Getting and expanding {} did not result in a directory {}.".format(package_url, package_source_dir))
     try:
@@ -96,6 +98,7 @@ if __name__ == "__main__":
         die("Could not chdir into {}".format(package_source_dir))
     # Change PREFIX_GOES_HERE in package_make_str into TARGET_DIR/package_name
     full_make_str = package_make_str.replace("PREFIX_GOES_HERE", "{}/{}".format(TARGET_DIR, package_source_dir))
+    log("Making with '{}'".format(full_make_str))
     # Make
     #################### More goes here ###################
     log("## Finished run")

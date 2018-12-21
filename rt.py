@@ -106,7 +106,13 @@ def is_vm_running(vm_name):
     for this_line in running_vms_lines:
         running_vms.append(this_line[1:this_line.find('"', 2)])
     if not vm_name in running_vms:
-        die("{} is not in the list of running VMs: '{}'.".format(vm_name, " ".join(running_vms)))
+        log("{} is not in the list of running VMs: '{}'.".format(vm_name, " ".join(running_vms)))
+        log("Attempting to start {}".format(vm_name))
+        p = subprocess.Popen("VBoxManage startvm {} --type headless".format(vm_name), stdout=subprocess.PIPE, shell=True)  
+        ret_val = p.wait()
+        if ret_val > 0:
+            die("VBoxManage startvm did not start {}: {}.".format(vm_name, (p.stdout.read()).decode("latin-1"))
+        
 
 def startup_and_config_general():
     ''' Make sure everything on the control host is set up correctly, and die if it is not; returns local configuration '''

@@ -111,7 +111,7 @@ def is_vm_running(vm_name):
         p = subprocess.Popen("VBoxManage startvm {} --type headless".format(vm_name), stdout=subprocess.PIPE, shell=True)  
         ret_val = p.wait()
         if ret_val > 0:
-            die("VBoxManage startvm did not start {}: {}.".format(vm_name, (p.stdout.read()).decode("latin-1"))
+            die("VBoxManage startvm did not start {}: {}.".format(vm_name, (p.stdout.read()).decode("latin-1")))
         
 
 def startup_and_config_general():

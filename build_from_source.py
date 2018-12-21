@@ -55,27 +55,48 @@ if __name__ == "__main__":
             except:
                 die("Could not create {}.".format(this_dir))
     # Get the name to build
-    image_name = sys.argv[1]
-    if not image_name in build_config_dict["builds"]:
+    package_name = sys.argv[1]
+    if not package_name in build_config_dict["builds"]:
         all_builds = " ".join(sorted((build_config_dict["builds"]).keys()))
-        die("The name '{}' was not found in the builds configuration:\n{}\n".format(image_name, all_builds))
+        die("The name '{}' was not found in the builds configuration:\n{}\n".format(package_name, all_builds))
     try:
-        image_url = build_config_dict["builds"][image_name]["url"]
+        package_url = build_config_dict["builds"][package_name]["url"]
     else:
-        die("There is no URL for {}.".format(image_name))
+        die("There is no URL for {}.".format(package_name))
     try:
-        image_make_str = build_config_dict["builds"][image_name]["make_str"]
+        package_make_str = build_config_dict["builds"][package_name]["make_str"]
     else:
-        die("There is no make string for {}.".format(image_name))
+        die("There is no make string for {}.".format(package_name))
     # Replace the make string abbreviation (starts with "!") with the full string
-    if image_make_str.startswith("!"):
-        if image_make_str in build_config_dict["templates"]:
-            image_make_str = build_config_dict["templates"][image_make_str]
+    if package_make_str.startswith("!"):
+        if package_make_str in build_config_dict["templates"]:
+            package_make_str = build_config_dict["templates"][package_make_str]
         else:
-            die("{} has a make string of {}, but there is no equivalent for that.".format(image_name, image_make_str))
+            die("{} has a make string of {}, but there is no equivalent for that.".format(package_name, package_make_str))
     # Get the compressed file into SOURCE_DIR
-    # Uncompress into image_name
-    # Change PREFIX_GOES_HERE in image_make_str into SOURCE_DIR/image_name
+    try:
+        os.chdir(SOURCE_DIR)
+    except:
+        die("Could not chdir to {}.".format(SOURCE_DIR))
+    p = subprocess.Popen("wget {}".format(package_url), stderr=subprocess.PIPE, shell=True)
+    p_ret = p.wait()
+    if p_ret > 0:
+        die("wget failed with '{}'.".format(p.stderr.read()))
+    # Uncompress into package_name
+    p = subprocess.Popen("tar -xf {}", shell=True)
+    p_ret = p.wait()
+    if p_ret > 0:
+        die("tar -xf failed with '{}'.".format(p.stderr.read()))
+    # Verify that the expected directory exists, then chdir there
+    package_source_dir = os.path.splitext(os.path.basename(package_url))[0]
+    if not os.path.exists(package_source_dir):
+        die("Getting and expanding {} did not result in a directory {}.".format(package_url, package_source_dir))
+    try:
+        os.chdir(package_source_dir)
+    except:
+        die("Could not chdir into {}".format(package_source_dir)
+    # Change PREFIX_GOES_HERE in package_make_str into TARGET_DIR/package_name
+    full_make_str = package_make_str.replace("PREFIX_GOES_HERE", "{}/{}".format(TARGET_DIR, package_source_dir))
     # Make
     #################### More goes here ###################
     log("## Finished run")

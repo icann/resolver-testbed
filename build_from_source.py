@@ -81,13 +81,13 @@ if __name__ == "__main__":
     p = subprocess.Popen("wget {}".format(package_url), stderr=subprocess.PIPE, shell=True)
     p_ret = p.wait()
     if p_ret > 0:
-        die("wget failed with '{}'.".format(p.stderr.read()))
+        die("wget failed with '{}'.".format((p.stderr.read()).decode("latin-1")))
     # Uncompress into package_name
     log("Uncompressing {}".format(os.path.basename(package_url)))
     p = subprocess.Popen("tar -xf {}".format(os.path.basename(package_url)), shell=True)
     p_ret = p.wait()
     if p_ret > 0:
-        die("tar -xf failed with '{}'.".format(p.stderr.read()))
+        die("tar -xf failed with '{}'.".format((p.stderr.read()).decode("latin-1")))
     # Verify that the expected directory exists, then chdir there
     package_source_dir = (os.path.splitext(os.path.basename(package_url))[0]).replace(".tar", "")
     if not os.path.exists(package_source_dir):
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     p = subprocess.Popen(full_make_str, stderr=subprocess.PIPE, shell=True)
     p_ret = p.wait()
     if p_ret > 0:
-        die("making failed with '{}'.".format(p.stderr.read()))
+        die("making failed with '{}'.".format((p.stderr.read()).decode("latin-1")))
     log("## Finished run")
     exit()
 

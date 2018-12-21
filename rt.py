@@ -140,7 +140,7 @@ def startup_and_config_general():
     except:
         die("The JSON in {} is broken.".format(BUILD_CONFIG))
     # Sanity check the input
-    if not (("builds" in build_input) and ("templates" in build_input) and ("bases" in build_input)):
+    if not (("builds" in build_input) and ("templates" in build_input)):
         die("{} does not have the right components.".format(BUILD_CONFIG))
     if not ("bind-for-auth" in build_input["builds"]):
         die('{} does not have builds["bind-for-auth"].'.format(BUILD_CONFIG))

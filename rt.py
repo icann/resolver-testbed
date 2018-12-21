@@ -154,7 +154,7 @@ def sanity_check_vms():
         log("Starting sanity check on {}".format(this_vm))
         is_vm_running(this_vm)
         # On servers-vm, install all the stuff for building if it isn't already there
-        if this_vm == "servers-vm":
+        if this_vm in ("servers-vm", "resolvers-vm"):
             this_ret, this_str = cmd_to_vm("apt list --installed", this_vm)
             if not this_ret:
                 die("Could not run 'apt list' on servers-vm.")
@@ -168,6 +168,7 @@ def sanity_check_vms():
             this_ret, this_str = cmd_to_vm("ls Target/bind-for-auth", this_vm)
             if not this_ret:
                 log("bind-for-auth does not exist on servers-vm, building now.")
+            ################ Need to build BIND on servers-vm here ###############
 
 # Run the main program
 if __name__ == "__main__":

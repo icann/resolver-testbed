@@ -189,7 +189,7 @@ def build_all_resolvers():
             log("Building {}".format(this_build))
             this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py {}".format(this_build), "resolvers-vm")
             if not this_ret:
-                die("Could not build {}: {}".format(this_build, this_str))
+                die("Could not build {}:\n{}".format(this_build, this_str))
     
 
 # Run the main program

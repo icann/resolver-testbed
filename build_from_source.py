@@ -30,7 +30,7 @@ def die(in_str):
     log(err_str)
     this_log_f.close()
     die_out = open(this_log_filename, mode="rt").read()
-    print(die_out)
+    print(die_out, file=sys.stderr)
     sys.exit(1)
 
 

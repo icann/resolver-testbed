@@ -68,7 +68,7 @@
 		"!unboundmake": "./configure --prefix=PREFIX_GOES_HERE && make && make install",
 		"!pdns3make": "./configure && SYSCONFDIR=PREFIX_GOES_HERE/etc/powerdns make -e && DESTDIR=PREFIX_GOES_HERE make -e install",
 		"!pdns4make": "./configure && SYSCONFDIR=PREFIX_GOES_HERE/etc/powerdns make -e && DESTDIR=PREFIX_GOES_HERE make -e install",
-		"!knotresmake": "make PREFIX=PREFIX_GOES_HERE LDFLAGS=\"-Wl,-rpath=/PREFIX_GOES_HERE/lib\" && make install PREFIX=PREFIX_GOES_HERE",
+		"!knotresmake": "make PREFIX=PREFIX_GOES_HERE LDFLAGS=\"-Wl,-rpath=PREFIX_GOES_HERE/lib\" && make install PREFIX=PREFIX_GOES_HERE",
 		"!bind9start": "PREFIX_GOES_HERE/sbin/named -c CONF_FILE_NAME",
 		"!unboundstart": "PREFIX_GOES_HERE/sbin/unbound -c CONF_FILE_NAME",
 		"!pdns3start": [ "cp CONF_FILE_NAME PREFIX_GOES_HERE/usr/etc/recursor.conf",

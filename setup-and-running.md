@@ -132,3 +132,4 @@ All clones are full clones because they are faster.
 * Get the testbed repo: `git clone https://github.com/icann/resolver-testbed.git`
 * Change into that directory: `cd resolver-testbed`
 * Check that the VMs are running, and add things initially if needed: `./rt.py check_vms`
+	* This builds a recent version of BIND on servers-vm to be used as the authoritative server

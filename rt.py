@@ -34,13 +34,15 @@ VM_INFO = {
 
 CLI_COMMANDS = [
 "help",
-"check_vms"
+"check_vms",
+"build_resolvers"
 ]
 
 HELP_TEXT = '''
 Available commands for rt.py are:
 help                 Show this text
 check_vms            Run simple checks on the VMs
+build_resolvers      Build all resolvers on the resolvers-vm
 '''.strip()
 
 # Do very early check for contents of the directory that we're running in
@@ -176,6 +178,20 @@ def sanity_check_vms():
                 if not this_ret:
                     die("Could not build bind-9.12.3: {}".format(this_str))
 
+def build_all_resolvers():
+    ''' Build all the resolvers on resolvers-vm '''
+    for this_build in rt_config["build_info"]["builds"]:
+        # See if it is already there
+        this_ret, this_str = cmd_to_vm("ls Target/{}".format(this_build), "resolvers-vm")
+        if this_ret:
+            log("{} already present".format(this_build))
+        else:
+            log("Building {}".format(this_build))
+            this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py {}".format(this_build), "resolvers-vm")
+            if not this_ret:
+                die("Could not build {}: {}".format(this_build, this_str))
+    
+
 # Run the main program
 if __name__ == "__main__":
     log("## Starting run on date {}".format(time.strftime("%Y-%m-%d")))
@@ -197,6 +213,9 @@ if __name__ == "__main__":
     elif cmd == "check_vms":
         sanity_check_vms()
         log("VMs are running as expected")
+    elif cmd == "build_resolvers":
+        build_all_resolvers()
+        log("Done building resolvers")
     # We're done, so exit
     log("## Finished run")
     exit()

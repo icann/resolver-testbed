@@ -24,7 +24,7 @@ def die(in_str):
     ''' log then exit  '''
     err_str = in_str + " Exiting."
     log(err_str)
-    exit()
+    sys.exit(1)
 
 # Run the main program
 if __name__ == "__main__":

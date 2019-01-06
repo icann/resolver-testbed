@@ -13,12 +13,16 @@ PROG_DIR = os.path.abspath(os.getcwd())
 LOG_FILE = "{}/log_resolver_testbed.txt".format(PROG_DIR)
 BUILD_CONFIG = "{}/build_config.json".format(PROG_DIR)
 CLONE_BASENAME = "debian960-base"
-SERVER_LIBRARIES = ["LC_ALL=C.UTF-8 add-apt-repository -y ppa:cz.nic-labs/knot-dns && LC_ALL=C.UTF-8 add-apt-repository -y ppa:cz.nic-labs/knot-resolver",
+SERVER_LIBRARIES = [
+    "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
+    "wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
+    "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
     "apt update",
+    "apt install -y python3-ply",
     "apt install -y libknot-dev",
     "apt install -y libssl-dev pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
-    "apt install -y libldns-dev libexpat-dev libboost-dev" ]
-
+    "apt install -y libldns-dev libexpat-dev libboost-dev"
+]
 
 VM_INFO = {
     "gateway-vm": {

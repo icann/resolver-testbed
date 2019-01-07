@@ -193,8 +193,7 @@ def build_all_resolvers():
             log("Building {}".format(this_build))
             this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py {}".format(this_build), "resolvers-vm")
             if not this_ret:
-                log("Could not build {}:\n{}\nContinuing".format(this_build, this_str))
-    
+                log("Could not build {}:\n{}\nContinuing".format(this_build, this_str))   
 
 # Run the main program
 if __name__ == "__main__":
@@ -225,7 +224,13 @@ if __name__ == "__main__":
     exit()
 
 ''' Still to do:
-- Build the resolvers on resolvers-vm
+- Work on building multiple knot-resolver versions
+  - SERVER_LIBRARIES needs to be fixed because libknot needs to be done version-by-version. The current only works for 3.7 and above
+
+- Set up the servers on servers-vm
+  - Modify the root zone to nclude a test TLD that can be used to be sure that the resolver is going to the testbed root servers
+  - Create new DNSSEC keys and sign
+  - Create the necessary BIND configuration for this new zone and keys
 
 - Start a test on resovers-vm
   - Be sure that the resolver cache is empy

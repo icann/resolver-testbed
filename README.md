@@ -24,13 +24,16 @@ On Ubuntu hosts, use `sudo apt install -y virtualbox` instead of installing from
 
 The VMs are all accessed using the "root" user only.
 
-@@ MORE REQUIREMENTS WILL GO HERE
+@@ MORE REQUIREMENTS WILL GO HERE @@
 
 ## Other Documents
 
 Please see [the technical plan](technical-plan.md) for an overview of the technical parts of the testbed.
 
 Please see [the setup and running guide](setup-and-running.md) for steps on how to create the testbed and run tests.
+
+The project is still in its early phases. Please see the end of [rt.py](rt.py) for a list of areas known
+to be incomplete.
 
 ## License
 

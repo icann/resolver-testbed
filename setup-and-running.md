@@ -55,12 +55,13 @@ click the "Create" button to define it.
 		* Configure the package manager
 			* No additional CDs
 			* Any mirror is fine; you can use the default
-			* Popularity contest: No
+			* Package user survey: No
 		* Software selection
 			* Unselect "Debian desktop environment"
 			* Unselect "print server"
 			* Select "SSH server"
 			* Leave "standard system utilities" selected
+		* Install GRUB to the drive you just created, /dev/sda
 
 * After automatic reboot
 	* Log in as root with the password created above
@@ -69,7 +70,7 @@ click the "Create" button to define it.
 		* `apt -y upgrade`
 		* `apt -y install build-essential git python3-pip`
 		* `pip3 install fabric`
-	* Get the project repo so that the VMs can be set up easily
+	* Get the project repo in the home directory for the root user
 		* `git clone https://github.com/icann/resolver-testbed.git`
 	* Set up SSH for automated logging in
 		* `mkdir .ssh`
@@ -81,6 +82,8 @@ click the "Create" button to define it.
 
 ## Clone the Base VM Image to the Other VMs
 
+Be sure that "Reinitialze the MAC address of all network cards" is selected when cloning the three images.
+
 All clones are full clones because they are faster.
 
 ### Gateway VM
@@ -89,6 +92,7 @@ All clones are full clones because they are faster.
 * Machine &rarr; Clone
 	* Name: gateway-vm
 	* Clone type: Full clone
+* Be sure that the gateway-vm VM is selected
 * Machine &rarr; Settings
 	* Network &rarr; Adatper 1: Attached to "Host-only Adapter" _vboxnet0_
 	* Network &rarr; Adatper 2: Attached to "Internal Network" _resnet_
@@ -105,6 +109,7 @@ All clones are full clones because they are faster.
 * Machine &rarr; Clone
 	* Name: servers-vm
 	* Clone type: Full clone
+* Be sure that the servers-vm VM is selected
 * Machine &rarr; Settings
 	* Network &rarr; Adatper 1: Attached to "Host-only Adapter" _vboxnet0_
 	* Network &rarr; Adatper 2: Attached to "Internal Network" _servnet_
@@ -119,6 +124,7 @@ All clones are full clones because they are faster.
 * Machine &rarr; Clone
 	* Name: resolvers-vm
 	* Clone type: Full clone
+* Be sure that the resolvers-vm VM is selected
 * Machine &rarr; Settings
 	* Network &rarr; Adatper 1: Attached to "Host-only Adapter" _vboxnet0_
 	* Network &rarr; Adatper 2: Attached to "Internal Network" _resnet_
@@ -133,3 +139,5 @@ All clones are full clones because they are faster.
 * Change into that directory: `cd resolver-testbed`
 * Check that the VMs are running, and add things initially if needed: `./rt.py check_vms`
 	* This builds a recent version of BIND on servers-vm to be used as the authoritative server
+* Build all the resolvers on resolvers-vm: `./rt.py build_resolvers`
+	* It is known that some of these don't build currently

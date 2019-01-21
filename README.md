@@ -19,7 +19,7 @@ Install the testbed by cloning from GitHub at <https://github.com/icann/resolver
 You need to have Python 3 installed. Other than the standard library, you also need
 a recent version of the [Fabric library](http://www.fabfile.org/). `pip install fabric` will work.
 
-VMs are kept in [VirtuaBox](https://www.virtualbox.org/).
+VMs are kept in [VirtualBox](https://www.virtualbox.org/).
 On Ubuntu hosts, use `sudo apt install -y virtualbox` instead of installing from the software store.
 
 The VMs are all accessed using the "root" user only.

@@ -100,6 +100,7 @@ def cmd_to_vm(cmd_to_run, vm_name):
         return False, "Error: {}".format(ret_main_cmd.stderr.strip())
     else:
         return True, ret_main_cmd.stdout.strip()
+    fabconn.close()
 
 def is_vm_running(vm_name):
     ''' Check if the VM is running; die if not '''

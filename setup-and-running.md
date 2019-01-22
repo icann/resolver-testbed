@@ -80,6 +80,10 @@ click the "Create" button to define it.
 		* `chmod 600 authorized_keys`
 	* `shutdown -h now`
 
+## Create the host mangement network _vboxnet0_
+
+In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
+
 ## Clone the Base VM Image to the Other VMs
 
 Be sure that "Reinitialze the MAC address of all network cards" is selected when cloning the three images.

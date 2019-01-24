@@ -39,7 +39,7 @@ click the "Create" button to define it.
 	* System &rarr; Motherboard: Pointing Device: PS2 Mouse, 
 	* System &rarr; Processor: 2 CPUs
 	* Storage &rarr; Controller: IDE: Channge "empty" to attach the Debian ISO from above
-	* Network &rarr; Adatper 1: Attached to "NAT"
+	* Network &rarr; Adapter 1: Attached to "NAT"
 	* Ports &rarr; USB: off
 
 * Boot the new `debian960-base` VM
@@ -80,6 +80,10 @@ click the "Create" button to define it.
 		* `chmod 600 authorized_keys`
 	* `shutdown -h now`
 
+## Create the host mangement network _vboxnet0_
+
+In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
+
 ## Clone the Base VM Image to the Other VMs
 
 Be sure that "Reinitialze the MAC address of all network cards" is selected when cloning the three images.
@@ -94,10 +98,10 @@ All clones are full clones because they are faster.
 	* Clone type: Full clone
 * Be sure that the gateway-vm VM is selected
 * Machine &rarr; Settings
-	* Network &rarr; Adatper 1: Attached to "Host-only Adapter" _vboxnet0_
-	* Network &rarr; Adatper 2: Attached to "Internal Network" _resnet_
-	* Network &rarr; Adatper 3: Attached to "Internal Network" _servnet_
-	* Network &rarr; Adatper 4: Attached to "NAT"
+	* Network &rarr; Adapter 1: Attached to "Host-only Adapter" _vboxnet0_
+	* Network &rarr; Adapter 2: Attached to "Internal Network" _resnet_
+	* Network &rarr; Adapter 3: Attached to "Internal Network" _servnet_
+	* Network &rarr; Adapter 4: Attached to "NAT"
 * Start the VM
 * Log in as root
 * Give the command `/root/resolver-testbed/vm_initial_setup.py gateway-vm`
@@ -111,8 +115,8 @@ All clones are full clones because they are faster.
 	* Clone type: Full clone
 * Be sure that the servers-vm VM is selected
 * Machine &rarr; Settings
-	* Network &rarr; Adatper 1: Attached to "Host-only Adapter" _vboxnet0_
-	* Network &rarr; Adatper 2: Attached to "Internal Network" _servnet_
+	* Network &rarr; Adapter 1: Attached to "Host-only Adapter" _vboxnet0_
+	* Network &rarr; Adapter 2: Attached to "Internal Network" _servnet_
 * Start the VM
 * Log in as root
 * Give the command `/root/resolver-testbed/vm_initial_setup.py servers-vm`
@@ -126,8 +130,8 @@ All clones are full clones because they are faster.
 	* Clone type: Full clone
 * Be sure that the resolvers-vm VM is selected
 * Machine &rarr; Settings
-	* Network &rarr; Adatper 1: Attached to "Host-only Adapter" _vboxnet0_
-	* Network &rarr; Adatper 2: Attached to "Internal Network" _resnet_
+	* Network &rarr; Adapter 1: Attached to "Host-only Adapter" _vboxnet0_
+	* Network &rarr; Adapter 2: Attached to "Internal Network" _resnet_
 * Start the VM
 * Log in as root
 * Give the command `/root/resolver-testbed/vm_initial_setup.py resolvers-vm`

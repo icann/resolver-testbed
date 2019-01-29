@@ -11,3 +11,69 @@ iface enp0s8 inet static
 address 172.21.1.2
 netmask 16
 gateway 172.21.1.1
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.97.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.98.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.99.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.100.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.101.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.102.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.103.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.104.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.105.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.106.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.107.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.108.1
+netmask 16
+
+auto enp0s8
+iface enp0s8 inet static
+address 172.21.109.1
+netmask 16
+

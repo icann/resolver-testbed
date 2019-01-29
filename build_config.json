@@ -1,8 +1,8 @@
 {
 
 	"builds": {
-		"knot-resolver-3.2.0":
-			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-3.2.0.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
+		"knot-resolver-3.2.1":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-3.2.1.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
 
 		"knot-resolver-2.4.1":
 			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-2.4.1.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
@@ -43,8 +43,8 @@
 		"unbound-1.5.10":
 			{ "url": "http://unbound.net/downloads/unbound-1.5.10.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
 
-		"pdns-recursor-4.1.8":
-			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.8.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },
+		"pdns-recursor-4.1.9":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.9.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },
 
 		"pdns-recursor-4.0.9":
 			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },

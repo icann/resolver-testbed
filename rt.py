@@ -39,6 +39,7 @@ VM_INFO = {
 CLI_COMMANDS = [
 "help",
 "check_vms",
+"prepare_servers_vm",
 "build_resolvers"
 ]
 
@@ -46,6 +47,7 @@ HELP_TEXT = '''
 Available commands for rt.py are:
 help                 Show this text
 check_vms            Run simple checks on the VMs
+prepare_servers_vm   Set up the servers_vm
 build_resolvers      Build all resolvers on the resolvers-vm
 '''.strip()
 
@@ -159,7 +161,7 @@ def startup_and_config_general():
     # Finish up initialization
     return this_local_config
 
-def sanity_check_vms():
+def do_check_vms():
     ''' See if the VMs are running and have the expected things on them; fix silently if that's easy, otherwise die '''
     for this_vm in rt_config["vm_info"]:
         log("Starting sanity check on {}".format(this_vm))
@@ -174,14 +176,25 @@ def sanity_check_vms():
                 for this_line in SERVER_LIBRARIES:
                     this_ret, this_str = cmd_to_vm(this_line, this_vm)
                 log("Finished instsalling libraries on servers-vm,")
-        # Be sure that BIND is built on servers-vm
+        # See if BIND is built on servers-vm
         if this_vm == "servers-vm":
-            this_ret, this_str = cmd_to_vm("ls Target/bind-9.12.3", this_vm)
+            this_ret, this_str = cmd_to_vm("ls /root/Target/bind-9.12.3", this_vm)
             if not this_ret:
-                log("bind-9.12.3 does not exist on servers-vm, building now, may take a few minutes.")
-                this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py bind-9.12.3", this_vm)
-                if not this_ret:
-                    die("Could not build bind-9.12.3: {}".format(this_str))
+                log("bind-9.12.3 does not exist on servers-vm. Run 'rt.py prepare_servers_vm'.")
+
+def do_prepare_servers_vm():
+    ''' Set up BIND, bring in the test-root system, get the configs, start up BIND '''
+    # Build BIND if it is not already there
+    this_ret, this_str = cmd_to_vm("ls /root/Target/bind-9.12.3", "servers-vm")
+    if not this_ret:
+        log("bind-9.12.3 does not exist on servers-vm, building now, may take a few minutes.")
+        this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py bind-9.12.3", "servers-vm")
+        if not this_ret:
+            die("Could not build bind-9.12.3: {}".format(this_str))
+    ######## Need to bring in test-root from GitHub
+    ######## Need to bring in test-root configuration
+    ######## Need to bring in BIND configurations
+    ######## Launch BIND
 
 def build_all_resolvers():
     ''' Build all the resolvers on resolvers-vm '''
@@ -215,8 +228,11 @@ if __name__ == "__main__":
     if cmd == "help":
         show_help()
     elif cmd == "check_vms":
-        sanity_check_vms()
+        do_check_vms()
         log("VMs are running as expected")
+    elif cmd == "prepare_servers_vm":
+        do_prepare_servers_vm()
+        log("servers_vm is now set up")
     elif cmd == "build_resolvers":
         build_all_resolvers()
         log("Done building resolvers")

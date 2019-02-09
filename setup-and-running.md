@@ -145,3 +145,4 @@ All clones are full clones because they are faster.
 	* This builds a recent version of BIND on servers-vm to be used as the authoritative server
 * Build all the resolvers on resolvers-vm: `./rt.py build_resolvers`
 	* It is known that some of these don't build currently
+* Prepare the servers-vm (build BIND, do initial configuration): `./rt.py prepare_servers_vm`

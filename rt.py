@@ -118,8 +118,7 @@ def is_vm_running(vm_name):
         p = subprocess.Popen("VBoxManage startvm {} --type headless".format(vm_name), stdout=subprocess.PIPE, shell=True)  
         ret_val = p.wait()
         if ret_val > 0:
-            die("VBoxManage startvm did not start {}: {}.".format(vm_name, (p.stdout.read()).decode("latin-1")))
-        
+            die("VBoxManage startvm did not start {}: {}.".format(vm_name, (p.stdout.read()).decode("latin-1")))      
 
 def startup_and_config_general():
     ''' Make sure everything on the control host is set up correctly, and die if it is not; returns local configuration '''
@@ -199,6 +198,10 @@ def do_prepare_servers_vm():
     this_ret, this_str = cmd_to_vm("cp {}/* {}/".format(root_zone_basic_dir, root_bind_configs), "servers-vm")
     if not this_ret:
         die("Copying files from {} to {} failed: {}.".format(root_zone_basic_dir, root_bind_configs, this_str))
+    sed_cmd = "sed 's/SOME_DIRECTORY_GOES_HERE/{0}/' {0}/named.conf >/tmp/named.conf ; mv /tmp/named.conf {0}/named.conf".format(root_bind_configs)
+    this_ret, this_str = cmd_to_vm(sed_cmd, "servers-vm")
+    if not this_ret:
+        die("Running sed to change the directory name failed: {}.".format(this_str))
     # Launch BIND
     bind_start = "/root/Target/bind-9.12.3/sbin/named -c {}/named.conf".format(root_bind_configs)
     this_ret, this_str = cmd_to_vm(bind_start, "servers-vm")

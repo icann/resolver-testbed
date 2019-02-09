@@ -1,0 +1,146 @@
+; File written on Fri Feb  8 14:58:57 2019
+; dnssec_signzone version 9.12.3-P1
+p53.			3600	IN SOA	a.p53. foo.p53. (
+					2019020899 ; serial
+					120        ; refresh (2 minutes)
+					72         ; retry (1 minute 12 seconds)
+					9600       ; expire (2 hours 40 minutes)
+					3600       ; minimum (1 hour)
+					)
+			3600	RRSIG	SOA 8 1 3600 (
+					20190310215857 20190208215857 60225 p53.
+					J+w7Bg62Ouzd4kGZnyh7U8jS/xULp/LLqRzK
+					n13CdUT+uv2+VMBQc4Gruo5qHSi5EBiWhd18
+					Ucx8w+OvLX8PvYo6uU30skYxgxD9YymzpGRf
+					u4x76UqjrjK0Zml4/JtEOeE9hI4asiOfNxz5
+					2W9bPE59TFtDxsIP/30kFYJxvsyjjwxkZhZE
+					GuyBfkhJLtcJKuiuEzZGyov4IY0MLKdEuuN2
+					MqQu6MdsqmeW/OJl8TpGghQhic1nyY3rh+Wk
+					yHK59kce6IE2M3ud/PEbIwPR8pQeU4y8lZPm
+					Zdj+3AbeKu9y95FLzU5VKfl86yP30Ws/ip5+
+					ipuOY9dLeCu7tCxK4A== )
+			3600	NS	a.some-servers.p53.
+			3600	NS	b.some-servers.p53.
+			3600	NS	c.some-servers.p53.
+			3600	NS	d.some-servers.p53.
+			3600	NS	e.some-servers.p53.
+			3600	NS	f.some-servers.p53.
+			3600	NS	g.some-servers.p53.
+			3600	NS	h.some-servers.p53.
+			3600	NS	i.some-servers.p53.
+			3600	NS	j.some-servers.p53.
+			3600	NS	k.some-servers.p53.
+			3600	NS	l.some-servers.p53.
+			3600	NS	m.some-servers.p53.
+			3600	RRSIG	NS 8 1 3600 (
+					20190310215857 20190208215857 60225 p53.
+					QjD3ud6uNxjLH2FMKA3vsQTjTOtQDzTLQmSE
+					UECsy6z9257tAVDGVhglVn2Q9BrY8/GEXHeT
+					bV3UHOmv+VcAB9CN9h2rHmENidnjH5V8SKb/
+					vG9Mv7R2e7tx8JutLhdtNli5niLc1aAp2l0g
+					4Y11SrLRsHQbWR5/3OLcjOcUdFsnaqTtLyx7
+					ceA7c44IcXYk+XFnJb2YuYYwD2oHNMaQ6hPn
+					R/XKc3o0JOgbU6AKRoZ2CvvbDYAxGd9qZfAp
+					hL65ybEMBxYfditUWkk3eSHMEQ0AYpdI6Mva
+					quEzszUUbElHMzu4TFykUMFLc37EN4HH+Bky
+					m8i6yYWgEDyMavf6CA== )
+			3600	NSEC	some-servers.p53. NS SOA RRSIG NSEC DNSKEY
+			3600	RRSIG	NSEC 8 1 3600 (
+					20190310215857 20190208215857 60225 p53.
+					UhGQgItXEvz+pq3WGfcK0tRXvDw/nGg2JvEk
+					NR0jj25N5jE0DlHPqE2RJzxx6FyHHbvUDN6T
+					zsOT5PFyZlLJCsfXSapHDTGcyuMw0q0x9Z92
+					3N/GNuW8gacUX/EZbrIljuQJri82ND+ce6v5
+					dnNwlo08XTyQD7G3USvloa1jH+1eYWb7C07z
+					s9v6Ixkr64tome4WhntmgY+iUYOQfgQ9Ecay
+					n49/iGfQC8WjsI8OrfURXNrGLzt27bgJHXiM
+					egjr4VMGmup1meiaee+Guy3DKzdsYpwMyHCh
+					lZGURYPOvRlF9uOW/LpJszpYV8JVt5LA0VmL
+					/aiSZvp8CDF2yLQQTQ== )
+			3600	DNSKEY	256 3 8 (
+					AwEAAa5uuG8vjALPkhV5JhbspAwdK930Kkv6
+					R1tY+NFw7TmglyZuMNzTPJpt8Um1deyKowly
+					7aX5tKFz1MKn8qMsGnl7DVVDJv/gUAxQnGdx
+					hstWc5QpBpq446oyHj3hGNY/d5Jh4JbIC6py
+					wm0Pz2lRmoXmo5Ol7gTI5i8Cew6k4viJKyM9
+					/6Vgb7MbVJllLU0a/XDFYTTvPxQTPRr84tkp
+					hQqLFVxlzEXuZYd3wUcWaf+z1ar4mqJQWKOE
+					qR7ygEMPzsALNYaEdi2zr7Mq6wMXxRM4pT+L
+					ZPL6D3s6wJRhljStA6gcntSWGDgZhp8/c/Fi
+					36d1GTxj0qP/9kSEe5tnmEM=
+					) ; ZSK; alg = RSASHA256 ; key id = 60225
+			3600	DNSKEY	257 3 8 (
+					AwEAAcKDPIS6wIt5z3Pu9r7jIOg7oh9BvxrD
+					JMwflOWZ7e7v6G0rTdd45XsFJG9yfhSmWlYF
+					XOIbuWgrk0cg3J83onPKZJkvlAKv+J1gr1k1
+					wHtiWId2LVXhNmCTu7cPLZGgUlijPCv+PVe0
+					a8rLSwqqs+GWLykwA9VyTXF3GpR1d/OtVQio
+					AzIGf0Lwn9IB4GQh2ODwzI+MjsvlINdvdVJn
+					6Vr/0LZJQzmWHcmXMB8E3mn464S5FinzJSCQ
+					svkA8eI4QQ949XQZ55nZrKa8gFY7XKzD2f9B
+					s2Txk7A01FoScq0X012V7EonTzie/j3CgG1T
+					ft9bVlxoRuleznGeqodyjTE=
+					) ; KSK; alg = RSASHA256 ; key id = 36382
+			3600	RRSIG	DNSKEY 8 1 3600 (
+					20190310215857 20190208215857 36382 p53.
+					Xju3q5l7XkiD1ePslyyCpOjBu4nvqhkouegC
+					WvZi1JXALgmIfJScGZT9XAyjNBZgazfXrZWE
+					0ZOUy5Io8DxJpwuH7pkHUwH1B7c2YDknlU2U
+					D5GgwU0YOFm5+P/4A0DQKUQk8IBe/sF9+M39
+					P2eNpzsUbs+UkIyRr05jIAG7vnhXe4lhrLSz
+					izJhrp1//MG9sWuDhC5Yp508ASO2RUPqpS5e
+					cxrJoxaaBAO2gczy4HzQGkVrcQ7TlacZXEWX
+					Vlf8QN/DmyNyG96Y/ymA6V3/A+bKhDsx6J6j
+					RbGR9RUR5OG+uqq/gk8oDN4mfXd5AD49GMKf
+					jyjthJ0Krdmgej1BbQ== )
+			3600	RRSIG	DNSKEY 8 1 3600 (
+					20190310215857 20190208215857 60225 p53.
+					iBbms65UCfeNghBjA0v7KkwNMLuisy7XNCxB
+					9I8w5NWhw+QYunbxAywvnJRBZWtZO+VPW14Q
+					3lmhr2mdBTTo9er2FYjoZAn06FmbR0dExHZa
+					gnUB1uFsvjiaUdQ2EUXfZ97NYthLB6ZEtNqV
+					wgt3m1WP/V0/wqLAmXCnV9lElW+7F0N1QZhf
+					c0Q1Xpm5RMjl1nt9qyK8dmMSCbYK9TPF3mWF
+					liftm9CuPUlULatz3CGGtGUgDHMoKepPjoTu
+					Cp2V5uy+1H399Qh/6+JfWIMGA1USq4forAvz
+					ElvbeaE2RLGCl+d9lmU+wfwhY+cdbFuZNpBw
+					PdI0/hnSy1mVUPWfXQ== )
+a.some-servers.p53.	3600	IN A	172.21.97.1
+b.some-servers.p53.	3600	IN A	172.21.98.1
+c.some-servers.p53.	3600	IN A	172.21.99.1
+d.some-servers.p53.	3600	IN A	172.21.100.1
+e.some-servers.p53.	3600	IN A	172.21.101.1
+f.some-servers.p53.	3600	IN A	172.21.102.1
+g.some-servers.p53.	3600	IN A	172.21.103.1
+h.some-servers.p53.	3600	IN A	172.21.104.1
+i.some-servers.p53.	3600	IN A	172.21.105.1
+j.some-servers.p53.	3600	IN A	172.21.106.1
+k.some-servers.p53.	3600	IN A	172.21.107.1
+l.some-servers.p53.	3600	IN A	172.21.108.1
+m.some-servers.p53.	3600	IN A	172.21.109.1
+some-servers.p53.	3600	IN NS	a.some-servers.p53.
+			3600	IN NS	b.some-servers.p53.
+			3600	IN NS	c.some-servers.p53.
+			3600	IN NS	d.some-servers.p53.
+			3600	IN NS	e.some-servers.p53.
+			3600	IN NS	f.some-servers.p53.
+			3600	IN NS	g.some-servers.p53.
+			3600	IN NS	h.some-servers.p53.
+			3600	IN NS	i.some-servers.p53.
+			3600	IN NS	j.some-servers.p53.
+			3600	IN NS	k.some-servers.p53.
+			3600	IN NS	l.some-servers.p53.
+			3600	IN NS	m.some-servers.p53.
+			3600	NSEC	p53. NS RRSIG NSEC
+			3600	RRSIG	NSEC 8 2 3600 (
+					20190310215857 20190208215857 60225 p53.
+					OU6bvSW0WKy2Bv99k/oSW7pjJI51+CI/8JBE
+					qR2zcBBeubehUFhTAH1PWs6rftnjXBA/oCN+
+					AZoGLl5pFRFKHND5S8BRSDoo2TTIKoT1My9p
+					x9z8dtMxWmDXSsefkMi0GA+/aoyQ7s5Ruk1U
+					rNvx4jDaQPZUdR9wzS1/p+i1lT0/b/FXZT+T
+					COhXKPRU7JLA7vLxGhxAw2Il4cw+umaXcqp+
+					P3flNtaUnFkOFFkkPNrDPc3ui6hHn2b3/PTn
+					nQTGi/3yvCVQAAFmFB+oLMEIRsFy4q6Fc97u
+					qNBY3ddudWReQP7x8daPXeevYIwOJ2t/Q6RD
+					VJ1FaZZqMxQC2spxMA== )

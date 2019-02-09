@@ -1,0 +1,52 @@
+p53. 3600 IN SOA a.p53. foo.p53. 2019020899 120 72 9600 3600
+p53. 3600 IN NS a.some-servers.p53.
+p53. 3600 IN NS b.some-servers.p53.
+p53. 3600 IN NS c.some-servers.p53.
+p53. 3600 IN NS d.some-servers.p53.
+p53. 3600 IN NS e.some-servers.p53.
+p53. 3600 IN NS f.some-servers.p53.
+p53. 3600 IN NS g.some-servers.p53.
+p53. 3600 IN NS h.some-servers.p53.
+p53. 3600 IN NS i.some-servers.p53.
+p53. 3600 IN NS j.some-servers.p53.
+p53. 3600 IN NS k.some-servers.p53.
+p53. 3600 IN NS l.some-servers.p53.
+p53. 3600 IN NS m.some-servers.p53.
+; This is a key-signing key, keyid 36382, for p53.
+; Created: 20190208225855 (Fri Feb  8 14:58:55 2019)
+; Publish: 20190208225855 (Fri Feb  8 14:58:55 2019)
+; Activate: 20190208225855 (Fri Feb  8 14:58:55 2019)
+p53. 3600 IN DNSKEY 257 3 8 AwEAAcKDPIS6wIt5z3Pu9r7jIOg7oh9BvxrDJMwflOWZ7e7v6G0rTdd4 5XsFJG9yfhSmWlYFXOIbuWgrk0cg3J83onPKZJkvlAKv+J1gr1k1wHti WId2LVXhNmCTu7cPLZGgUlijPCv+PVe0a8rLSwqqs+GWLykwA9VyTXF3 GpR1d/OtVQioAzIGf0Lwn9IB4GQh2ODwzI+MjsvlINdvdVJn6Vr/0LZJ QzmWHcmXMB8E3mn464S5FinzJSCQsvkA8eI4QQ949XQZ55nZrKa8gFY7 XKzD2f9Bs2Txk7A01FoScq0X012V7EonTzie/j3CgG1Tft9bVlxoRule znGeqodyjTE=
+
+; This is a zone-signing key, keyid 60225, for p53.
+; Created: 20190208225855 (Fri Feb  8 14:58:55 2019)
+; Publish: 20190208225855 (Fri Feb  8 14:58:55 2019)
+; Activate: 20190208225855 (Fri Feb  8 14:58:55 2019)
+p53. 3600 IN DNSKEY 256 3 8 AwEAAa5uuG8vjALPkhV5JhbspAwdK930Kkv6R1tY+NFw7TmglyZuMNzT PJpt8Um1deyKowly7aX5tKFz1MKn8qMsGnl7DVVDJv/gUAxQnGdxhstW c5QpBpq446oyHj3hGNY/d5Jh4JbIC6pywm0Pz2lRmoXmo5Ol7gTI5i8C ew6k4viJKyM9/6Vgb7MbVJllLU0a/XDFYTTvPxQTPRr84tkphQqLFVxl zEXuZYd3wUcWaf+z1ar4mqJQWKOEqR7ygEMPzsALNYaEdi2zr7Mq6wMX xRM4pT+LZPL6D3s6wJRhljStA6gcntSWGDgZhp8/c/Fi36d1GTxj0qP/ 9kSEe5tnmEM=
+
+some-servers.p53. 3600 IN NS a.some-servers.p53.
+some-servers.p53. 3600 IN NS b.some-servers.p53.
+some-servers.p53. 3600 IN NS c.some-servers.p53.
+some-servers.p53. 3600 IN NS d.some-servers.p53.
+some-servers.p53. 3600 IN NS e.some-servers.p53.
+some-servers.p53. 3600 IN NS f.some-servers.p53.
+some-servers.p53. 3600 IN NS g.some-servers.p53.
+some-servers.p53. 3600 IN NS h.some-servers.p53.
+some-servers.p53. 3600 IN NS i.some-servers.p53.
+some-servers.p53. 3600 IN NS j.some-servers.p53.
+some-servers.p53. 3600 IN NS k.some-servers.p53.
+some-servers.p53. 3600 IN NS l.some-servers.p53.
+some-servers.p53. 3600 IN NS m.some-servers.p53.
+a.some-servers.p53. 3600 IN A 172.21.97.1
+b.some-servers.p53. 3600 IN A 172.21.98.1
+c.some-servers.p53. 3600 IN A 172.21.99.1
+d.some-servers.p53. 3600 IN A 172.21.100.1
+e.some-servers.p53. 3600 IN A 172.21.101.1
+f.some-servers.p53. 3600 IN A 172.21.102.1
+g.some-servers.p53. 3600 IN A 172.21.103.1
+h.some-servers.p53. 3600 IN A 172.21.104.1
+i.some-servers.p53. 3600 IN A 172.21.105.1
+j.some-servers.p53. 3600 IN A 172.21.106.1
+k.some-servers.p53. 3600 IN A 172.21.107.1
+l.some-servers.p53. 3600 IN A 172.21.108.1
+m.some-servers.p53. 3600 IN A 172.21.109.1

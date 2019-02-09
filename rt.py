@@ -125,9 +125,8 @@ def is_vm_running(vm_name):
 
 def startup_and_config_general():
     ''' Make sure everything on the control host is set up correctly, and die if it is not; returns local configuration '''
-    # Be sure we are running from the directory the program is in
-    if sys.argv[0] != "./rt.py":
-        die("This program must be run as ./rt.py so that all the additional files are found.")
+    # Get the directory in which rt.py is
+    path_to_rt = os.path.abspath(os.path.split(sys.argv[0])[0])
     # Make sure that vboxmanage is available
     p = subprocess.Popen("VBoxManage --version >/dev/null 2>/dev/null", shell=True)
     ret_val = p.wait()
@@ -147,7 +146,7 @@ def startup_and_config_general():
         this_local_config["vm_info"][this_key] = VM_INFO[this_key]
     # Add BUILD_CONFIG to the local configuration
     try:
-        build_f = open(BUILD_CONFIG, mode="rt")
+        build_f = open("{}/{}".format(path_to_rt, BUILD_CONFIG), mode="rt")
     except:
         die("Could not find {}.".format(BUILD_CONFIG))
     try:
@@ -166,24 +165,19 @@ def do_check_vms():
     for this_vm in rt_config["vm_info"]:
         log("Starting sanity check on {}".format(this_vm))
         is_vm_running(this_vm)
-        # On servers-vm, install all the stuff for building if it isn't already there
+        # On servers-vm and resolvers-vm, install all the stuff for building if it isn't already there
         if this_vm in ("servers-vm", "resolvers-vm"):
             this_ret, this_str = cmd_to_vm("apt list --installed", this_vm)
             if not this_ret:
-                die("Could not run 'apt list' on servers-vm.")
+                die("Could not run 'apt list' on {}.".format(this_vm))
             if not "libknot" in this_str:
                 log("Did not find libknot on servers-vm, so installing libraries.")
                 for this_line in SERVER_LIBRARIES:
                     this_ret, this_str = cmd_to_vm(this_line, this_vm)
-                log("Finished instsalling libraries on servers-vm,")
-        # See if BIND is built on servers-vm
-        if this_vm == "servers-vm":
-            this_ret, this_str = cmd_to_vm("ls /root/Target/bind-9.12.3", this_vm)
-            if not this_ret:
-                log("bind-9.12.3 does not exist on servers-vm. Run 'rt.py prepare_servers_vm'.")
+                log("Finished instsalling libraries on {}".format(this_vm))
 
 def do_prepare_servers_vm():
-    ''' Set up BIND, bring in the test-root system, get the configs, start up BIND '''
+    ''' On the servers_vm, set up BIND, configure the first test-root, and start up BIND '''
     # Build BIND if it is not already there
     this_ret, this_str = cmd_to_vm("ls /root/Target/bind-9.12.3", "servers-vm")
     if not this_ret:
@@ -191,10 +185,26 @@ def do_prepare_servers_vm():
         this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py bind-9.12.3", "servers-vm")
         if not this_ret:
             die("Could not build bind-9.12.3: {}".format(this_str))
-    ######## Need to bring in test-root from GitHub
-    ######## Need to bring in test-root configuration
-    ######## Need to bring in BIND configurations
-    ######## Launch BIND
+    root_zone_basic_dir = "/root/resolver-testbed/config-files/root-zone-basic"
+    # Be sure that root_zone_basic_dir exists before doing more
+    this_ret, this_str = cmd_to_vm("ls {}".format(root_zone_basic_dir), "servers-vm")
+    if not this_ret:
+        die("Did not find {} or servers-vm; this indicates that the repo was not correct.".format(root_zone_basic_dir))
+    root_bind_configs = "/root/bind-configs"
+    # create /root/bind-configs on servers-vm if it isn't already there, then clear it and put the needed files in it and fix the config
+    this_ret, this_str = cmd_to_vm("mkdir {}".format(root_bind_configs), "servers-vm")
+    # Ignore the errors, because it might already be there
+    this_ret, this_str = cmd_to_vm("rm -r {}/*".format(root_bind_configs), "servers-vm")
+    # Ignore the errors, because it might already be empty
+    # Copy all the files, even though only some are needed
+    this_ret, this_str = cmd_to_vm("cp {}/* {}/".format(root_zone_basic_dir, root_bind_configs), "servers-vm")
+    if not this_ret:
+        die("Copying files from {} to {} failed: {}.".format(root_zone_basic_dir, root_bind_configs, this_str))
+    # Launch BIND
+    bind_start = "/root/Target/bind-9.12.3/sbin/named -c {}/named.conf".format(root_bind_configs)
+    this_ret, this_str = cmd_to_vm(bind_start, "servers-vm")
+    if not this_ret:
+        die("Starting BIND as {} failed: {}.".format(bind_start, this_str))
 
 def build_all_resolvers():
     ''' Build all the resolvers on resolvers-vm '''

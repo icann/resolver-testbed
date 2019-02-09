@@ -9,9 +9,6 @@ import os, subprocess, sys, time, logging, json
 import fabric
 
 # Some program-wide constants
-PROG_DIR = os.path.abspath(os.getcwd())
-LOG_FILE = "{}/log_resolver_testbed.txt".format(PROG_DIR)
-BUILD_CONFIG = "{}/build_config.json".format(PROG_DIR)
 CLONE_BASENAME = "debian960-base"
 SERVER_LIBRARIES = [
     "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
@@ -52,6 +49,7 @@ build_resolvers      Build all resolvers on the resolvers-vm
 '''.strip()
 
 # Do very early check for contents of the directory that we're running in
+LOG_FILE = "{}/log_resolver_testbed.txt".format(os.path.abspath(os.getcwd()))
 LOG_FORMAT = logging.Formatter("%(message)s")
 LOG_HANDLER = logging.FileHandler(LOG_FILE)
 LOG_HANDLER.setFormatter(LOG_FORMAT)
@@ -144,18 +142,19 @@ def startup_and_config_general():
     this_local_config["vm_info"] = {}
     for this_key in VM_INFO:
         this_local_config["vm_info"][this_key] = VM_INFO[this_key]
-    # Add BUILD_CONFIG to the local configuration
+    build_config_file = "{}/build_config.json".format(path_to_rt)
+    # Add build_config_file to the local configuration
     try:
-        build_f = open("{}/{}".format(path_to_rt, BUILD_CONFIG), mode="rt")
+        build_f = open(build_config_file, mode="rt")
     except:
-        die("Could not find {}.".format(BUILD_CONFIG))
+        die("Could not find {}".format(build_config_file))
     try:
         build_input = json.load(build_f)
     except:
-        die("The JSON in {} is broken.".format(BUILD_CONFIG))
+        die("The JSON in {} is broken.".format(build_config_file))
     # Sanity check the input
     if not (("builds" in build_input) and ("templates" in build_input)):
-        die("{} does not have the right components.".format(BUILD_CONFIG))
+        die("{} does not have the right components.".format(build_config_file))
     this_local_config["build_info"] = build_input
     # Finish up initialization
     return this_local_config

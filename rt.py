@@ -203,7 +203,8 @@ def do_prepare_servers_vm():
     if not this_ret:
         die("Running sed to change the directory name failed: {}.".format(this_str))
     # Launch BIND
-    bind_start = "/root/Target/bind-9.12.3/sbin/named -c {}/named.conf".format(root_bind_configs)
+    #   Needs to be started from the config directory because there is no "directory" statement in the config file
+    bind_start = "cd {} && /root/Target/bind-9.12.3/sbin/named -c named.conf".format(root_bind_configs)
     this_ret, this_str = cmd_to_vm(bind_start, "servers-vm")
     if not this_ret:
         die("Starting BIND as {} failed: {}.".format(bind_start, this_str))

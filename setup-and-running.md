@@ -68,7 +68,7 @@ click the "Create" button to define it.
 	* General machine preparation
 		* `apt update`
 		* `apt -y upgrade`
-		* `apt -y install build-essential git python3-pip`
+		* `apt -y install build-essential dnsutils git python3-pip`
 		* `pip3 install fabric`
 	* Get the project repo in the home directory for the root user
 		* `git clone https://github.com/icann/resolver-testbed.git`

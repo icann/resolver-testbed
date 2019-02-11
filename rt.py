@@ -10,9 +10,6 @@ import fabric
 
 # Some program-wide constants
 CLONE_BASENAME = "debian960-base"
-BIND_LIBRARIES = [
-    "apt install -y libssl-dev",
-]
 RESOLVER_LIBRARIES = [
     "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
     "wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
@@ -169,15 +166,9 @@ def do_check_vms():
 
 def do_prepare_servers_vm():
     ''' On the servers-vm, set up BIND, configure the first test-root, and start up BIND '''
-    # Install all the stuff for building if it isn't already there
-    this_ret, this_str = cmd_to_vm("apt list --installed", "servers-vm")
-    if not this_ret:
-        die("Could not run 'apt list' on servers-vm.")
-    if not "libssl" in this_str:
-        log("Did not find libssl on servers-vm, so installing libraries.")
-        for this_line in BIND_LIBRARIES:
-            this_ret, this_str = cmd_to_vm(this_line, "servers-vm")
-        log("Finished instsalling libraries")
+    # Install libssl-dev
+    this_ret, this_str = cmd_to_vm("apt install -y libssl-dev", "servers-vm")
+    log("Finished instsalling libraries")
     # Build BIND if it is not already there
     this_ret, this_str = cmd_to_vm("ls /root/Target/bind-9.12.3", "servers-vm")
     if not this_ret:

@@ -10,7 +10,10 @@ import fabric
 
 # Some program-wide constants
 CLONE_BASENAME = "debian960-base"
-SERVER_LIBRARIES = [
+BIND_LIBRARIES = [
+    "apt install -y libssl-dev",
+]
+RESOLVER_LIBRARIES = [
     "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
     "wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
     "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
@@ -163,19 +166,18 @@ def do_check_vms():
     for this_vm in rt_config["vm_info"]:
         log("Starting sanity check on {}".format(this_vm))
         is_vm_running(this_vm)
-        # On servers-vm and resolvers-vm, install all the stuff for building if it isn't already there
-        if this_vm in ("servers-vm", "resolvers-vm"):
-            this_ret, this_str = cmd_to_vm("apt list --installed", this_vm)
-            if not this_ret:
-                die("Could not run 'apt list' on {}.".format(this_vm))
-            if not "libknot" in this_str:
-                log("Did not find libknot on servers-vm, so installing libraries.")
-                for this_line in SERVER_LIBRARIES:
-                    this_ret, this_str = cmd_to_vm(this_line, this_vm)
-                log("Finished instsalling libraries on {}".format(this_vm))
 
 def do_prepare_servers_vm():
-    ''' On the servers_vm, set up BIND, configure the first test-root, and start up BIND '''
+    ''' On the servers-vm, set up BIND, configure the first test-root, and start up BIND '''
+    # Install all the stuff for building if it isn't already there
+    this_ret, this_str = cmd_to_vm("apt list --installed", "servers-vm")
+    if not this_ret:
+        die("Could not run 'apt list' on servers-vm.")
+    if not "libssl" in this_str:
+        log("Did not find libssl on servers-vm, so installing libraries.")
+        for this_line in BIND_LIBRARIES:
+            this_ret, this_str = cmd_to_vm(this_line, "servers-vm")
+        log("Finished instsalling libraries")
     # Build BIND if it is not already there
     this_ret, this_str = cmd_to_vm("ls /root/Target/bind-9.12.3", "servers-vm")
     if not this_ret:
@@ -211,6 +213,15 @@ def do_prepare_servers_vm():
 
 def build_all_resolvers():
     ''' Build all the resolvers on resolvers-vm '''
+    # Install all the stuff for building if it isn't already there
+    this_ret, this_str = cmd_to_vm("apt list --installed", "resolvers-vm")
+    if not this_ret:
+        die("Could not run 'apt list' on resolvers-vm.")
+    if not "libknot" in this_str:
+        log("Did not find libknot on servers-vm, so installing libraries.")
+        for this_line in RESOLVER_LIBRARIES:
+            this_ret, this_str = cmd_to_vm(this_line, "resolvers-vm")
+        log("Finished instsalling libraries on resolvers-vm")
     for this_build in rt_config["build_info"]["builds"]:
         # See if it is already there
         this_ret, this_str = cmd_to_vm("ls Target/{}".format(this_build), "resolvers-vm")
@@ -255,7 +266,7 @@ if __name__ == "__main__":
 
 ''' Still to do:
 - Work on building multiple knot-resolver versions
-  - SERVER_LIBRARIES needs to be fixed because libknot needs to be done version-by-version. The current only works for 3.7 and above
+  - RESOLVER_LIBRARIES needs to be fixed because libknot needs to be done version-by-version. The current only works for 3.7 and above
 
 - Set up the servers on servers-vm
   - Modify the root zone to nclude a test TLD that can be used to be sure that the resolver is going to the testbed root servers

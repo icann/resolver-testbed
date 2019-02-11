@@ -191,16 +191,19 @@ def do_prepare_servers_vm():
     this_ret, this_str = cmd_to_vm("cp {}/* {}/".format(root_zone_basic_dir, root_bind_configs), "servers-vm")
     if not this_ret:
         die("Copying files from {} to {} failed: {}.".format(root_zone_basic_dir, root_bind_configs, this_str))
-    sed_cmd = "sed 's/SOME_DIRECTORY_GOES_HERE/\/root\/bind-configs/' {0}/named.conf >/tmp/named.conf ; mv /tmp/named.conf {0}/named.conf".format(root_bind_configs)
-    this_ret, this_str = cmd_to_vm(sed_cmd, "servers-vm")
+    # Create rc.local to start up BIND
+    this_ret, this_str = cmd_to_vm("echo -e '#!/bin/sh -e\ncd /root/bind-configs && /root/Target/bind-9.12.3/sbin/named -c named.conf' >/etc/rc.local", "servers-vm")
     if not this_ret:
-        die("Running sed to change the directory name failed: {}.".format(this_str))
-    # Launch BIND
-    #   Needs to be started from the config directory because there is no "directory" statement in the config file
-    bind_start = "cd {} && /root/Target/bind-9.12.3/sbin/named -c named.conf".format(root_bind_configs)
-    this_ret, this_str = cmd_to_vm(bind_start, "servers-vm")
+        die("Creating /etc/rc.local failed: {}.".format(this_str))
+    this_ret, this_str = cmd_to_vm("chmod u+x /etc/rc.local", "servers-vm")
     if not this_ret:
-        die("Starting BIND as {} failed: {}.".format(bind_start, this_str))
+        die("Doing chmod on /etc/rc.local failed: {}.".format(this_str))
+    this_ret, this_str = cmd_to_vm("systemctl daemon-reload", "servers-vm")
+    if not this_ret:
+        die("Calling 'systemctl daemon-reload' failed: {}.".format(this_str))
+    this_ret, this_str = cmd_to_vm("systemctl start rc-local", "servers-vm")
+    if not this_ret:
+        die("Starting BIND with 'systemctl start rc-local' failed: {}.".format(this_str))
 
 def build_all_resolvers():
     ''' Build all the resolvers on resolvers-vm '''

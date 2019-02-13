@@ -46,7 +46,7 @@ if __name__ == "__main__":
     if in_vm_name == "gateway-vm":
         print("Making /etc/rc.local for NAT and forwarding")
         try:
-            shutil.copy("{}/config-files/nat-on-gateway-vm.sh".format(PROG_DIR), "/etc/rc.local")
+            shutil.copy("{}/config-files/rc-local-on-gateway-vm".format(PROG_DIR), "/etc/rc.local")
         except:
             die("Could not copy {} to {}.".format("{}/config-files/nat-on-gateway-vm.sh".format(PROG_DIR), "/etc/rc.local"))
         try:

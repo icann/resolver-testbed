@@ -43,8 +43,8 @@ if __name__ == "__main__":
     except:
         die("Could not copy {} to {}.".format(this_interfaces_file, "/etc/network/interfaces"))
     # For gateway-vm, cause the NAT rules to be automatically executed on startup
-    print("Making /etc/rc.local for NAT and forwarding")
     if in_vm_name == "gateway-vm":
+        print("Making /etc/rc.local for NAT and forwarding")
         try:
             shutil.copy("{}/config-files/nat-on-gateway-vm.sh".format(PROG_DIR), "/etc/rc.local")
         except:

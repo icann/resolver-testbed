@@ -35,6 +35,7 @@ VM_INFO = {
 
 CLI_COMMANDS = [
 "help",
+"make_clones",
 "check_vms",
 "prepare_servers_vm",
 "build_resolvers"
@@ -43,10 +44,20 @@ CLI_COMMANDS = [
 HELP_TEXT = '''
 Available commands for rt.py are:
 help                 Show this text
+make_clones          Make the initial clones
 check_vms            Run simple checks on the VMs
 prepare_servers_vm   Set up the servers_vm
 build_resolvers      Build all resolvers on the resolvers-vm
 '''.strip()
+
+CLONE_COMMANDS = '''
+VBoxManage clonevm debian960-base --name servers-vm --register
+VBoxManage modifyvm servers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 servnet --nic3 intnet --intnet3 servnet --nic4 intnet --intnet4 servnet --nic5 intnet --intnet5 servnet --nic6 intnet --intnet6 servnet --nic7 intnet --intnet7 servnet --nic8 intnet --intnet8 servnet
+VBoxManage clonevm debian960-base --name resolvers-vm --register
+VBoxManage modifyvm resolvers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet
+VBoxManage clonevm debian960-base --name gateway-vm --register
+VBoxManage modifyvm gateway-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat
+'''.strip().splitlines()
 
 # Do very early check for contents of the directory that we're running in
 LOG_FILE = "{}/log_resolver_testbed.txt".format(os.path.abspath(os.getcwd()))
@@ -158,6 +169,17 @@ def startup_and_config_general():
     # Finish up initialization
     return this_local_config
 
+def do_make_clones():
+    ''' Make the clones at the beginning '''
+    for this_cmd in CLONE_COMMANDS:
+        p = subprocess.Popen(this_cmd, shell=True)
+        ret_val = p.wait()
+        if ret_val > 0:
+            die("Failed to perform command {}".format(this_cmd))
+        else:
+            log(this_cmd)
+        
+
 def do_check_vms():
     ''' See if the VMs are running and have the expected things on them; fix silently if that's easy, otherwise die '''
     for this_vm in rt_config["vm_info"]:
@@ -192,7 +214,7 @@ def do_prepare_servers_vm():
     if not this_ret:
         die("Copying files from {} to {} failed: {}.".format(root_zone_basic_dir, root_bind_configs, this_str))
     # Create rc.local to start up BIND
-    this_ret, this_str = cmd_to_vm("echo -e '#!/bin/sh -e\ncd /root/bind-configs && /root/Target/bind-9.12.3/sbin/named -c named.conf' >/etc/rc.local", "servers-vm")
+    this_ret, this_str = cmd_to_vm("cp /root/resolver-testbed/config-files/rc-local-on-servers-vm /etc/rc.local", "servers-vm")
     if not this_ret:
         die("Creating /etc/rc.local failed: {}.".format(this_str))
     this_ret, this_str = cmd_to_vm("chmod u+x /etc/rc.local", "servers-vm")
@@ -245,6 +267,9 @@ if __name__ == "__main__":
     # Figure out which command it was
     if cmd == "help":
         show_help()
+    elif cmd == "make_clones":
+        do_make_clones()
+        log("Done making clones")
     elif cmd == "check_vms":
         do_check_vms()
         log("VMs are running as expected")

@@ -140,12 +140,6 @@ def startup_and_config_general():
     ret_val = p.wait()
     if ret_val > 0:
         die("Could not run VBoxManage during sanity check.")
-    # Make sure the three VMs at least exist
-    for this_vm_name in VM_INFO:
-        p = subprocess.Popen("VBoxManage showvminfo {} >/dev/null 2>/dev/null".format(this_vm_name), shell=True)
-        ret_val = p.wait()
-        if ret_val > 0:
-            die("Could not find '{}' in the VirtualBox inventory.".format(this_vm_name))
     # Keep the configuration info here; this could expand in the future
     this_local_config = {}
     # Add VM_INFO to the local configuration
@@ -178,7 +172,6 @@ def do_make_clones():
             die("Failed to perform command {}".format(this_cmd))
         else:
             log(this_cmd)
-        
 
 def do_check_vms():
     ''' See if the VMs are running and have the expected things on them; fix silently if that's easy, otherwise die '''

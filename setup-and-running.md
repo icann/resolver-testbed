@@ -16,10 +16,6 @@ The last two steps can be repeated as the configurations change for different te
 
 * Get the recent Debiain image from `http://cdimage.debian.org/cdimage/release/current/amd64/iso-cd/debian-9.6.0-amd64-netinst.iso`
 
-* Choose which SSH keys you will use for logging into the VMs on the testbed.
-This needs to have the private key _not_ password-protected, so you might want to create a new keypair for the testbed.
-To ease installation, you might put this as an authized_keys file on a locally-managed web server.
-
 * In VirtualBox, choose File &rarr; Host Network Manager and make sure that vboxnet0 is defined. If it is not,
 click the "Create" button to define it.
 
@@ -28,7 +24,7 @@ click the "Create" button to define it.
 		* Name: debian960-base
 		* Type: Linux
 		* Version: Debian (64-bit)
-		* Memory: 2048M
+		* Memory: 256M
 		* Create new virtual hard drive
 			* Type: VDI
 			* Storage: dynamically allocated
@@ -37,7 +33,7 @@ click the "Create" button to define it.
 * Before booting, change settings
 	* System &rarr; Motherboard: Uncheck floppy
 	* System &rarr; Motherboard: Pointing Device: PS2 Mouse, 
-	* System &rarr; Processor: 2 CPUs
+	* System &rarr; Processor: 1 CPUs
 	* Storage &rarr; Controller: IDE: Channge "empty" to attach the Debian ISO from above
 	* Network &rarr; Adapter 1: Attached to "NAT"
 	* Ports &rarr; USB: off
@@ -46,7 +42,7 @@ click the "Create" button to define it.
 	* Use Non-graphical installation, and use the default choices other than these:
 		* Hostname: debian960-base
 		* Domain name: Make sure this is blank
-		* Root password: This will be used for all interaction with all VMs, so use a strong one
+		* Root password: BadPassword
 		* User: Any name, any password (this user will not be used in the testbed)
 		* Time zone: Use your local time zone
 		* Partition disks:
@@ -64,11 +60,39 @@ click the "Create" button to define it.
 		* Install GRUB to the drive you just created, /dev/sda
 
 * After automatic reboot
-	* Log in as root with the password created above
+	* Log in as root / BadPassword
+	* `wget https://holder.proper.com/testbed-startup.sh`
+	* `sh testbed-startup.sh`
+	* `shutdown -h now`
+
+## Create the host mangement network _vboxnet0_
+
+In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
+
+## Do the Initial Setup and Sanity Checks on the Control Host
+
+* Get the testbed repo: `git clone https://github.com/icann/resolver-testbed.git`
+* Change into that directory: `cd resolver-testbed`
+* Clone the initial VM and set up each one : `./rt.py make_clones`
+	* This sets their IP addresses and so on
+* Build all the resolvers on resolvers-vm: `./rt.py build_resolvers`
+	* It is known that some of these don't build currently
+* Prepare the servers-vm (build BIND, do initial configuration): `./rt.py prepare_servers_vm`
+
+
+
+
+* Choose which SSH keys you will use for logging into the VMs on the testbed.
+This needs to have the private key _not_ password-protected, so you might want to create a new keypair for the testbed.
+To ease installation, you might put this as an authized_keys file on a locally-managed web server.
+
+
 	* General machine preparation
+		* `echo deb http://ftp.debian.org/debian stretch-backports main contrib > /etc/apt/sources.list.d/stretch-backports.list`
 		* `apt update`
 		* `apt -y upgrade`
-		* `apt -y install build-essential dnsutils git python3-pip`
+		* `apt -y install bind9 dnsutils git python3-pip`
+		* `apt install virtualbox-guest-dkms virtualbox-guest-x11 linux-headers-$(uname -r)`
 		* `pip3 install fabric`
 	* Get the project repo in the home directory for the root user
 		* `git clone https://github.com/icann/resolver-testbed.git`
@@ -78,11 +102,8 @@ click the "Create" button to define it.
 		* `cd .ssh`
 		* Install the authorized_keys file, possibly by getting it off of the locally-administered web server
 		* `chmod 600 authorized_keys`
-	* `shutdown -h now`
 
-## Create the host mangement network _vboxnet0_
 
-In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
 
 ## Clone the Base VM Image to the Other VMs
 
@@ -136,13 +157,3 @@ All clones are full clones because they are faster.
 * Log in as root
 * Give the command `/root/resolver-testbed/vm_initial_setup.py resolvers-vm`
 * Reboot
-
-## Do the Initial Setup and Sanity Checks on the Control Host
-
-* Get the testbed repo: `git clone https://github.com/icann/resolver-testbed.git`
-* Change into that directory: `cd resolver-testbed`
-* Check that the VMs are running, and add things initially if needed: `./rt.py check_vms`
-	* This builds a recent version of BIND on servers-vm to be used as the authoritative server
-* Build all the resolvers on resolvers-vm: `./rt.py build_resolvers`
-	* It is known that some of these don't build currently
-* Prepare the servers-vm (build BIND, do initial configuration): `./rt.py prepare_servers_vm`

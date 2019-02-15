@@ -10,7 +10,9 @@ import fabric
 
 # Some program-wide constants
 CLONE_BASENAME = "debian960-base"
+GUESTCONTROL_TEMPLATE = "VBoxManage guestcontrol {} --username root --password BadPassword"
 RESOLVER_LIBRARIES = [
+    "apt install -y build-essential"
     "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
     "wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
     "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
@@ -35,8 +37,7 @@ VM_INFO = {
 
 CLI_COMMANDS = [
 "help",
-"make_clones",
-"check_vms",
+"make_gateway_clone",
 "prepare_servers_vm",
 "build_resolvers"
 ]
@@ -45,7 +46,6 @@ HELP_TEXT = '''
 Available commands for rt.py are:
 help                 Show this text
 make_clones          Make the initial clones
-check_vms            Run simple checks on the VMs
 prepare_servers_vm   Set up the servers_vm
 build_resolvers      Build all resolvers on the resolvers-vm
 '''.strip()
@@ -55,8 +55,6 @@ VBoxManage clonevm debian960-base --name servers-vm --register
 VBoxManage modifyvm servers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 servnet --nic3 intnet --intnet3 servnet --nic4 intnet --intnet4 servnet --nic5 intnet --intnet5 servnet --nic6 intnet --intnet6 servnet --nic7 intnet --intnet7 servnet --nic8 intnet --intnet8 servnet
 VBoxManage clonevm debian960-base --name resolvers-vm --register
 VBoxManage modifyvm resolvers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet
-VBoxManage clonevm debian960-base --name gateway-vm --register
-VBoxManage modifyvm gateway-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat
 '''.strip().splitlines()
 
 # Do very early check for contents of the directory that we're running in
@@ -85,7 +83,7 @@ def die(in_str):
 def show_help():
     print(HELP_TEXT)
 
-def cmd_to_vm(cmd_to_run, vm_name):
+def ssh_cmd_to_vm(cmd_to_run, vm_name):
     ''' Runs a command on a named VM. Returns success_boolean, output_text '''
     if not vm_name in VM_INFO:
         die("Attempt to run on {}, which is not a valid VM".format(vm_name))
@@ -113,6 +111,13 @@ def cmd_to_vm(cmd_to_run, vm_name):
         return True, ret_main_cmd.stdout.strip()
     fabconn.close()
 
+def send_with_guestcontrol(this_cmd):
+    ''' Send a message and look for the response; die if it failed '''
+    p = subprocess.Popen(this_cmd, shell=True)
+    ret_val = p.wait()
+    if ret_val > 0:
+        die("Failed run '{}'.".format(this_cmd))
+    
 def is_vm_running(vm_name):
     ''' Check if the VM is running; die if not '''
     p = subprocess.Popen("VBoxManage list runningvms", stdout=subprocess.PIPE, shell=True)  
@@ -163,82 +168,119 @@ def startup_and_config_general():
     # Finish up initialization
     return this_local_config
 
-def do_make_clones():
-    ''' Make the clones at the beginning '''
-    for this_cmd in CLONE_COMMANDS:
-        p = subprocess.Popen(this_cmd, shell=True)
+def do_make_gateway_clone():
+    ''' Make the gateway_vm '''
+    this_vm = "gateway-vm"
+    this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
+    setup_commands = [
+    "VBoxManage clonevm debian960-base --name {} --register".format(this_vm),
+    "VBoxManage modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat".format(this_vm)
+    ]
+    vms_that_exist = subprocess.getoutput("VBoxManage list vms")
+    if not this_vm in vms_that_exist:
+        log("Cloning to create {}".format(this_vm))
+        for this_cmd in setup_commands:
+            log(this_cmd)
+            p = subprocess.Popen(this_cmd, shell=True)
+            ret_val = p.wait()
+            if ret_val > 0:
+                die("Failed to perform command {}".format(this_cmd))
+    vms_that_are_running = subprocess.getoutput("VBoxManage list runningvms")
+    if not this_vm in vms_that_are_running:
+        # Start the VM
+        log("Starting {}, waiting 20 seconds".format(this_vm))
+        p = subprocess.Popen("VBoxManage startvm {}".format(this_vm), shell=True)
         ret_val = p.wait()
         if ret_val > 0:
-            die("Failed to perform command {}".format(this_cmd))
-        else:
-            log(this_cmd)
+            die("Failed to start {}".format(this_vm))
+        time.sleep(20)
+    log("Copying to /etc/hosts/interfaces")
+    this_interfaces_file = "{}/config-files/interfaces-{}".format(os.getcwd(), this_vm)
+    this_cmd = "{} copyto --target-directory /etc/network/interfaces {}".format(this_guestcontrol, this_interfaces_file)
+    send_with_guestcontrol(this_cmd)
+    log("Changing the hostname")
+    this_hostname_file = "{}/config-files/hostname-{}".format(os.getcwd(), this_vm)
+    this_cmd = "{} copyto --target-directory /etc/hostname {}".format(this_guestcontrol, this_hostname_file)
+    send_with_guestcontrol(this_cmd)
+    log("Writing /etc/resolv.conf")
+    this_resolv_file = "{}/config-files/resolv-with-8844".format(os.getcwd())
+    this_cmd = "{} copyto --target-directory /etc/resolv.conf {}".format(this_guestcontrol, this_resolv_file)
+    send_with_guestcontrol(this_cmd)
+    log("Making /etc/rc.local for NAT and forwarding")
+    this_rc_local = "{}/config-files/rc-local-on-gateway-vm".format(os.getcwd())
+    this_cmd = "{} copyto --target-directory /etc/rc.local {}".format(this_guestcontrol, this_rc_local)
+    send_with_guestcontrol(this_cmd)
+    this_cmd = "{} run --exe /bin/chmod -- chmod u+x /etc/rc.local".format(this_guestcontrol)
+    send_with_guestcontrol(this_cmd)
+    this_cmd = "{} run --exe /bin/systemctl -- systemctl daemon-reload".format(this_guestcontrol)
+    send_with_guestcontrol(this_cmd)
+    this_cmd = "{} run --exe /bin/systemctl -- systemctl start rc-local".format(this_guestcontrol)
+    send_with_guestcontrol(this_cmd)
+    # Reboot; don't look for failure
+    subprocess.call("{} run --exe /sbin/reboot".format(this_guestcontrol), shell=True)
+    log("Finished setting up {}; rebooting.".format(this_vm))
 
-def do_check_vms():
-    ''' See if the VMs are running and have the expected things on them; fix silently if that's easy, otherwise die '''
-    for this_vm in rt_config["vm_info"]:
-        log("Starting sanity check on {}".format(this_vm))
-        is_vm_running(this_vm)
 
 def do_prepare_servers_vm():
     ''' On the servers-vm, set up BIND, configure the first test-root, and start up BIND '''
     # Install libssl-dev
-    this_ret, this_str = cmd_to_vm("apt install -y libssl-dev", "servers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("apt install -y libssl-dev", "servers-vm")
     log("Finished instsalling libraries")
     # Build BIND if it is not already there
-    this_ret, this_str = cmd_to_vm("ls /root/Target/bind-9.12.3", "servers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("ls /root/Target/bind-9.12.3", "servers-vm")
     if not this_ret:
         log("bind-9.12.3 does not exist on servers-vm, building now, may take a few minutes.")
-        this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py bind-9.12.3", "servers-vm")
+        this_ret, this_str = ssh_cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py bind-9.12.3", "servers-vm")
         if not this_ret:
             die("Could not build bind-9.12.3: {}".format(this_str))
     root_zone_basic_dir = "/root/resolver-testbed/config-files/root-zone-basic"
     # Be sure that root_zone_basic_dir exists before doing more
-    this_ret, this_str = cmd_to_vm("ls {}".format(root_zone_basic_dir), "servers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("ls {}".format(root_zone_basic_dir), "servers-vm")
     if not this_ret:
         die("Did not find {} or servers-vm; this indicates that the repo was not correct.".format(root_zone_basic_dir))
     root_bind_configs = "/root/bind-configs"
     # create /root/bind-configs on servers-vm if it isn't already there, then clear it and put the needed files in it and fix the config
-    this_ret, this_str = cmd_to_vm("mkdir {}".format(root_bind_configs), "servers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("mkdir {}".format(root_bind_configs), "servers-vm")
     # Ignore the errors, because it might already be there
-    this_ret, this_str = cmd_to_vm("rm -r {}/*".format(root_bind_configs), "servers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("rm -r {}/*".format(root_bind_configs), "servers-vm")
     # Ignore the errors, because it might already be empty
     # Copy all the files, even though only some are needed
-    this_ret, this_str = cmd_to_vm("cp {}/* {}/".format(root_zone_basic_dir, root_bind_configs), "servers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("cp {}/* {}/".format(root_zone_basic_dir, root_bind_configs), "servers-vm")
     if not this_ret:
         die("Copying files from {} to {} failed: {}.".format(root_zone_basic_dir, root_bind_configs, this_str))
     # Create rc.local to start up BIND
-    this_ret, this_str = cmd_to_vm("cp /root/resolver-testbed/config-files/rc-local-on-servers-vm /etc/rc.local", "servers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("cp /root/resolver-testbed/config-files/rc-local-on-servers-vm /etc/rc.local", "servers-vm")
     if not this_ret:
         die("Creating /etc/rc.local failed: {}.".format(this_str))
-    this_ret, this_str = cmd_to_vm("chmod u+x /etc/rc.local", "servers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("chmod u+x /etc/rc.local", "servers-vm")
     if not this_ret:
         die("Doing chmod on /etc/rc.local failed: {}.".format(this_str))
-    this_ret, this_str = cmd_to_vm("systemctl daemon-reload", "servers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("systemctl daemon-reload", "servers-vm")
     if not this_ret:
         die("Calling 'systemctl daemon-reload' failed: {}.".format(this_str))
-    this_ret, this_str = cmd_to_vm("systemctl start rc-local", "servers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("systemctl start rc-local", "servers-vm")
     if not this_ret:
         die("Starting BIND with 'systemctl start rc-local' failed: {}.".format(this_str))
 
 def build_all_resolvers():
     ''' Build all the resolvers on resolvers-vm '''
     # Install all the stuff for building if it isn't already there
-    this_ret, this_str = cmd_to_vm("apt list --installed", "resolvers-vm")
+    this_ret, this_str = ssh_cmd_to_vm("apt list --installed", "resolvers-vm")
     if not this_ret:
         die("Could not run 'apt list' on resolvers-vm.")
     if not "libknot" in this_str:
         log("Did not find libknot on servers-vm, so installing libraries.")
         for this_line in RESOLVER_LIBRARIES:
-            this_ret, this_str = cmd_to_vm(this_line, "resolvers-vm")
+            this_ret, this_str = ssh_cmd_to_vm(this_line, "resolvers-vm")
         log("Finished instsalling libraries on resolvers-vm")
     for this_build in rt_config["build_info"]["builds"]:
         # See if it is already there
-        this_ret, this_str = cmd_to_vm("ls Target/{}".format(this_build), "resolvers-vm")
+        this_ret, this_str = ssh_cmd_to_vm("ls Target/{}".format(this_build), "resolvers-vm")
         if this_ret:
             log("{} already present".format(this_build))
         else:
             log("Building {}".format(this_build))
-            this_ret, this_str = cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py {}".format(this_build), "resolvers-vm")
+            this_ret, this_str = ssh_cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py {}".format(this_build), "resolvers-vm")
             if not this_ret:
                 log("Could not build {}:\n{}\nContinuing".format(this_build, this_str))   
 
@@ -260,12 +302,9 @@ if __name__ == "__main__":
     # Figure out which command it was
     if cmd == "help":
         show_help()
-    elif cmd == "make_clones":
-        do_make_clones()
-        log("Done making clones")
-    elif cmd == "check_vms":
-        do_check_vms()
-        log("VMs are running as expected")
+    elif cmd == "make_gateway_clone":
+        do_make_gateway_clone()
+        log("Done making the gateway-vm VM")
     elif cmd == "prepare_servers_vm":
         do_prepare_servers_vm()
         log("servers_vm is now set up")

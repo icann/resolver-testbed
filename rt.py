@@ -38,23 +38,21 @@ VM_INFO = {
 CLI_COMMANDS = [
 "help",
 "make_gateway_clone",
-"prepare_servers_vm",
+"make_resolvers_clone",
 "build_resolvers"
 ]
 
 HELP_TEXT = '''
 Available commands for rt.py are:
 help                 Show this text
-make_clones          Make the initial clones
-prepare_servers_vm   Set up the servers_vm
+make_gateway_clone   Make the gateway-vm VM
+make_resolvers_clone Make the resolvers-vm VM
 build_resolvers      Build all resolvers on the resolvers-vm
 '''.strip()
 
 CLONE_COMMANDS = '''
 VBoxManage clonevm debian960-base --name servers-vm --register
 VBoxManage modifyvm servers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 servnet --nic3 intnet --intnet3 servnet --nic4 intnet --intnet4 servnet --nic5 intnet --intnet5 servnet --nic6 intnet --intnet6 servnet --nic7 intnet --intnet7 servnet --nic8 intnet --intnet8 servnet
-VBoxManage clonevm debian960-base --name resolvers-vm --register
-VBoxManage modifyvm resolvers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet
 '''.strip().splitlines()
 
 # Do very early check for contents of the directory that we're running in
@@ -217,9 +215,51 @@ def do_make_gateway_clone():
     this_cmd = "{} run --exe /bin/systemctl -- systemctl start rc-local".format(this_guestcontrol)
     send_with_guestcontrol(this_cmd)
     # Reboot; don't look for failure
-    subprocess.call("{} run --exe /sbin/reboot".format(this_guestcontrol), shell=True)
+    p = subprocess.Popen("{} run --exe /sbin/reboot -- reboot 2>/dev/null".format(this_guestcontrol), shell=True)
     log("Finished setting up {}; rebooting.".format(this_vm))
 
+def do_make_resolvers_clone():
+    ''' Make the resolvers_vm '''
+    this_vm = "resolvers-vm"
+    this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
+    setup_commands = [
+    "VBoxManage clonevm debian960-base --name {} --register".format(this_vm),
+    "VBoxManage modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet".format(this_vm),
+    "VBoxManage modifyvm {} --cpus 2 --memory 2048".format(this_vm)
+    ]
+    vms_that_exist = subprocess.getoutput("VBoxManage list vms")
+    if not this_vm in vms_that_exist:
+        log("Cloning to create {}".format(this_vm))
+        for this_cmd in setup_commands:
+            log(this_cmd)
+            p = subprocess.Popen(this_cmd, shell=True)
+            ret_val = p.wait()
+            if ret_val > 0:
+                die("Failed to perform command {}".format(this_cmd))
+    vms_that_are_running = subprocess.getoutput("VBoxManage list runningvms")
+    if not this_vm in vms_that_are_running:
+        # Start the VM
+        log("Starting {}, waiting 20 seconds".format(this_vm))
+        p = subprocess.Popen("VBoxManage startvm {}".format(this_vm), shell=True)
+        ret_val = p.wait()
+        if ret_val > 0:
+            die("Failed to start {}".format(this_vm))
+        time.sleep(20)
+    log("Copying to /etc/hosts/interfaces")
+    this_interfaces_file = "{}/config-files/interfaces-{}".format(os.getcwd(), this_vm)
+    this_cmd = "{} copyto --target-directory /etc/network/interfaces {}".format(this_guestcontrol, this_interfaces_file)
+    send_with_guestcontrol(this_cmd)
+    log("Changing the hostname")
+    this_hostname_file = "{}/config-files/hostname-{}".format(os.getcwd(), this_vm)
+    this_cmd = "{} copyto --target-directory /etc/hostname {}".format(this_guestcontrol, this_hostname_file)
+    send_with_guestcontrol(this_cmd)
+    log("Writing /etc/resolv.conf")
+    this_resolv_file = "{}/config-files/resolv-with-8844".format(os.getcwd())
+    this_cmd = "{} copyto --target-directory /etc/resolv.conf {}".format(this_guestcontrol, this_resolv_file)
+    send_with_guestcontrol(this_cmd)
+    # Reboot; don't look for failure
+    p = subprocess.Popen("{} run --exe /sbin/reboot -- reboot 2>/dev/null".format(this_guestcontrol), shell=True)
+    log("Finished setting up {}; rebooting.".format(this_vm))
 
 def do_prepare_servers_vm():
     ''' On the servers-vm, set up BIND, configure the first test-root, and start up BIND '''
@@ -304,6 +344,9 @@ if __name__ == "__main__":
         show_help()
     elif cmd == "make_gateway_clone":
         do_make_gateway_clone()
+        log("Done making the gateway-vm VM")
+    elif cmd == "make_resolvers_clone":
+        do_make_resolvers_clone()
         log("Done making the gateway-vm VM")
     elif cmd == "prepare_servers_vm":
         do_prepare_servers_vm()

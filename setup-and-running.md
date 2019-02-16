@@ -73,8 +73,9 @@ In the Virtualbox _Host Network Manager_ create a new management network called 
 
 * Get the testbed repo: `git clone https://github.com/icann/resolver-testbed.git`
 * Change into that directory: `cd resolver-testbed`
-* Clone the initial VM and set up each one : `./rt.py make_clones`
-	* This sets their IP addresses and so on
+* Create the first two VMs by cloning from debian960-base, setting the IP addresses, and so on:
+	* `./rt.py make_gateway_clone`
+	* `./rt.py make_resolvers_clone`
 * Build all the resolvers on resolvers-vm: `./rt.py build_resolvers`
 	* It is known that some of these don't build currently
 * Prepare the servers-vm (build BIND, do initial configuration): `./rt.py prepare_servers_vm`

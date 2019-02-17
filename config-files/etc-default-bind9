@@ -1,0 +1,2 @@
+RESOLVCONF=no
+OPTIONS="-c /root/bind-configs/named.conf"

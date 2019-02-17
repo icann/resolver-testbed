@@ -364,19 +364,6 @@ def do_prepare_server_clones():
         send_with_guestcontrol(this_cmd)
         this_cmd = "{} run --exe /bin/systemctl -- systemctl start rc-local".format(this_guestcontrol)
         send_with_guestcontrol(this_cmd)
-        # Install BIND9
-        this_cmd = "{} run --exe /usr/bin/apt -- apt install -y bind9".format(this_guestcontrol)
-        send_with_guestcontrol(this_cmd)
-        # Copy the /etc/default/bind9 file
-        this_bind_defaults = "{}/config-files/etc-default-bind9".format(os.getcwd())
-        this_cmd = "{} copyto --target-directory /etc/default/bind9 {}".format(this_guestcontrol, this_bind_defaults)
-        send_with_guestcontrol(this_cmd)
-        # Create /root/bind-configs and fill it
-        this_cmd = "{} run --exe /bin/mkdir -- mkdir /root/bind-configs".format(this_guestcontrol)
-        send_with_guestcontrol(this_cmd)
-        # Copy all the files, even though only some are needed
-        the_root_files = "{}/config-files/root-zone-basic/*".format(os.getcwd())
-        this_cmd = "{} copyto --target-directory /root/bind-configs {}".format(this_guestcontrol, the_root_files)
         # Reboot
         log("Shutting down")
         p = subprocess.Popen("VBoxManage --nologo controlvm {} acpipowerbutton".format(this_vm), shell=True)
@@ -390,6 +377,19 @@ def do_prepare_server_clones():
         if ret_val > 0:
             die("Failed to start {}".format(this_vm))
         time.sleep(20)
+        # Install BIND9
+        this_cmd = "{} run --exe /usr/bin/apt -- apt install -y bind9".format(this_guestcontrol)
+        send_with_guestcontrol(this_cmd)
+        # Copy the /etc/default/bind9 file
+        this_bind_defaults = "{}/config-files/etc-default-bind9".format(os.getcwd())
+        this_cmd = "{} copyto --target-directory /etc/default/bind9 {}".format(this_guestcontrol, this_bind_defaults)
+        send_with_guestcontrol(this_cmd)
+        # Create /root/bind-configs and fill it
+        this_cmd = "{} run --exe /bin/mkdir -- mkdir /root/bind-configs".format(this_guestcontrol)
+        send_with_guestcontrol(this_cmd)
+        # Copy all the files, even though only some are needed
+        the_root_files = "{}/config-files/root-zone-basic/*".format(os.getcwd())
+        this_cmd = "{} copyto --target-directory /root/bind-configs {}".format(this_guestcontrol, the_root_files)
         log("Finished setting up {}; rebooting.".format(this_vm))
 
 def do_prepare_servers_vm():

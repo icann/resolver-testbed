@@ -188,7 +188,7 @@ def do_make_gateway_clone():
     if not this_vm in vms_that_are_running:
         # Start the VM
         log("Starting {}, waiting 20 seconds".format(this_vm))
-        p = subprocess.Popen("VBoxManage --nologo startvm {}".format(this_vm), shell=True)
+        p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
         ret_val = p.wait()
         if ret_val > 0:
             die("Failed to start {}".format(this_vm))
@@ -228,7 +228,7 @@ def do_make_gateway_clone():
         die("Failed to shut down {}".format(this_vm))
     time.sleep(5)
     log("Starting {}, waiting 20 seconds".format(this_vm))
-    p = subprocess.Popen("VBoxManage --nologo startvm {}".format(this_vm), shell=True)
+    p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
     ret_val = p.wait()
     if ret_val > 0:
         die("Failed to start {}".format(this_vm))
@@ -257,7 +257,7 @@ def do_make_resolvers_clone():
     if not this_vm in vms_that_are_running:
         # Start the VM
         log("Starting {}, waiting 20 seconds".format(this_vm))
-        p = subprocess.Popen("VBoxManage --nologo startvm {}".format(this_vm), shell=True)
+        p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
         ret_val = p.wait()
         if ret_val > 0:
             die("Failed to start {}".format(this_vm))
@@ -286,7 +286,7 @@ def do_make_resolvers_clone():
         die("Failed to shut down {}".format(this_vm))
     time.sleep(5)
     log("Starting {}, waiting 20 seconds".format(this_vm))
-    p = subprocess.Popen("VBoxManage --nologo startvm {}".format(this_vm), shell=True)
+    p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
     ret_val = p.wait()
     if ret_val > 0:
         die("Failed to start {}".format(this_vm))
@@ -314,7 +314,7 @@ def do_make_resolvers_clone():
 
 def do_prepare_server_clones():
     ''' Make the serverX clones '''
-    for i in range(1, 2):
+    for i in range(1, 14):
         this_vm = "server{}-vm".format(i)
         this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
         setup_commands = [
@@ -334,7 +334,7 @@ def do_prepare_server_clones():
         if not this_vm in vms_that_are_running:
             # Start the VM
             log("Starting {}, waiting 20 seconds".format(this_vm))
-            p = subprocess.Popen("VBoxManage --nologo startvm {}".format(this_vm), shell=True)
+            p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
             ret_val = p.wait()
             if ret_val > 0:
                 die("Failed to start {}".format(this_vm))
@@ -364,6 +364,8 @@ def do_prepare_server_clones():
         this_cmd = "{} run --exe /bin/mkdir -- mkdir /root/bind-configs".format(this_guestcontrol)
         send_with_guestcontrol(this_cmd)
         # Copy all the files, even though only some are needed
+        #   NOTE: named.conf *must* have
+        #      directory: "/root/bind-configs";
         the_root_files = "{}/config-files/root-zone-basic/*".format(os.getcwd())
         this_cmd = "{} copyto --target-directory /root/bind-configs/ {}".format(this_guestcontrol, the_root_files)
         send_with_guestcontrol(this_cmd)
@@ -375,13 +377,17 @@ def do_prepare_server_clones():
             die("Failed to shut down {}".format(this_vm))
         time.sleep(5)
         log("Starting {}, waiting 20 seconds".format(this_vm))
-        p = subprocess.Popen("VBoxManage --nologo startvm {}".format(this_vm), shell=True)
+        p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
         ret_val = p.wait()
         if ret_val > 0:
             die("Failed to start {}".format(this_vm))
         time.sleep(20)
         # Install BIND9
-        this_cmd = "{} run --exe /usr/bin/apt -- apt install -y bind9".format(this_guestcontrol)
+        this_cmd = "{} run --exe /usr/bin/apt -- apt install -y bind9 >/dev/null 2>&1".format(this_guestcontrol)
+        send_with_guestcontrol(this_cmd)
+        this_cmd = "{} run --exe /bin/systemctl -- systemctl enable bind9".format(this_guestcontrol)
+        send_with_guestcontrol(this_cmd)
+        this_cmd = "{} run --exe /bin/systemctl -- systemctl start bind9".format(this_guestcontrol)
         send_with_guestcontrol(this_cmd)
         # Add the /rc.local to give delays
         log("Making /etc/rc.local")
@@ -394,48 +400,7 @@ def do_prepare_server_clones():
         send_with_guestcontrol(this_cmd)
         this_cmd = "{} run --exe /bin/systemctl -- systemctl start rc-local".format(this_guestcontrol)
         send_with_guestcontrol(this_cmd)
-        log("Finished setting up {}; rebooting.".format(this_vm))
-
-def do_prepare_servers_vm():
-    ''' On the servers-vm, set up BIND, configure the first test-root, and start up BIND '''
-    # Install libssl-dev
-    this_ret, this_str = ssh_cmd_to_vm("apt install -y libssl-dev", "servers-vm")
-    log("Finished instsalling libraries")
-    # Build BIND if it is not already there
-    this_ret, this_str = ssh_cmd_to_vm("ls /root/Target/bind-9.12.3", "servers-vm")
-    if not this_ret:
-        log("bind-9.12.3 does not exist on servers-vm, building now, may take a few minutes.")
-        this_ret, this_str = ssh_cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py bind-9.12.3", "servers-vm")
-        if not this_ret:
-            die("Could not build bind-9.12.3: {}".format(this_str))
-    root_zone_basic_dir = "/root/resolver-testbed/config-files/root-zone-basic"
-    # Be sure that root_zone_basic_dir exists before doing more
-    this_ret, this_str = ssh_cmd_to_vm("ls {}".format(root_zone_basic_dir), "servers-vm")
-    if not this_ret:
-        die("Did not find {} or servers-vm; this indicates that the repo was not correct.".format(root_zone_basic_dir))
-    root_bind_configs = "/root/bind-configs"
-    # create /root/bind-configs on servers-vm if it isn't already there, then clear it and put the needed files in it and fix the config
-    this_ret, this_str = ssh_cmd_to_vm("mkdir {}".format(root_bind_configs), "servers-vm")
-    # Ignore the errors, because it might already be there
-    this_ret, this_str = ssh_cmd_to_vm("rm -r {}/*".format(root_bind_configs), "servers-vm")
-    # Ignore the errors, because it might already be empty
-    # Copy all the files, even though only some are needed
-    this_ret, this_str = ssh_cmd_to_vm("cp {}/* {}/".format(root_zone_basic_dir, root_bind_configs), "servers-vm")
-    if not this_ret:
-        die("Copying files from {} to {} failed: {}.".format(root_zone_basic_dir, root_bind_configs, this_str))
-    # Create rc.local to start up BIND
-    this_ret, this_str = ssh_cmd_to_vm("cp /root/resolver-testbed/config-files/rc-local-on-servers-vm /etc/rc.local", "servers-vm")
-    if not this_ret:
-        die("Creating /etc/rc.local failed: {}.".format(this_str))
-    this_ret, this_str = ssh_cmd_to_vm("chmod u+x /etc/rc.local", "servers-vm")
-    if not this_ret:
-        die("Doing chmod on /etc/rc.local failed: {}.".format(this_str))
-    this_ret, this_str = ssh_cmd_to_vm("systemctl daemon-reload", "servers-vm")
-    if not this_ret:
-        die("Calling 'systemctl daemon-reload' failed: {}.".format(this_str))
-    this_ret, this_str = ssh_cmd_to_vm("systemctl start rc-local", "servers-vm")
-    if not this_ret:
-        die("Starting BIND with 'systemctl start rc-local' failed: {}.".format(this_str))
+        log("Finished setting up {}; still running.".format(this_vm))
 
 # Run the main program
 if __name__ == "__main__":

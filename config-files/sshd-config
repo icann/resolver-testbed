@@ -1,0 +1,5 @@
+PermitRootLogin yes
+ChallengeResponseAuthentication no
+UsePAM yes
+AcceptEnv LANG LC_*
+Subsystem	sftp	/usr/lib/openssh/sftp-server

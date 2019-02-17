@@ -10,36 +10,42 @@ import fabric
 
 # Some program-wide constants
 CLONE_BASENAME = "debian960-base"
-GUESTCONTROL_TEMPLATE = "VBoxManage guestcontrol {} --username root --password BadPassword"
+GUESTCONTROL_TEMPLATE = "VBoxManage --nologo guestcontrol {} --username root --password BadPassword"
 RESOLVER_LIBRARIES = [
-    "apt install -y build-essential"
-    "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
-    "wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
-    "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
-    "apt update",
-    "apt install -y libknot-dev",
-    "apt install -y libssl-dev libcap-dev",
-    "apt install -y pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
-    "apt install -y libldns-dev libexpat-dev libboost-dev"
+"apt install -y build-essential"
+"apt-get -y install apt-transport-https lsb-release ca-certificates wget",
+"wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
+"sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
+"apt update",
+"apt install -y libknot-dev",
+"apt install -y libssl-dev libcap-dev",
+"apt install -y pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
+"apt install -y libldns-dev libexpat-dev libboost-dev"
 ]
 
 VM_INFO = {
-    "gateway-vm": {
-        "control_addr": "192.168.56.2"
-    },
-    "servers-vm": {
-        "control_addr": "192.168.56.3"
-    },
-    "resolvers-vm": {
-        "control_addr": "192.168.56.4"
-    }
+"gateway-vm": { "control_addr": "192.168.56.20" },
+"resolvers-vm": { "control_addr": "192.168.56.30" },
+"server1-vm": { "control_addr": "192.168.56.1" },
+"server2-vm": { "control_addr": "192.168.56.2" },
+"server3-vm": { "control_addr": "192.168.56.3" },
+"server4-vm": { "control_addr": "192.168.56.4" },
+"server5-vm": { "control_addr": "192.168.56.5" },
+"server6-vm": { "control_addr": "192.168.56.6" },
+"server7-vm": { "control_addr": "192.168.56.7" },
+"server8-vm": { "control_addr": "192.168.56.8" },
+"server9-vm": { "control_addr": "192.168.56.9" },
+"server10-vm": { "control_addr": "192.168.56.10" },
+"server11-vm": { "control_addr": "192.168.56.11" },
+"server12-vm": { "control_addr": "192.168.56.12" },
+"server13-vm": { "control_addr": "192.168.56.13" }
 }
 
 CLI_COMMANDS = [
 "help",
 "make_gateway_clone",
 "make_resolvers_clone",
-"build_resolvers"
+"prepare_server_clones"
 ]
 
 HELP_TEXT = '''
@@ -47,13 +53,7 @@ Available commands for rt.py are:
 help                 Show this text
 make_gateway_clone   Make the gateway-vm VM
 make_resolvers_clone Make the resolvers-vm VM
-build_resolvers      Build all resolvers on the resolvers-vm
 '''.strip()
-
-CLONE_COMMANDS = '''
-VBoxManage clonevm debian960-base --name servers-vm --register
-VBoxManage modifyvm servers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 servnet --nic3 intnet --intnet3 servnet --nic4 intnet --intnet4 servnet --nic5 intnet --intnet5 servnet --nic6 intnet --intnet6 servnet --nic7 intnet --intnet7 servnet --nic8 intnet --intnet8 servnet
-'''.strip().splitlines()
 
 # Do very early check for contents of the directory that we're running in
 LOG_FILE = "{}/log_resolver_testbed.txt".format(os.path.abspath(os.getcwd()))
@@ -89,11 +89,11 @@ def ssh_cmd_to_vm(cmd_to_run, vm_name):
     this_control_address = (rt_config["vm_info"][vm_name]).get("control_addr")
     if not this_control_address:
         die("There was no address for {}".format(vm_name))
-    fabconn = fabric.Connection(host=this_control_address, user="root")
+    fabconn = fabric.Connection(host=this_control_address, user="root", connect_kwargs= {"password": "BadPassword"})
     try:
         fabconn.open()
-    except:
-        die("Could not open an SSH connection to {} on {}.".format(vm_name, this_control_address))
+    except Exception as this_e:
+        die("Could not open an SSH connection to {} on {}: '{}'.".format(vm_name, this_control_address, this_e))
     # Is this the right VM?
     ret_hostname = fabconn.run("hostname", hide=True)
     if ret_hostname.failed:
@@ -118,7 +118,7 @@ def send_with_guestcontrol(this_cmd):
     
 def is_vm_running(vm_name):
     ''' Check if the VM is running; die if not '''
-    p = subprocess.Popen("VBoxManage list runningvms", stdout=subprocess.PIPE, shell=True)  
+    p = subprocess.Popen("VBoxManage --nologo list runningvms", stdout=subprocess.PIPE, shell=True)  
     ret_val = p.wait()
     if ret_val > 0:
         die("VBoxManage runningvms failed to run.")
@@ -129,7 +129,7 @@ def is_vm_running(vm_name):
     if not vm_name in running_vms:
         log("{} is not in the list of running VMs: '{}'.".format(vm_name, " ".join(running_vms)))
         log("Attempting to start {}".format(vm_name))
-        p = subprocess.Popen("VBoxManage startvm {} --type headless".format(vm_name), stdout=subprocess.PIPE, shell=True)  
+        p = subprocess.Popen("VBoxManage --nologo startvm {} --type headless".format(vm_name), stdout=subprocess.PIPE, shell=True)  
         ret_val = p.wait()
         if ret_val > 0:
             die("VBoxManage startvm did not start {}: {}.".format(vm_name, (p.stdout.read()).decode("latin-1")))      
@@ -171,10 +171,10 @@ def do_make_gateway_clone():
     this_vm = "gateway-vm"
     this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
     setup_commands = [
-    "VBoxManage clonevm debian960-base --name {} --register".format(this_vm),
-    "VBoxManage modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat".format(this_vm)
+    "VBoxManage --nologo clonevm debian960-base --name {} --register".format(this_vm),
+    "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat".format(this_vm)
     ]
-    vms_that_exist = subprocess.getoutput("VBoxManage list vms")
+    vms_that_exist = subprocess.getoutput("VBoxManage --nologo list vms")
     if not this_vm in vms_that_exist:
         log("Cloning to create {}".format(this_vm))
         for this_cmd in setup_commands:
@@ -183,11 +183,11 @@ def do_make_gateway_clone():
             ret_val = p.wait()
             if ret_val > 0:
                 die("Failed to perform command {}".format(this_cmd))
-    vms_that_are_running = subprocess.getoutput("VBoxManage list runningvms")
+    vms_that_are_running = subprocess.getoutput("VBoxManage --nologo list runningvms")
     if not this_vm in vms_that_are_running:
         # Start the VM
         log("Starting {}, waiting 20 seconds".format(this_vm))
-        p = subprocess.Popen("VBoxManage startvm {}".format(this_vm), shell=True)
+        p = subprocess.Popen("VBoxManage --nologo startvm {}".format(this_vm), shell=True)
         ret_val = p.wait()
         if ret_val > 0:
             die("Failed to start {}".format(this_vm))
@@ -203,6 +203,10 @@ def do_make_gateway_clone():
     log("Writing /etc/resolv.conf")
     this_resolv_file = "{}/config-files/resolv-with-8844".format(os.getcwd())
     this_cmd = "{} copyto --target-directory /etc/resolv.conf {}".format(this_guestcontrol, this_resolv_file)
+    send_with_guestcontrol(this_cmd)
+    log("Writing /etc/ssh/sshd_config")
+    this_sshd_file = "{}/config-files/sshd-config".format(os.getcwd())
+    this_cmd = "{} copyto --target-directory /etc/ssh/sshd_config {}".format(this_guestcontrol, this_sshd_file)
     send_with_guestcontrol(this_cmd)
     log("Making /etc/rc.local for NAT and forwarding")
     this_rc_local = "{}/config-files/rc-local-on-gateway-vm".format(os.getcwd())
@@ -214,8 +218,19 @@ def do_make_gateway_clone():
     send_with_guestcontrol(this_cmd)
     this_cmd = "{} run --exe /bin/systemctl -- systemctl start rc-local".format(this_guestcontrol)
     send_with_guestcontrol(this_cmd)
-    # Reboot; don't look for failure
-    p = subprocess.Popen("{} run --exe /sbin/reboot -- reboot 2>/dev/null".format(this_guestcontrol), shell=True)
+    # Reboot
+    log("Shutting down")
+    p = subprocess.Popen("VBoxManage --nologo controlvm {} acpipowerbutton".format(this_vm), shell=True)
+    ret_val = p.wait()
+    if ret_val > 0:
+        die("Failed to shut down {}".format(this_vm))
+    time.sleep(5)
+    log("Starting {}, waiting 20 seconds".format(this_vm))
+    p = subprocess.Popen("VBoxManage --nologo startvm {}".format(this_vm), shell=True)
+    ret_val = p.wait()
+    if ret_val > 0:
+        die("Failed to start {}".format(this_vm))
+    time.sleep(20)
     log("Finished setting up {}; rebooting.".format(this_vm))
 
 def do_make_resolvers_clone():
@@ -223,11 +238,11 @@ def do_make_resolvers_clone():
     this_vm = "resolvers-vm"
     this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
     setup_commands = [
-    "VBoxManage clonevm debian960-base --name {} --register".format(this_vm),
-    "VBoxManage modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet".format(this_vm),
-    "VBoxManage modifyvm {} --cpus 2 --memory 2048".format(this_vm)
+    "VBoxManage --nologo clonevm debian960-base --name {} --register".format(this_vm),
+    "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet".format(this_vm),
+    "VBoxManage --nologo modifyvm {} --cpus 2 --memory 2048".format(this_vm)
     ]
-    vms_that_exist = subprocess.getoutput("VBoxManage list vms")
+    vms_that_exist = subprocess.getoutput("VBoxManage --nologo list vms")
     if not this_vm in vms_that_exist:
         log("Cloning to create {}".format(this_vm))
         for this_cmd in setup_commands:
@@ -236,11 +251,11 @@ def do_make_resolvers_clone():
             ret_val = p.wait()
             if ret_val > 0:
                 die("Failed to perform command {}".format(this_cmd))
-    vms_that_are_running = subprocess.getoutput("VBoxManage list runningvms")
+    vms_that_are_running = subprocess.getoutput("VBoxManage --nologo list runningvms")
     if not this_vm in vms_that_are_running:
         # Start the VM
         log("Starting {}, waiting 20 seconds".format(this_vm))
-        p = subprocess.Popen("VBoxManage startvm {}".format(this_vm), shell=True)
+        p = subprocess.Popen("VBoxManage --nologo startvm {}".format(this_vm), shell=True)
         ret_val = p.wait()
         if ret_val > 0:
             die("Failed to start {}".format(this_vm))
@@ -257,9 +272,46 @@ def do_make_resolvers_clone():
     this_resolv_file = "{}/config-files/resolv-with-8844".format(os.getcwd())
     this_cmd = "{} copyto --target-directory /etc/resolv.conf {}".format(this_guestcontrol, this_resolv_file)
     send_with_guestcontrol(this_cmd)
-    # Reboot; don't look for failure
-    p = subprocess.Popen("{} run --exe /sbin/reboot -- reboot 2>/dev/null".format(this_guestcontrol), shell=True)
-    log("Finished setting up {}; rebooting.".format(this_vm))
+    log("Writing /etc/ssh/sshd_config")
+    this_sshd_file = "{}/config-files/sshd-config".format(os.getcwd())
+    this_cmd = "{} copyto --target-directory /etc/ssh/sshd_config {}".format(this_guestcontrol, this_sshd_file)
+    send_with_guestcontrol(this_cmd)
+    # Reboot
+    log("Shutting down")
+    p = subprocess.Popen("VBoxManage --nologo controlvm {} acpipowerbutton".format(this_vm), shell=True)
+    ret_val = p.wait()
+    if ret_val > 0:
+        die("Failed to shut down {}".format(this_vm))
+    time.sleep(5)
+    log("Starting {}, waiting 20 seconds".format(this_vm))
+    p = subprocess.Popen("VBoxManage --nologo startvm {}".format(this_vm), shell=True)
+    ret_val = p.wait()
+    if ret_val > 0:
+        die("Failed to start {}".format(this_vm))
+    time.sleep(20)
+    # Build all the resolvers on resolvers-vm
+    # Install all the stuff for building if it isn't already there
+    this_ret, this_str = ssh_cmd_to_vm("apt list --installed", "resolvers-vm")
+    if not this_ret:
+        die("Could not run 'apt list' on resolvers-vm.")
+    if not "libknot" in this_str:
+        log("Did not find libknot on servers-vm, so installing libraries.")
+        for this_line in RESOLVER_LIBRARIES:
+            this_ret, this_str = ssh_cmd_to_vm(this_line, "resolvers-vm")
+        log("Finished instsalling libraries on resolvers-vm")
+    for this_build in rt_config["build_info"]["builds"]:
+        # See if it is already there
+        this_ret, this_str = ssh_cmd_to_vm("ls Target/{}".format(this_build), "resolvers-vm")
+        if this_ret:
+            log("{} already present".format(this_build))
+        else:
+            log("Building {}".format(this_build))
+            this_ret, this_str = ssh_cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py {}".format(this_build), "resolvers-vm")
+            if not this_ret:
+                log("Could not build {}:\n{}\nContinuing".format(this_build, this_str))
+
+def do_prepare_server_clones():
+    pass #########################
 
 def do_prepare_servers_vm():
     ''' On the servers-vm, set up BIND, configure the first test-root, and start up BIND '''
@@ -302,28 +354,6 @@ def do_prepare_servers_vm():
     if not this_ret:
         die("Starting BIND with 'systemctl start rc-local' failed: {}.".format(this_str))
 
-def build_all_resolvers():
-    ''' Build all the resolvers on resolvers-vm '''
-    # Install all the stuff for building if it isn't already there
-    this_ret, this_str = ssh_cmd_to_vm("apt list --installed", "resolvers-vm")
-    if not this_ret:
-        die("Could not run 'apt list' on resolvers-vm.")
-    if not "libknot" in this_str:
-        log("Did not find libknot on servers-vm, so installing libraries.")
-        for this_line in RESOLVER_LIBRARIES:
-            this_ret, this_str = ssh_cmd_to_vm(this_line, "resolvers-vm")
-        log("Finished instsalling libraries on resolvers-vm")
-    for this_build in rt_config["build_info"]["builds"]:
-        # See if it is already there
-        this_ret, this_str = ssh_cmd_to_vm("ls Target/{}".format(this_build), "resolvers-vm")
-        if this_ret:
-            log("{} already present".format(this_build))
-        else:
-            log("Building {}".format(this_build))
-            this_ret, this_str = ssh_cmd_to_vm("cd /root/resolver-testbed; ./build_from_source.py {}".format(this_build), "resolvers-vm")
-            if not this_ret:
-                log("Could not build {}:\n{}\nContinuing".format(this_build, this_str))   
-
 # Run the main program
 if __name__ == "__main__":
     log("## Starting run on date {}".format(time.strftime("%Y-%m-%d")))
@@ -348,12 +378,9 @@ if __name__ == "__main__":
     elif cmd == "make_resolvers_clone":
         do_make_resolvers_clone()
         log("Done making the gateway-vm VM")
-    elif cmd == "prepare_servers_vm":
-        do_prepare_servers_vm()
+    elif cmd == "prepare_server_clones":
+        do_prepare_server_clones()
         log("servers_vm is now set up")
-    elif cmd == "build_resolvers":
-        build_all_resolvers()
-        log("Done building resolvers")
     # We're done, so exit
     log("## Finished run")
     exit()

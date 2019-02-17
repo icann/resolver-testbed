@@ -28,12 +28,10 @@ click the "Create" button to define it.
 		* Create new virtual hard drive
 			* Type: VDI
 			* Storage: dynamically allocated
-			* Size: 20 gig
+			* Size: 8 gig
 
 * Before booting, change settings
-	* System &rarr; Motherboard: Uncheck floppy
-	* System &rarr; Motherboard: Pointing Device: PS2 Mouse, 
-	* System &rarr; Processor: 1 CPUs
+	* Settings &rarr; Pointer: PS/2 Mouse
 	* Storage &rarr; Controller: IDE: Channge "empty" to attach the Debian ISO from above
 	* Network &rarr; Adapter 1: Attached to "NAT"
 	* Ports &rarr; USB: off
@@ -75,59 +73,12 @@ In the Virtualbox _Host Network Manager_ create a new management network called 
 * Change into that directory: `cd resolver-testbed`
 * Create the first two VMs by cloning from debian960-base, setting the IP addresses, and so on:
 	* `./rt.py make_gateway_clone`
+		* This also sets up the gateway as a NAT
 	* `./rt.py make_resolvers_clone`
-* Build all the resolvers on resolvers-vm: `./rt.py build_resolvers`
-	* It is known that some of these don't build currently
-* Prepare the servers-vm (build BIND, do initial configuration): `./rt.py prepare_servers_vm`
-
-
-
-
-* Choose which SSH keys you will use for logging into the VMs on the testbed.
-This needs to have the private key _not_ password-protected, so you might want to create a new keypair for the testbed.
-To ease installation, you might put this as an authized_keys file on a locally-managed web server.
-
-
-	* General machine preparation
-		* `echo deb http://ftp.debian.org/debian stretch-backports main contrib > /etc/apt/sources.list.d/stretch-backports.list`
-		* `apt update`
-		* `apt -y upgrade`
-		* `apt -y install bind9 dnsutils git python3-pip`
-		* `apt install virtualbox-guest-dkms virtualbox-guest-x11 linux-headers-$(uname -r)`
-		* `pip3 install fabric`
-	* Get the project repo in the home directory for the root user
-		* `git clone https://github.com/icann/resolver-testbed.git`
-	* Set up SSH for automated logging in
-		* `mkdir .ssh`
-		* `chmod 700 .ssh`
-		* `cd .ssh`
-		* Install the authorized_keys file, possibly by getting it off of the locally-administered web server
-		* `chmod 600 authorized_keys`
-
-
-
-## Clone the Base VM Image to the Other VMs
-
-Be sure that "Reinitialze the MAC address of all network cards" is selected when cloning the three images.
-
-All clones are full clones because they are faster.
-
-### Gateway VM
-
-* Select debian96-base in the VirtualBox UI
-* Machine &rarr; Clone
-	* Name: gateway-vm
-	* Clone type: Full clone
-* Be sure that the gateway-vm VM is selected
-* Machine &rarr; Settings
-	* Network &rarr; Adapter 1: Attached to "Host-only Adapter" _vboxnet0_
-	* Network &rarr; Adapter 2: Attached to "Internal Network" _resnet_
-	* Network &rarr; Adapter 3: Attached to "Internal Network" _servnet_
-	* Network &rarr; Adapter 4: Attached to "NAT"
-* Start the VM
-* Log in as root
-* Give the command `/root/resolver-testbed/vm_initial_setup.py gateway-vm`
-* Reboot
+		* This also builds all the current resolvers; this takes 30 minutes or more
+		* It is known that some of these don't build currently
+* Prepare the 13 server VMs (server1-vm through server13-vm):
+	* `./rt.py prepare_server_clones`
 
 ### Root Servers VM
 
@@ -142,19 +93,4 @@ All clones are full clones because they are faster.
 * Start the VM
 * Log in as root
 * Give the command `/root/resolver-testbed/vm_initial_setup.py servers-vm`
-* Reboot
-
-### Resolver Systems
-
-* Select debian96-base in the VirtualBox UI
-* Machine &rarr; Clone
-	* Name: resolvers-vm
-	* Clone type: Full clone
-* Be sure that the resolvers-vm VM is selected
-* Machine &rarr; Settings
-	* Network &rarr; Adapter 1: Attached to "Host-only Adapter" _vboxnet0_
-	* Network &rarr; Adapter 2: Attached to "Internal Network" _resnet_
-* Start the VM
-* Log in as root
-* Give the command `/root/resolver-testbed/vm_initial_setup.py resolvers-vm`
 * Reboot

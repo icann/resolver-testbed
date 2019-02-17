@@ -3,9 +3,9 @@ iface lo inet loopback
 
 auto enp0s3
 iface enp0s3 inet static
-address 192.168.56.30/24
+address 192.168.56.6/24
 
 auto enp0s8
 iface enp0s8 inet static
-address 172.20.1.2/24
-gateway 172.20.1.1
+address 172.21.106.1/24
+gateway 172.21.1.1

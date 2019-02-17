@@ -1,4 +1,4 @@
-p53. 60 IN SOA a.p53. foo.p53. 2019020999 1800 900 604800 60
+p53. 60 IN SOA a.p53. foo.p53. 2019021799 1800 900 604800 60
 p53. 60 IN NS a.some-servers.p53.
 p53. 60 IN NS b.some-servers.p53.
 p53. 60 IN NS c.some-servers.p53.
@@ -12,17 +12,17 @@ p53. 60 IN NS j.some-servers.p53.
 p53. 60 IN NS k.some-servers.p53.
 p53. 60 IN NS l.some-servers.p53.
 p53. 60 IN NS m.some-servers.p53.
-; This is a key-signing key, keyid 16975, for p53.
-; Created: 20190210014101 (Sat Feb  9 17:41:01 2019)
-; Publish: 20190210014101 (Sat Feb  9 17:41:01 2019)
-; Activate: 20190210014101 (Sat Feb  9 17:41:01 2019)
-p53. 60 IN DNSKEY 257 3 8 AwEAAclDdKbSHhW72pBv9MXomCovQuHXnhZr8L07NELkQaNBOzmgiYQy 5gYXwq6XKh6mT6yDONgo6Qrxl2JDxMMQ2Ski2L2yCbE6dEFCMaiIGPng nSbNd7Mrse5J4vHPoG1YynzfIh9tK7D06wbo+QVPlJE/N1AnnEsHSGNV 4c9oZSM8UMHWLK0yrDPEaV4Enrcm77acrthrvbu4pnKolgY7HYGbcg2X jx1kEJ7s/+ZgXpgHxzZEgvd+0qayLu3/xap+MdwoaU6Y7loe4TbdM+pI 4En/tidsQNFdgqlB9alxvc1x2j/8kbOOdJH1cjmxDubiOUjImV7TGg4K lLdK/WA6QX8=
+; This is a key-signing key, keyid 13141, for p53.
+; Created: 20190217190127 (Sun Feb 17 11:01:27 2019)
+; Publish: 20190217190127 (Sun Feb 17 11:01:27 2019)
+; Activate: 20190217190127 (Sun Feb 17 11:01:27 2019)
+p53. 60 IN DNSKEY 257 3 8 AwEAAcHHOw60J0UkGDuGu2xaRJCE28QX+sbrNizqagGjWPHxFWepds9w gehyjwAYIE2JSxX1syXtlEUIFOv01G5QqTaiZAecy6p6LeJvNxqRt+kG UIDjssKdweDCVmBUb2LTe2HI1EW2HiZIAbEwDh8u3vKJbAFWo/kkaKIC zGE9phj4SPJ57lu7GZ4c/uG3/hSvx/bZDWQrbSAg/m7sde3j5/UAkQio xhPLzDn3ZL5Q6lum5adaKxmkU9b/3BmpQGdn4uLboSROiKOMrcQIDFOk 9qVejTjPD5RezpMZD9LsXSDlMbOxQYkbXUMI2MefnDv9OWmgMAPiBRdQ ubZa7GxIhrc=
 
-; This is a zone-signing key, keyid 30834, for p53.
-; Created: 20190210014101 (Sat Feb  9 17:41:01 2019)
-; Publish: 20190210014101 (Sat Feb  9 17:41:01 2019)
-; Activate: 20190210014101 (Sat Feb  9 17:41:01 2019)
-p53. 60 IN DNSKEY 256 3 8 AwEAAai0Wu0lykRlOoktcVQqtP3HURSAwl+ldd9N0Qai11afdm1J8HhE habWxq3reAoVdQq0ChtfTNnF0ZrHabmT6nuBoV3eMT7SOE2oitUChqyJ LhD0Mo1msuao9YEn52PLn4+79Y/HiatXW0osXcLjIxe9TmM+LbqJRWqC +6oiL++IMJ1FXZEnY8w3BCxzgbtOWcjPXzdG5eJ73LsSXYp/ZqV4asli xpS7fvC+JigbhoauXU5ZQifYpEI4tkz8jMzidtaHo7dgLGvRTeuACnr9 6vStvvCA1IJ5gTp44uv4ZDKfq8/LqUWIdbh+VDZRETkWjwGUyB7DRjQG pS5TklobU4U=
+; This is a zone-signing key, keyid 54480, for p53.
+; Created: 20190217190128 (Sun Feb 17 11:01:28 2019)
+; Publish: 20190217190128 (Sun Feb 17 11:01:28 2019)
+; Activate: 20190217190128 (Sun Feb 17 11:01:28 2019)
+p53. 60 IN DNSKEY 256 3 8 AwEAAaawnTxi//JA/K/H6fAfgkChZizGdfoz1/LFfbgpCE/HJwn/09cF T0BfS4fLZJTVnoNuJtrCw84OemrKeKCASoa9zQF1/b3657ziOA5aHJ6A pWXQI4kduwOdnPXnszqxOL4l56RRCsg2ZBO8rxn4MxSmcpR9gMtPeyIH diBR1hSfPXY6T5DAawNuMjgZq54LfZDIxpeW40funP0SiOHkbQfYOJn2 B2b+whR/jcuoZDV6kaRVuF9zgdy4gjUeyoglZnFIcsl9WtS/tDD3BUxf dxAdUwbzyVj32aTCZTyITHiK2dEkxgNYxqP576k+AQsySG+Qxa5QKXug KcsNFGpaukk=
 
 some-servers.p53. 60 IN NS a.some-servers.p53.
 some-servers.p53. 60 IN NS b.some-servers.p53.
@@ -37,16 +37,16 @@ some-servers.p53. 60 IN NS j.some-servers.p53.
 some-servers.p53. 60 IN NS k.some-servers.p53.
 some-servers.p53. 60 IN NS l.some-servers.p53.
 some-servers.p53. 60 IN NS m.some-servers.p53.
-a.some-servers.p53. 60 IN A 172.21.97.1
-b.some-servers.p53. 60 IN A 172.21.98.1
-c.some-servers.p53. 60 IN A 172.21.99.1
-d.some-servers.p53. 60 IN A 172.21.100.1
-e.some-servers.p53. 60 IN A 172.21.101.1
-f.some-servers.p53. 60 IN A 172.21.102.1
-g.some-servers.p53. 60 IN A 172.21.103.1
-h.some-servers.p53. 60 IN A 172.21.104.1
-i.some-servers.p53. 60 IN A 172.21.105.1
-j.some-servers.p53. 60 IN A 172.21.106.1
-k.some-servers.p53. 60 IN A 172.21.107.1
-l.some-servers.p53. 60 IN A 172.21.108.1
-m.some-servers.p53. 60 IN A 172.21.109.1
+a.some-servers.p53. 60 IN A 172.21.101.1
+b.some-servers.p53. 60 IN A 172.21.102.1
+c.some-servers.p53. 60 IN A 172.21.103.1
+d.some-servers.p53. 60 IN A 172.21.104.1
+e.some-servers.p53. 60 IN A 172.21.105.1
+f.some-servers.p53. 60 IN A 172.21.106.1
+g.some-servers.p53. 60 IN A 172.21.107.1
+h.some-servers.p53. 60 IN A 172.21.108.1
+i.some-servers.p53. 60 IN A 172.21.109.1
+j.some-servers.p53. 60 IN A 172.21.109.10
+k.some-servers.p53. 60 IN A 172.21.109.11
+l.some-servers.p53. 60 IN A 172.21.109.12
+m.some-servers.p53. 60 IN A 172.21.109.13

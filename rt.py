@@ -209,6 +209,7 @@ def do_make_gateway_clone():
     this_sshd_file = "{}/config-files/sshd-config".format(os.getcwd())
     this_cmd = "{} copyto --target-directory /etc/ssh/sshd_config {}".format(this_guestcontrol, this_sshd_file)
     send_with_guestcontrol(this_cmd)
+    # Add /etc/rc.local to do NAT
     log("Making /etc/rc.local")
     this_rc_local = "{}/config-files/rc-local-on-{}".format(os.getcwd(), this_vm)
     this_cmd = "{} copyto --target-directory /etc/rc.local {}".format(this_guestcontrol, this_rc_local)
@@ -354,15 +355,17 @@ def do_prepare_server_clones():
         this_sshd_file = "{}/config-files/sshd-config".format(os.getcwd())
         this_cmd = "{} copyto --target-directory /etc/ssh/sshd_config {}".format(this_guestcontrol, this_sshd_file)
         send_with_guestcontrol(this_cmd)
-        log("Making /etc/rc.local")
-        this_rc_local = "{}/config-files/rc-local-on-{}".format(os.getcwd(), this_vm)
-        this_cmd = "{} copyto --target-directory /etc/rc.local {}".format(this_guestcontrol, this_rc_local)
+        # Copy the /etc/default/bind9 file
+        this_bind_defaults = "{}/config-files/etc-default-bind9".format(os.getcwd())
+        this_cmd = "{} copyto --target-directory /etc/default/bind9 {}".format(this_guestcontrol, this_bind_defaults)
         send_with_guestcontrol(this_cmd)
-        this_cmd = "{} run --exe /bin/chmod -- chmod u+x /etc/rc.local".format(this_guestcontrol)
+        # Create /root/bind-configs and fill it
+        log("Creating /root/bind-configs and filling it")
+        this_cmd = "{} run --exe /bin/mkdir -- mkdir /root/bind-configs".format(this_guestcontrol)
         send_with_guestcontrol(this_cmd)
-        this_cmd = "{} run --exe /bin/systemctl -- systemctl daemon-reload".format(this_guestcontrol)
-        send_with_guestcontrol(this_cmd)
-        this_cmd = "{} run --exe /bin/systemctl -- systemctl start rc-local".format(this_guestcontrol)
+        # Copy all the files, even though only some are needed
+        the_root_files = "{}/config-files/root-zone-basic/*".format(os.getcwd())
+        this_cmd = "{} copyto --target-directory /root/bind-configs/ {}".format(this_guestcontrol, the_root_files)
         send_with_guestcontrol(this_cmd)
         # Reboot
         log("Shutting down")
@@ -380,16 +383,17 @@ def do_prepare_server_clones():
         # Install BIND9
         this_cmd = "{} run --exe /usr/bin/apt -- apt install -y bind9".format(this_guestcontrol)
         send_with_guestcontrol(this_cmd)
-        # Copy the /etc/default/bind9 file
-        this_bind_defaults = "{}/config-files/etc-default-bind9".format(os.getcwd())
-        this_cmd = "{} copyto --target-directory /etc/default/bind9 {}".format(this_guestcontrol, this_bind_defaults)
+        # Add the /rc.local to give delays
+        log("Making /etc/rc.local")
+        this_rc_local = "{}/config-files/rc-local-on-{}".format(os.getcwd(), this_vm)
+        this_cmd = "{} copyto --target-directory /etc/rc.local {}".format(this_guestcontrol, this_rc_local)
         send_with_guestcontrol(this_cmd)
-        # Create /root/bind-configs and fill it
-        this_cmd = "{} run --exe /bin/mkdir -- mkdir /root/bind-configs".format(this_guestcontrol)
+        this_cmd = "{} run --exe /bin/chmod -- chmod u+x /etc/rc.local".format(this_guestcontrol)
         send_with_guestcontrol(this_cmd)
-        # Copy all the files, even though only some are needed
-        the_root_files = "{}/config-files/root-zone-basic/*".format(os.getcwd())
-        this_cmd = "{} copyto --target-directory /root/bind-configs {}".format(this_guestcontrol, the_root_files)
+        this_cmd = "{} run --exe /bin/systemctl -- systemctl daemon-reload".format(this_guestcontrol)
+        send_with_guestcontrol(this_cmd)
+        this_cmd = "{} run --exe /bin/systemctl -- systemctl start rc-local".format(this_guestcontrol)
+        send_with_guestcontrol(this_cmd)
         log("Finished setting up {}; rebooting.".format(this_vm))
 
 def do_prepare_servers_vm():

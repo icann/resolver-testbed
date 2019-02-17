@@ -50,9 +50,10 @@ CLI_COMMANDS = [
 
 HELP_TEXT = '''
 Available commands for rt.py are:
-help                 Show this text
-make_gateway_clone   Make the gateway-vm VM
-make_resolvers_clone Make the resolvers-vm VM
+help                   Show this text
+make_gateway_clone     Make the gateway-vm VM
+make_resolvers_clone   Make the resolvers-vm VM
+prepare_server_clones  Make the serverX-vm VMs
 '''.strip()
 
 # Do very early check for contents of the directory that we're running in
@@ -312,7 +313,7 @@ def do_make_resolvers_clone():
 
 def do_prepare_server_clones():
     ''' Make the serverX clones '''
-    for i in range(1, 1):
+    for i in range(1, 2):
         this_vm = "server{}-vm".format(i)
         this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
         setup_commands = [

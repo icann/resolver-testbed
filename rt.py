@@ -10,7 +10,8 @@ import fabric
 
 # Some program-wide constants
 CLONE_BASENAME = "debian960-base"
-GUESTCONTROL_TEMPLATE = "VBoxManage --nologo guestcontrol {} --username root --password BadPassword"
+ROOT_PASS = "BadPassword"
+GUESTCONTROL_TEMPLATE = "VBoxManage --nologo guestcontrol {} --username root --password PASSWORD_GOES_HERE".replace("PASSWORD_GOES_HERE", ROOT_PASS)
 RESOLVER_LIBRARIES = [
 "apt install -y build-essential"
 "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
@@ -90,7 +91,7 @@ def ssh_cmd_to_vm(cmd_to_run, vm_name):
     this_control_address = (rt_config["vm_info"][vm_name]).get("control_addr")
     if not this_control_address:
         die("There was no address for {}".format(vm_name))
-    fabconn = fabric.Connection(host=this_control_address, user="root", connect_kwargs= {"password": "BadPassword"})
+    fabconn = fabric.Connection(host=this_control_address, user="root", connect_kwargs= {"password": ROOT_PASS})
     try:
         fabconn.open()
     except Exception as this_e:
@@ -173,7 +174,8 @@ def do_make_gateway_clone():
     this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
     setup_commands = [
     "VBoxManage --nologo clonevm debian960-base --name {} --register".format(this_vm),
-    "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat".format(this_vm)
+    "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat".format(this_vm),
+    "VBoxManage --nologo modifyvm {} --cpus 1 --memory 128".format(this_vm)
     ]
     vms_that_exist = subprocess.getoutput("VBoxManage --nologo list vms")
     if not this_vm in vms_that_exist:
@@ -319,7 +321,8 @@ def do_prepare_server_clones():
         this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
         setup_commands = [
         "VBoxManage --nologo clonevm debian960-base --name {} --register".format(this_vm),
-        "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 servnet".format(this_vm)
+        "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 servnet".format(this_vm),
+        "VBoxManage --nologo modifyvm {} --cpus 1 --memory 128".format(this_vm)
         ]
         vms_that_exist = subprocess.getoutput("VBoxManage --nologo list vms")
         if not this_vm in vms_that_exist:

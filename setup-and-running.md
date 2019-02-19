@@ -24,11 +24,11 @@ click the "Create" button to define it.
 		* Name: debian960-base
 		* Type: Linux
 		* Version: Debian (64-bit)
-		* Memory: 256M
+		* Memory: 512M
 		* Create new virtual hard drive
 			* Type: VDI
 			* Storage: dynamically allocated
-			* Size: 8 gig
+			* Size: 10 gig
 
 * Before booting, change settings
 	* Settings &rarr; Pointer: PS/2 Mouse
@@ -79,18 +79,5 @@ In the Virtualbox _Host Network Manager_ create a new management network called 
 		* It is known that some of these don't build currently
 * Prepare the 13 server VMs (server1-vm through server13-vm):
 	* `./rt.py prepare_server_clones`
+	* This takes about 20 minutes
 
-### Root Servers VM
-
-* Select debian96-base in the VirtualBox UI
-* Machine &rarr; Clone
-	* Name: servers-vm
-	* Clone type: Full clone
-* Be sure that the servers-vm VM is selected
-* Machine &rarr; Settings
-	* Network &rarr; Adapter 1: Attached to "Host-only Adapter" _vboxnet0_
-	* Network &rarr; Adapter 2: Attached to "Internal Network" _servnet_
-* Start the VM
-* Log in as root
-* Give the command `/root/resolver-testbed/vm_initial_setup.py servers-vm`
-* Reboot

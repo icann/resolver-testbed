@@ -7,5 +7,5 @@ address 192.168.56.5/24
 
 auto enp0s8
 iface enp0s8 inet static
-address 172.21.105.1/24
+address 172.21.105.1/16
 gateway 172.21.1.1

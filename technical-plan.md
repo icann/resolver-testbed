@@ -59,7 +59,7 @@ all 26 addresses.
 
 In order to avoid issues with resolvers that might coalesce views of servers
 on the same /24 network, the addresses for the root servers are each in their own
-/24. They start with 97 (the decimal value for ASCII "a"): 172.21.97.1, 172.21.98.1, 
+/24: 172.21.101.1, 172.21.102.1, 
 and so on. The configuration for the network uses /16 for the netmask.
 
 servers-vm has two NICs:

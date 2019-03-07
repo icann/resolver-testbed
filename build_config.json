@@ -13,8 +13,8 @@
 		"bind-9.13.6":
 			{ "url": "https://ftp.isc.org/isc/bind9/9.13.6/bind-9.13.6.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
-		"bind-9.12.3":
-			{ "url": "https://ftp.isc.org/isc/bind9/9.12.3/bind-9.12.3.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
+		"bind-9.12.4":
+			{ "url": "https://ftp.isc.org/isc/bind9/9.12.4/bind-9.12.4.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
 		"bind-9.11.5":
 			{ "url": "https://ftp.isc.org/isc/bind9/9.11.5/bind-9.11.5.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },

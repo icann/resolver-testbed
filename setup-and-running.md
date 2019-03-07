@@ -24,11 +24,11 @@ click the "Create" button to define it.
 		* Name: debian960-base
 		* Type: Linux
 		* Version: Debian (64-bit)
-		* Memory: 512M
+		* Memory: 2048M
 		* Create new virtual hard drive
 			* Type: VDI
 			* Storage: dynamically allocated
-			* Size: 10 gig
+			* Size: 20 gig
 
 * Before booting, change settings
 	* Settings &rarr; Pointer: PS/2 Mouse

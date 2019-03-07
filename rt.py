@@ -174,8 +174,7 @@ def do_make_gateway_clone():
     this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
     setup_commands = [
     "VBoxManage --nologo clonevm debian960-base --name {} --register".format(this_vm),
-    "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat".format(this_vm),
-    "VBoxManage --nologo modifyvm {} --cpus 1 --memory 128".format(this_vm)
+    "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat".format(this_vm)
     ]
     vms_that_exist = subprocess.getoutput("VBoxManage --nologo list vms")
     if not this_vm in vms_that_exist:

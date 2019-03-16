@@ -12,7 +12,7 @@ The steps can be summarized as:
 
 The last two steps can be repeated as the configurations change for different testing.
 
-## Building the Base VM Image on the Control Host
+## Build the Base VM Image for Resolvers and the Middlebox on the Control Host
 
 * Get the recent Debiain image from `http://cdimage.debian.org/cdimage/release/current/amd64/iso-cd/debian-9.6.0-amd64-netinst.iso`
 
@@ -59,15 +59,15 @@ click the "Create" button to define it.
 
 * After automatic reboot
 	* Log in as root / BadPassword
-	* `wget https://holder.proper.com/testbed-startup.sh`
-	* `sh testbed-startup.sh`
+	* `wget https://holder.proper.com/debian960-testbed-startup.sh`
+	* `sh debian960-testbed-startup.sh`
 	* `shutdown -h now`
 
 ## Create the host mangement network _vboxnet0_
 
 In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
 
-## Do the Initial Setup and Sanity Checks on the Control Host
+## Do the Initial Setup for Resolvers and the Middlebox on the Control Host
 
 * Get the testbed repo: `git clone https://github.com/icann/resolver-testbed.git`
 * Change into that directory: `cd resolver-testbed`
@@ -80,4 +80,64 @@ In the Virtualbox _Host Network Manager_ create a new management network called 
 * Prepare the 13 server VMs (server1-vm through server13-vm):
 	* `./rt.py prepare_server_clones`
 	* This takes about 20 minutes
+
+## Build the Base VM Image for the Authoritative Server on the Control Host
+
+* Start VirtualBox
+	* Machine &rarr; New
+		* Name: freebsd12-base
+		* Type: BSD
+		* Version: FreeBSD (64-bit)
+		* Memory: 1024M
+		* Create new virtual hard drive
+			* Type: VDI
+			* Storage: dynamically allocated
+			* Size: 16 gig
+
+* Before booting, change settings
+	* Storage &rarr; Controller: IDE: Channge "empty" to attach the FreeBSD ISO from above
+	* Network &rarr; Adapter 1: Attached to "NAT"
+	* Ports &rarr; USB: off
+
+* Boot the new `freebsd12-base` VM
+	* Select Install
+	* Continue with default keymap
+	* Hostname: freebsd12-base
+	* Optional system components: leave as-is
+	* Networking
+		* em0
+		* Configure IPv4
+		* Use DHCP
+		* Don't configure IPv6
+		* Leave resolver configuration as-is from DHCP
+	* Use main package mirror
+	* Partitioning:
+		* Auto (UFS)
+		* Entire disk
+		* Change to "BSD labels"
+		* Use default layout
+		* Finish and commit
+	* (Lots of packages are then downloaded)
+	* Root password: BadPassword
+	* Time zone: UTC, but you don't need to set the time
+	* System configuration: leave sshd and dumpdev selected
+	* No system hardening
+	* Do not add additional users (only root is used in the testbed)
+	* Apply system configuration and exit installer
+	* Select manual configuration to get a shell
+		* `fetch --no-verify-peer https://holder.proper.com/freebsd12-testbed-startup.sh`
+		* `shutdown -p now`
+	* In VirtualBox, unmount the CD-ROM
+		* In the window for the VM, select the second icon from the left (the CD-ROM), and select Remove disc from virtual drive
+
+* Create the VM
+	* `VBoxManage --nologo clonevm freebsd12-base --name servers-vm --register`
+	* `VBoxManage --nologo startvm servers-vm`
+	* Log in as root / BadPassword
+	* `sh ./freebsd12-testbed-startup.sh`
+	* `shutdown -p now`
+
+* Set up the interfaces
+	* `VBoxManage --nologo modifyvm servers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 servnet`
+	* `VBoxManage --nologo startvm servers-vm`
 

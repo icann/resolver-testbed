@@ -1,3 +1,16 @@
+ipfw delete 50101 >& /dev/null
+ipfw delete 50102 >& /dev/null
+ipfw delete 50103 >& /dev/null
+ipfw delete 50104 >& /dev/null
+ipfw delete 50105 >& /dev/null
+ipfw delete 50106 >& /dev/null
+ipfw delete 50107 >& /dev/null
+ipfw delete 50108 >& /dev/null
+ipfw delete 50109 >& /dev/null
+ipfw delete 50110 >& /dev/null
+ipfw delete 50111 >& /dev/null
+ipfw delete 50112 >& /dev/null
+ipfw delete 50113 >& /dev/null
 ipfw add 50101 pipe 101 ip from 172.21.101.1 to any
 ipfw add 50102 pipe 102 ip from 172.21.102.1 to any
 ipfw add 50103 pipe 103 ip from 172.21.103.1 to any

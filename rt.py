@@ -27,19 +27,7 @@ RESOLVER_LIBRARIES = [
 VM_INFO = {
 "gateway-vm": { "control_addr": "192.168.56.20" },
 "resolvers-vm": { "control_addr": "192.168.56.30" },
-"server1-vm": { "control_addr": "192.168.56.1" },
-"server2-vm": { "control_addr": "192.168.56.2" },
-"server3-vm": { "control_addr": "192.168.56.3" },
-"server4-vm": { "control_addr": "192.168.56.4" },
-"server5-vm": { "control_addr": "192.168.56.5" },
-"server6-vm": { "control_addr": "192.168.56.6" },
-"server7-vm": { "control_addr": "192.168.56.7" },
-"server8-vm": { "control_addr": "192.168.56.8" },
-"server9-vm": { "control_addr": "192.168.56.9" },
-"server10-vm": { "control_addr": "192.168.56.10" },
-"server11-vm": { "control_addr": "192.168.56.11" },
-"server12-vm": { "control_addr": "192.168.56.12" },
-"server13-vm": { "control_addr": "192.168.56.13" }
+"server-vm": { "control_addr": "192.168.56.40" }
 }
 
 CLI_COMMANDS = [

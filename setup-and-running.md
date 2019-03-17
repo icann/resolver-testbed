@@ -12,7 +12,14 @@ The steps can be summarized as:
 
 The last two steps can be repeated as the configurations change for different testing.
 
-## Build the Base VM Image for Resolvers and the Middlebox on the Control Host
+## Create the host mangement network _vboxnet0_
+
+In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
+
+## Build the Debian base VM image
+
+Because the middlebox-vm and resolvers-vm VMs are both based on Debian, build a base VM
+that will be cloned into the two VMs.
 
 * Get the recent Debiain image from `http://cdimage.debian.org/cdimage/release/current/amd64/iso-cd/debian-9.6.0-amd64-netinst.iso`
 
@@ -24,11 +31,11 @@ click the "Create" button to define it.
 		* Name: debian960-base
 		* Type: Linux
 		* Version: Debian (64-bit)
-		* Memory: 2048M
+		* Memory: 2048M  (Changed from default of 1024)
 		* Create new virtual hard drive
 			* Type: VDI
 			* Storage: dynamically allocated
-			* Size: 20 gig
+			* Size: 20 gig (Changed from default of 8 gig)
 
 * Before booting, change settings
 	* Settings &rarr; Pointer: PS/2 Mouse
@@ -42,13 +49,13 @@ click the "Create" button to define it.
 		* Domain name: Make sure this is blank
 		* Root password: BadPassword
 		* User: Any name, any password (this user will not be used in the testbed)
-		* Time zone: Use your local time zone
+		* Time zone: Pick any time zone
 		* Partition disks:
 			* Guided - use entire disk
 			* All files in one partition
 		* Configure the package manager
 			* No additional CDs
-			* Any mirror is fine; you can use the default
+			* Use the default mirror
 			* Package user survey: No
 		* Software selection
 			* Unselect "Debian desktop environment"
@@ -59,17 +66,23 @@ click the "Create" button to define it.
 
 * After automatic reboot
 	* Log in as root / BadPassword
-	* `wget https://holder.proper.com/debian960-testbed-startup.sh`
-	* `sh debian960-testbed-startup.sh`
+	* `wget https://github.com/icann/resolver-testbed/archive/master.zip`
+	* `apt install unzip`
+	* `unzip master.zip`
+	* `rm master.zip`
 	* `shutdown -h now`
 
-## Create the host mangement network _vboxnet0_
+* Create the two clones with commands on the control host
+	* `VBoxManage --nologo clonevm debian960-base --name gateway-vm --register`
+	* `VBoxManage --nologo modifyvm gateway-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat`
+	* `VBoxManage --nologo modifyvm gateway-vm  --cpus 2 --memory 1024`
+	* `VBoxManage --nologo clonevm debian960-base --name resolvers-vm --register`
+	* `VBoxManage --nologo modifyvm resolvers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet`
+	* `VBoxManage --nologo modifyvm resolvers-vm --cpus 2 --memory 2048`
 
-In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
+## Do the initial setup for resolvers-vm and the middlebox-vm
 
-## Do the Initial Setup for Resolvers and the Middlebox on the Control Host
-
-* Get the testbed repo: `git clone https://github.com/icann/resolver-testbed.git`
+* Get the testbed repo on the control host: `git clone https://github.com/icann/resolver-testbed.git`
 * Change into that directory: `cd resolver-testbed`
 * Create the first two VMs by cloning from debian960-base, setting the IP addresses, and so on:
 	* `./rt.py make_gateway_clone`
@@ -77,15 +90,12 @@ In the Virtualbox _Host Network Manager_ create a new management network called 
 	* `./rt.py make_resolvers_clone`
 		* This also builds all the current resolvers; this takes 30 minutes or more
 		* It is known that some of these don't build currently
-* Prepare the 13 server VMs (server1-vm through server13-vm):
-	* `./rt.py prepare_server_clones`
-	* This takes about 20 minutes
 
-## Build the Base VM Image for the Authoritative Server on the Control Host
+## Build the servers-vm VM
 
 * Start VirtualBox
 	* Machine &rarr; New
-		* Name: freebsd12-base
+		* Name: servers-vm
 		* Type: BSD
 		* Version: FreeBSD (64-bit)
 		* Memory: 1024M
@@ -99,7 +109,7 @@ In the Virtualbox _Host Network Manager_ create a new management network called 
 	* Network &rarr; Adapter 1: Attached to "NAT"
 	* Ports &rarr; USB: off
 
-* Boot the new `freebsd12-base` VM
+* Boot the new `servers-vm` VM
 	* Select Install
 	* Continue with default keymap
 	* Hostname: freebsd12-base
@@ -125,7 +135,7 @@ In the Virtualbox _Host Network Manager_ create a new management network called 
 	* Do not add additional users (only root is used in the testbed)
 	* Apply system configuration and exit installer
 	* Select manual configuration to get a shell
-		* `fetch --no-verify-peer https://holder.proper.com/freebsd12-testbed-startup.sh`
+		* `fetch http://holder.proper.com/freebsd12-testbed-startup.sh`
 		* `shutdown -p now`
 	* In VirtualBox, unmount the CD-ROM
 		* In the window for the VM, select the second icon from the left (the CD-ROM), and select Remove disc from virtual drive

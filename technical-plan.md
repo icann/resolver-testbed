@@ -50,23 +50,6 @@ gateway-vm has four NICs:
  * **gs** on the servers network (172.21.1.1)
  * **gi** on the Internet (via DHCP)
  
-### Root Servers VM
-
-**servers-vm** is all the simulated root servers on a single VM.
-The tentative plan is to have 13 IPv4 and 13 IPv6 addresses on the VM
-with one copy of BIND running as an authoritative server listening to
-all 26 addresses.
-
-In order to avoid issues with resolvers that might coalesce views of servers
-on the same /24 network, the addresses for the root servers are each in their own
-/24: 172.21.101.1, 172.21.102.1, 
-and so on. The configuration for the network uses /16 for the netmask.
-
-servers-vm has two NICs:
-
- * **sc** on the control network (192.168.56.3)
- * **ss** on the servers network (172.21.1.2)
-
 ### Resolver Systems
 
 There can be multiple VMs that run the resolvers under test.
@@ -86,4 +69,21 @@ Each resolver system has two NICs:
 
  * **rc** on the control network (192.168.56.4)
  * **rr** on the resolvers network (172.20.1.2)
+
+### Root Servers VM
+
+**servers-vm** is all the simulated root servers on a single VM.
+The tentative plan is to have 13 IPv4 and 13 IPv6 addresses on the VM
+with one copy of BIND running as an authoritative server listening to
+all 26 addresses.
+
+In order to avoid issues with resolvers that might coalesce views of servers
+on the same /24 network, the addresses for the root servers are each in their own
+/24: 172.21.101.1, 172.21.102.1, 
+and so on. The configuration for the network uses /16 for the netmask.
+
+servers-vm has two NICs:
+
+ * **sc** on the control network (192.168.56.3)
+ * **ss** on the servers network (172.21.1.2)
 

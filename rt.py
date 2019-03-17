@@ -33,8 +33,7 @@ VM_INFO = {
 CLI_COMMANDS = [
 "help",
 "make_gateway_clone",
-"make_resolvers_clone",
-"prepare_server_clones"
+"make_resolvers_clone"
 ]
 
 HELP_TEXT = '''
@@ -42,7 +41,6 @@ Available commands for rt.py are:
 help                   Show this text
 make_gateway_clone     Make the gateway-vm VM
 make_resolvers_clone   Make the resolvers-vm VM
-prepare_server_clones  Make the serverX-vm VMs
 '''.strip()
 
 # Do very early check for contents of the directory that we're running in
@@ -301,97 +299,6 @@ def do_make_resolvers_clone():
             if not this_ret:
                 log("Could not build {}:\n{}\nContinuing".format(this_build, this_str))
 
-def do_prepare_server_clones():
-    ''' Make the serverX clones '''
-    for i in range(1, 14):
-        this_vm = "server{}-vm".format(i)
-        this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
-        setup_commands = [
-        "VBoxManage --nologo clonevm debian960-base --name {} --register".format(this_vm),
-        "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 servnet".format(this_vm),
-        "VBoxManage --nologo modifyvm {} --cpus 1 --memory 128".format(this_vm)
-        ]
-        vms_that_exist = subprocess.getoutput("VBoxManage --nologo list vms")
-        if not this_vm in vms_that_exist:
-            log("Cloning to create {}".format(this_vm))
-            for this_cmd in setup_commands:
-                log(this_cmd)
-                p = subprocess.Popen(this_cmd, shell=True)
-                ret_val = p.wait()
-                if ret_val > 0:
-                    die("Failed to perform command {}".format(this_cmd))
-        vms_that_are_running = subprocess.getoutput("VBoxManage --nologo list runningvms")
-        if not this_vm in vms_that_are_running:
-            # Start the VM
-            log("Starting {}, waiting 20 seconds".format(this_vm))
-            p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
-            ret_val = p.wait()
-            if ret_val > 0:
-                die("Failed to start {}".format(this_vm))
-            time.sleep(20)
-        log("Copying to /etc/hosts/interfaces")
-        this_interfaces_file = "{}/config-files/interfaces-{}".format(os.getcwd(), this_vm)
-        this_cmd = "{} copyto --target-directory /etc/network/interfaces {}".format(this_guestcontrol, this_interfaces_file)
-        send_with_guestcontrol(this_cmd)
-        log("Changing the hostname")
-        this_hostname_file = "{}/config-files/hostname-{}".format(os.getcwd(), this_vm)
-        this_cmd = "{} copyto --target-directory /etc/hostname {}".format(this_guestcontrol, this_hostname_file)
-        send_with_guestcontrol(this_cmd)
-        log("Writing /etc/resolv.conf")
-        this_resolv_file = "{}/config-files/resolv-with-8844".format(os.getcwd())
-        this_cmd = "{} copyto --target-directory /etc/resolv.conf {}".format(this_guestcontrol, this_resolv_file)
-        send_with_guestcontrol(this_cmd)
-        log("Writing /etc/ssh/sshd_config")
-        this_sshd_file = "{}/config-files/sshd-config".format(os.getcwd())
-        this_cmd = "{} copyto --target-directory /etc/ssh/sshd_config {}".format(this_guestcontrol, this_sshd_file)
-        send_with_guestcontrol(this_cmd)
-        # Copy the /etc/default/bind9 file
-        this_bind_defaults = "{}/config-files/etc-default-bind9".format(os.getcwd())
-        this_cmd = "{} copyto --target-directory /etc/default/bind9 {}".format(this_guestcontrol, this_bind_defaults)
-        send_with_guestcontrol(this_cmd)
-        # Create /root/bind-configs and fill it
-        log("Creating /root/bind-configs and filling it")
-        this_cmd = "{} run --exe /bin/mkdir -- mkdir /root/bind-configs".format(this_guestcontrol)
-        send_with_guestcontrol(this_cmd)
-        # Copy all the files, even though only some are needed
-        #   NOTE: named.conf *must* have
-        #      directory: "/root/bind-configs";
-        the_root_files = "{}/config-files/root-zone-basic/*".format(os.getcwd())
-        this_cmd = "{} copyto --target-directory /root/bind-configs/ {}".format(this_guestcontrol, the_root_files)
-        send_with_guestcontrol(this_cmd)
-        # Reboot
-        log("Shutting down")
-        p = subprocess.Popen("VBoxManage --nologo controlvm {} acpipowerbutton".format(this_vm), shell=True)
-        ret_val = p.wait()
-        if ret_val > 0:
-            die("Failed to shut down {}".format(this_vm))
-        time.sleep(5)
-        log("Starting {}, waiting 20 seconds".format(this_vm))
-        p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
-        ret_val = p.wait()
-        if ret_val > 0:
-            die("Failed to start {}".format(this_vm))
-        time.sleep(20)
-        # Install BIND9
-        this_cmd = "{} run --exe /usr/bin/apt -- apt install -y bind9 >/dev/null 2>&1".format(this_guestcontrol)
-        send_with_guestcontrol(this_cmd)
-        this_cmd = "{} run --exe /bin/systemctl -- systemctl enable bind9".format(this_guestcontrol)
-        send_with_guestcontrol(this_cmd)
-        this_cmd = "{} run --exe /bin/systemctl -- systemctl start bind9".format(this_guestcontrol)
-        send_with_guestcontrol(this_cmd)
-        # Add the /rc.local to give delays
-        log("Making /etc/rc.local")
-        this_rc_local = "{}/config-files/rc-local-on-{}".format(os.getcwd(), this_vm)
-        this_cmd = "{} copyto --target-directory /etc/rc.local {}".format(this_guestcontrol, this_rc_local)
-        send_with_guestcontrol(this_cmd)
-        this_cmd = "{} run --exe /bin/chmod -- chmod u+x /etc/rc.local".format(this_guestcontrol)
-        send_with_guestcontrol(this_cmd)
-        this_cmd = "{} run --exe /bin/systemctl -- systemctl daemon-reload".format(this_guestcontrol)
-        send_with_guestcontrol(this_cmd)
-        this_cmd = "{} run --exe /bin/systemctl -- systemctl start rc-local".format(this_guestcontrol)
-        send_with_guestcontrol(this_cmd)
-        log("Finished setting up {}; still running.".format(this_vm))
-
 # Run the main program
 if __name__ == "__main__":
     log("## Starting run on date {}".format(time.strftime("%Y-%m-%d")))
@@ -416,9 +323,6 @@ if __name__ == "__main__":
     elif cmd == "make_resolvers_clone":
         do_make_resolvers_clone()
         log("Done making the gateway-vm VM")
-    elif cmd == "prepare_server_clones":
-        do_prepare_server_clones()
-        log("servers_vm is now set up")
     # We're done, so exit
     log("## Finished run")
     exit()

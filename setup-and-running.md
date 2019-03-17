@@ -16,6 +16,12 @@ The last two steps can be repeated as the configurations change for different te
 
 In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
 
+## Get a local copy of the testbed software
+
+* `wget https://github.com/icann/resolver-testbed/archive/master.zip`
+* `unzip master.zip`
+* `rm master.zip`
+
 ## Build the Debian base VM image
 
 Because the middlebox-vm and resolvers-vm VMs are both based on Debian, build a base VM
@@ -67,18 +73,13 @@ click the "Create" button to define it.
 * After automatic reboot
 	* Log in as root / BadPassword
 	* `wget https://github.com/icann/resolver-testbed/archive/master.zip`
-	* `apt install unzip`
+	* `apt install -y unzip`
 	* `unzip master.zip`
 	* `rm master.zip`
 	* `shutdown -h now`
 
 * Create the two clones with commands on the control host
-	* `VBoxManage --nologo clonevm debian960-base --name gateway-vm --register`
-	* `VBoxManage --nologo modifyvm gateway-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat`
-	* `VBoxManage --nologo modifyvm gateway-vm  --cpus 2 --memory 1024`
-	* `VBoxManage --nologo clonevm debian960-base --name resolvers-vm --register`
-	* `VBoxManage --nologo modifyvm resolvers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet`
-	* `VBoxManage --nologo modifyvm resolvers-vm --cpus 2 --memory 2048`
+	* `sh resolver-testbed/config-files/clone-and-start-vms.sh`
 
 ## Do the initial setup for resolvers-vm and the middlebox-vm
 

@@ -164,7 +164,6 @@ def do_initial_vm_config():
 def do_make_resolvers():
     ''' Make the resolvers_vm '''
     this_vm = "resolvers-vm"
-    this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
     # Build all the resolvers on resolvers-vm
     # Install all the stuff for building if it isn't already there
     this_ret, this_str = ssh_cmd_to_vm("apt list --installed", "resolvers-vm")

@@ -27,19 +27,18 @@ RESOLVER_LIBRARIES = [
 VM_INFO = {
 "gateway-vm": { "control_addr": "192.168.56.20" },
 "resolvers-vm": { "control_addr": "192.168.56.30" },
-"server-vm": { "control_addr": "192.168.56.40" }
+"servers-vm": { "control_addr": "192.168.56.40" }
 }
 
 CLI_COMMANDS = [
 "help",
-"make_gateway_clone",
-"make_resolvers_clone"
+"initial_vm_config",
+"make_resolvers"
 ]
 
 HELP_TEXT = '''
 Available commands for rt.py are:
 help                   Show this text
-make_gateway_clone     Make the gateway-vm VM
 make_resolvers_clone   Make the resolvers-vm VM
 '''.strip()
 
@@ -154,130 +153,18 @@ def startup_and_config_general():
     # Finish up initialization
     return this_local_config
 
-def do_make_gateway_clone():
-    ''' Make the gateway_vm '''
-    this_vm = "gateway-vm"
-    this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
-    setup_commands = [
-    "VBoxManage --nologo clonevm debian960-base --name {} --register".format(this_vm),
-    "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet --nic3 intnet --intnet3 servnet --nic4 nat".format(this_vm)
-    ]
-    vms_that_exist = subprocess.getoutput("VBoxManage --nologo list vms")
-    if not this_vm in vms_that_exist:
-        log("Cloning to create {}".format(this_vm))
-        for this_cmd in setup_commands:
-            log(this_cmd)
-            p = subprocess.Popen(this_cmd, shell=True)
-            ret_val = p.wait()
-            if ret_val > 0:
-                die("Failed to perform command {}".format(this_cmd))
-    vms_that_are_running = subprocess.getoutput("VBoxManage --nologo list runningvms")
-    if not this_vm in vms_that_are_running:
-        # Start the VM
-        log("Starting {}, waiting 20 seconds".format(this_vm))
-        p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
-        ret_val = p.wait()
-        if ret_val > 0:
-            die("Failed to start {}".format(this_vm))
-        time.sleep(20)
-    log("Copying to /etc/hosts/interfaces")
-    this_interfaces_file = "{}/config-files/interfaces-{}".format(os.getcwd(), this_vm)
-    this_cmd = "{} copyto --target-directory /etc/network/interfaces {}".format(this_guestcontrol, this_interfaces_file)
-    send_with_guestcontrol(this_cmd)
-    log("Changing the hostname")
-    this_hostname_file = "{}/config-files/hostname-{}".format(os.getcwd(), this_vm)
-    this_cmd = "{} copyto --target-directory /etc/hostname {}".format(this_guestcontrol, this_hostname_file)
-    send_with_guestcontrol(this_cmd)
-    log("Writing /etc/resolv.conf")
-    this_resolv_file = "{}/config-files/resolv-with-8844".format(os.getcwd())
-    this_cmd = "{} copyto --target-directory /etc/resolv.conf {}".format(this_guestcontrol, this_resolv_file)
-    send_with_guestcontrol(this_cmd)
-    log("Writing /etc/ssh/sshd_config")
-    this_sshd_file = "{}/config-files/sshd-config".format(os.getcwd())
-    this_cmd = "{} copyto --target-directory /etc/ssh/sshd_config {}".format(this_guestcontrol, this_sshd_file)
-    send_with_guestcontrol(this_cmd)
-    # Add /etc/rc.local to do NAT
-    log("Making /etc/rc.local")
-    this_rc_local = "{}/config-files/rc-local-on-{}".format(os.getcwd(), this_vm)
-    this_cmd = "{} copyto --target-directory /etc/rc.local {}".format(this_guestcontrol, this_rc_local)
-    send_with_guestcontrol(this_cmd)
-    this_cmd = "{} run --exe /bin/chmod -- chmod u+x /etc/rc.local".format(this_guestcontrol)
-    send_with_guestcontrol(this_cmd)
-    this_cmd = "{} run --exe /bin/systemctl -- systemctl daemon-reload".format(this_guestcontrol)
-    send_with_guestcontrol(this_cmd)
-    this_cmd = "{} run --exe /bin/systemctl -- systemctl start rc-local".format(this_guestcontrol)
-    send_with_guestcontrol(this_cmd)
-    # Reboot
-    log("Shutting down")
-    p = subprocess.Popen("VBoxManage --nologo controlvm {} acpipowerbutton".format(this_vm), shell=True)
-    ret_val = p.wait()
-    if ret_val > 0:
-        die("Failed to shut down {}".format(this_vm))
-    time.sleep(5)
-    log("Starting {}, waiting 20 seconds".format(this_vm))
-    p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
-    ret_val = p.wait()
-    if ret_val > 0:
-        die("Failed to start {}".format(this_vm))
-    time.sleep(20)
-    log("Finished setting up {}; rebooting.".format(this_vm))
+def do_initial_vm_config():
+    ''' Run the initialization script on each VM '''
+    for this_vm in VM_INFO:
+        log("Initializing {}".format(this_vm))
+        this_ret, this_str = ssh_cmd_to_vm("/root/resolver-testbed-master/config-files/setup-{}".format(this_vm), this_vm)
+        if this_ret:
+            log("Running the initial setup for {} ended with {}".format(this_vm, this_str))
 
-def do_make_resolvers_clone():
+def do_make_resolvers():
     ''' Make the resolvers_vm '''
     this_vm = "resolvers-vm"
     this_guestcontrol = GUESTCONTROL_TEMPLATE.format(this_vm)
-    setup_commands = [
-    "VBoxManage --nologo clonevm debian960-base --name {} --register".format(this_vm),
-    "VBoxManage --nologo modifyvm {} --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 resnet".format(this_vm),
-    "VBoxManage --nologo modifyvm {} --cpus 2 --memory 2048".format(this_vm)
-    ]
-    vms_that_exist = subprocess.getoutput("VBoxManage --nologo list vms")
-    if not this_vm in vms_that_exist:
-        log("Cloning to create {}".format(this_vm))
-        for this_cmd in setup_commands:
-            log(this_cmd)
-            p = subprocess.Popen(this_cmd, shell=True)
-            ret_val = p.wait()
-            if ret_val > 0:
-                die("Failed to perform command {}".format(this_cmd))
-    vms_that_are_running = subprocess.getoutput("VBoxManage --nologo list runningvms")
-    if not this_vm in vms_that_are_running:
-        # Start the VM
-        log("Starting {}, waiting 20 seconds".format(this_vm))
-        p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
-        ret_val = p.wait()
-        if ret_val > 0:
-            die("Failed to start {}".format(this_vm))
-        time.sleep(20)
-    log("Copying to /etc/hosts/interfaces")
-    this_interfaces_file = "{}/config-files/interfaces-{}".format(os.getcwd(), this_vm)
-    this_cmd = "{} copyto --target-directory /etc/network/interfaces {}".format(this_guestcontrol, this_interfaces_file)
-    send_with_guestcontrol(this_cmd)
-    log("Changing the hostname")
-    this_hostname_file = "{}/config-files/hostname-{}".format(os.getcwd(), this_vm)
-    this_cmd = "{} copyto --target-directory /etc/hostname {}".format(this_guestcontrol, this_hostname_file)
-    send_with_guestcontrol(this_cmd)
-    log("Writing /etc/resolv.conf")
-    this_resolv_file = "{}/config-files/resolv-with-8844".format(os.getcwd())
-    this_cmd = "{} copyto --target-directory /etc/resolv.conf {}".format(this_guestcontrol, this_resolv_file)
-    send_with_guestcontrol(this_cmd)
-    log("Writing /etc/ssh/sshd_config")
-    this_sshd_file = "{}/config-files/sshd-config".format(os.getcwd())
-    this_cmd = "{} copyto --target-directory /etc/ssh/sshd_config {}".format(this_guestcontrol, this_sshd_file)
-    send_with_guestcontrol(this_cmd)
-    # Reboot
-    log("Shutting down")
-    p = subprocess.Popen("VBoxManage --nologo controlvm {} acpipowerbutton".format(this_vm), shell=True)
-    ret_val = p.wait()
-    if ret_val > 0:
-        die("Failed to shut down {}".format(this_vm))
-    time.sleep(5)
-    log("Starting {}, waiting 20 seconds".format(this_vm))
-    p = subprocess.Popen("VBoxManage --nologo startvm --type headless {}".format(this_vm), shell=True)
-    ret_val = p.wait()
-    if ret_val > 0:
-        die("Failed to start {}".format(this_vm))
-    time.sleep(20)
     # Build all the resolvers on resolvers-vm
     # Install all the stuff for building if it isn't already there
     this_ret, this_str = ssh_cmd_to_vm("apt list --installed", "resolvers-vm")
@@ -317,12 +204,12 @@ if __name__ == "__main__":
     # Figure out which command it was
     if cmd == "help":
         show_help()
-    elif cmd == "make_gateway_clone":
-        do_make_gateway_clone()
-        log("Done making the gateway-vm VM")
-    elif cmd == "make_resolvers_clone":
-        do_make_resolvers_clone()
-        log("Done making the gateway-vm VM")
+    elif cmd == "initial_vm_config":
+        do_initial_vm_config()
+        log("Done with the initial VM configuration")
+    elif cmd == "make_resolvers":
+        do_make_resolvers()
+        log("Done making the resolvers")
     # We're done, so exit
     log("## Finished run")
     exit()

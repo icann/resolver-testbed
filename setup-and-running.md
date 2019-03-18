@@ -22,7 +22,7 @@ In the Virtualbox _Host Network Manager_ create a new management network called 
 * `unzip master.zip`
 * `rm master.zip`
 
-## Build the Debian base VM image
+## Build the middlebox-vm and resolvers-vm VMs
 
 Because the middlebox-vm and resolvers-vm VMs are both based on Debian, build a base VM
 that will be cloned into the two VMs.
@@ -78,20 +78,6 @@ click the "Create" button to define it.
 	* `rm master.zip`
 	* `shutdown -h now`
 
-* Create the two clones with commands on the control host
-	* `sh resolver-testbed/config-files/clone-and-start-vms.sh`
-
-## Do the initial setup for resolvers-vm and the middlebox-vm
-
-* Get the testbed repo on the control host: `git clone https://github.com/icann/resolver-testbed.git`
-* Change into that directory: `cd resolver-testbed`
-* Create the first two VMs by cloning from debian960-base, setting the IP addresses, and so on:
-	* `./rt.py make_gateway_clone`
-		* This also sets up the gateway as a NAT
-	* `./rt.py make_resolvers_clone`
-		* This also builds all the current resolvers; this takes 30 minutes or more
-		* It is known that some of these don't build currently
-
 ## Build the servers-vm VM
 
 * Start VirtualBox
@@ -136,19 +122,22 @@ click the "Create" button to define it.
 	* Do not add additional users (only root is used in the testbed)
 	* Apply system configuration and exit installer
 	* Select manual configuration to get a shell
-		* `fetch http://holder.proper.com/freebsd12-testbed-startup.sh`
+		* `fetch https://github.com/icann/resolver-testbed/archive/master.zip`
+		* XXXXXXXX UNZIP IF POSSIBLE #####
 		* `shutdown -p now`
 	* In VirtualBox, unmount the CD-ROM
 		* In the window for the VM, select the second icon from the left (the CD-ROM), and select Remove disc from virtual drive
 
-* Create the VM
-	* `VBoxManage --nologo clonevm freebsd12-base --name servers-vm --register`
-	* `VBoxManage --nologo startvm servers-vm`
-	* Log in as root / BadPassword
-	* `sh ./freebsd12-testbed-startup.sh`
-	* `shutdown -p now`
+## Create the clones for gateway-vm and resolvers-vm, and start all three
 
-* Set up the interfaces
-	* `VBoxManage --nologo modifyvm servers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 servnet`
-	* `VBoxManage --nologo startvm servers-vm`
+* The following script does the necessary VirtualBox steps to get the VMs cloned and started
+	* `sh resolver-testbed/config-files/clone-and-start-vms.sh`
+* Change into that directory: `cd resolver-testbed`
+* `./rt.py initial_vm_config`
+
+## Build the resolvers on resolvers-vm
+
+* `./rt.py make_resolvers`
+	* This also builds all the current resolvers; this takes 30 minutes or more
+	* It is known that some of these don't build currently
 

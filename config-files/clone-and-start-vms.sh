@@ -14,4 +14,5 @@ VBoxManage --nologo startvm resolvers-vm || exit
 
 echo "Configuring and starting servers-vm"
 VBoxManage --nologo modifyvm servers-vm --nic1 hostonly --hostonlyadapter1 vboxnet0 --nic2 intnet --intnet2 servnet || exit
+VBoxManage --nologo modifyvm servers-vm --cpus 2 --memory 2048 || exit
 VBoxManage --nologo startvm servers-vm || exit

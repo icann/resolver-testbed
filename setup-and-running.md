@@ -22,9 +22,9 @@ In the Virtualbox _Host Network Manager_ create a new management network called 
 * `unzip master.zip`
 * `rm master.zip`
 
-## Build the middlebox-vm and resolvers-vm VMs
+## Build the gateway-vm and resolvers-vm VMs
 
-Because the middlebox-vm and resolvers-vm VMs are both based on Debian, build a base VM
+Because the gateway-vm and resolvers-vm VMs are both based on Debian, build a base VM
 that will be cloned into the two VMs.
 
 * Get the recent Debiain image from `http://cdimage.debian.org/cdimage/release/current/amd64/iso-cd/debian-9.6.0-amd64-netinst.iso`
@@ -45,7 +45,7 @@ click the "Create" button to define it.
 
 * Before booting, change settings
 	* Settings &rarr; Pointer: PS/2 Mouse
-	* Storage &rarr; Controller: IDE: Channge "empty" to attach the Debian ISO from above
+	* Storage &rarr; Controller: IDE: Change "empty" to attach the Debian ISO from above
 	* Network &rarr; Adapter 1: Attached to "NAT"
 	* Ports &rarr; USB: off
 
@@ -80,26 +80,31 @@ click the "Create" button to define it.
 
 ## Build the servers-vm VM
 
+In the instructions below, you tell VirtualBox that the system will be a Linux Debian system even though
+it will really be a FreeBSD system. This is necessary due to a recent bug in the way FreeBSD is installed
+on VirtualBox VMs.
+
 * Start VirtualBox
 	* Machine &rarr; New
 		* Name: servers-vm
-		* Type: BSD
-		* Version: FreeBSD (64-bit)
+		* Type: Linux
+		* Version: Debian (64-bit)  (Note that this is incorrect, but needed)
 		* Memory: 1024M
 		* Create new virtual hard drive
 			* Type: VDI
 			* Storage: dynamically allocated
-			* Size: 16 gig
+			* Size: 8 gig
 
 * Before booting, change settings
-	* Storage &rarr; Controller: IDE: Channge "empty" to attach the FreeBSD ISO from above
+	* Settings &rarr; Pointer: PS/2 Mouse
+	* Storage &rarr; Controller: IDE: Change "empty" to attach the FreeBSD ISO from above
 	* Network &rarr; Adapter 1: Attached to "NAT"
 	* Ports &rarr; USB: off
 
 * Boot the new `servers-vm` VM
 	* Select Install
 	* Continue with default keymap
-	* Hostname: freebsd12-base
+	* Hostname: servers-vm
 	* Optional system components: leave as-is
 	* Networking
 		* em0
@@ -111,10 +116,10 @@ click the "Create" button to define it.
 	* Partitioning:
 		* Auto (UFS)
 		* Entire disk
-		* Change to "BSD labels"
+		* Change to "BSD labels" (instead of the default MS-DOS)
 		* Use default layout
 		* Finish and commit
-	* (Lots of packages are then downloaded)
+	* (Lots of packages are then downloaded and unpacked)
 	* Root password: BadPassword
 	* Time zone: UTC, but you don't need to set the time
 	* System configuration: leave sshd and dumpdev selected
@@ -122,22 +127,43 @@ click the "Create" button to define it.
 	* Do not add additional users (only root is used in the testbed)
 	* Apply system configuration and exit installer
 	* Select manual configuration to get a shell
-		* `fetch https://github.com/icann/resolver-testbed/archive/master.zip`
-		* XXXXXXXX UNZIP IF POSSIBLE #####
 		* `shutdown -p now`
-	* In VirtualBox, unmount the CD-ROM
-		* In the window for the VM, select the second icon from the left (the CD-ROM), and select Remove disc from virtual drive
+* In VirtualBox, unmount the CD-ROM
+	* Storage &rarr; Controller: IDE: Select the FreeBSD ISO, then under Optical Drive, select "Remove Disk from Virtual Drive"
 
 ## Create the clones for gateway-vm and resolvers-vm, and start all three
 
-* The following script does the necessary VirtualBox steps to get the VMs cloned and started
-	* `sh resolver-testbed/config-files/clone-and-start-vms.sh`
-* Change into that directory: `cd resolver-testbed`
-* `./rt.py initial_vm_config`
+* On the control host, change into the directory for the testbed
+	* `cd resolver-testbed`
+* The following does the necessary VirtualBox steps to get the VMs cloned and started
+	* `sh config-files/clone-and-start-vms.sh`
+
+* In the gateway-vm window
+	* Log in as root / BadPassword
+	* `sh /root/resolver-testbed-master/config-files/setup-gateway-vm.sh`
+
+* In the resolvers-vm window
+	* Log in as root / BadPassword
+	* `sh /root/resolver-testbed-master/config-files/setup-resolvers-vm.sh`
+
+* In the servers-vm window
+	* Log in as root / BadPassword
+	* `fetch --no-verify-peer https://github.com/icann/resolver-testbed/archive/master.zip`
+	* `unzip master.zip`
+	* `rm master.zip`
+	* `sh /root/resolver-testbed-master/config-files/setup-servers-vm.sh`
+	* Allow the system to reboot, and log in again
+	* `pkg install -y bind912`
+	* `mkdir /root/bind-configs
+	* `cp /root/resolver-testbed-master/config-files/root-zone-basic/* /root/bind-configs`
+	* `/usr/local/sbin/named -c /root/bind-configs`
+	
+XXXXXXXX Still need to do something like "iptables -A FORWARD -i enp0s8 -o enp0s9 -j ACCEPT"
 
 ## Build the resolvers on resolvers-vm
 
-* `./rt.py make_resolvers`
+* On the control host
+	* `./rt.py make_resolvers`
 	* This also builds all the current resolvers; this takes 30 minutes or more
 	* It is known that some of these don't build currently
 

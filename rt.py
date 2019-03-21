@@ -2,7 +2,7 @@
 '''
 Testbed for DNS resolvers
 See https://github.com/icann/resolver-testbed for more information
-Must be run in the same directory as the config files
+Must be run in the same directory as the config files 
 '''
 
 import os, subprocess, sys, time, logging, json
@@ -153,14 +153,6 @@ def startup_and_config_general():
     # Finish up initialization
     return this_local_config
 
-def do_initial_vm_config():
-    ''' Run the initialization script on each VM '''
-    for this_vm in VM_INFO:
-        log("Initializing {}".format(this_vm))
-        this_ret, this_str = ssh_cmd_to_vm("/root/resolver-testbed-master/config-files/setup-{}".format(this_vm), this_vm)
-        if this_ret:
-            log("Running the initial setup for {} ended with {}".format(this_vm, this_str))
-
 def do_make_resolvers():
     ''' Make the resolvers_vm '''
     this_vm = "resolvers-vm"
@@ -203,9 +195,6 @@ if __name__ == "__main__":
     # Figure out which command it was
     if cmd == "help":
         show_help()
-    elif cmd == "initial_vm_config":
-        do_initial_vm_config()
-        log("Done with the initial VM configuration")
     elif cmd == "make_resolvers":
         do_make_resolvers()
         log("Done making the resolvers")

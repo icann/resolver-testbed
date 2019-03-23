@@ -14,7 +14,7 @@ ROOT_PASS = "BadPassword"
 GUESTCONTROL_TEMPLATE = "VBoxManage --nologo guestcontrol {} --username root --password PASSWORD_GOES_HERE".replace("PASSWORD_GOES_HERE", ROOT_PASS)
 RESOLVER_LIBRARIES = [
 "apt update",
-"apt install -y build-essential"
+"apt install -y build-essential",
 "apt install -y libssl-dev libcap-dev python3-ply dnsutils",
 "apt install -y pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
 "apt install -y libldns-dev libexpat-dev libboost-dev"

@@ -14,7 +14,7 @@
 			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.6.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
 
 		"bind-9.14.0":
-			{ "url": "https://ftp.isc.org/isc/bind9/bind-9.14.0/bind-9.14.0.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
+			{ "url": "https://ftp.isc.org/isc/bind9/9.14.0/bind-9.14.0.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
 		"bind-9.13.6":
 			{ "url": "https://ftp.isc.org/isc/bind9/9.13.6/bind-9.13.6.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },

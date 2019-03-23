@@ -161,5 +161,4 @@ on VirtualBox VMs.
 * On the control host
 	* `./rt.py make_resolvers`
 	* This also builds all the current resolvers; this takes 30 minutes or more
-	* It is known that some of these don't build currently
 

@@ -136,7 +136,6 @@ on VirtualBox VMs.
 	* `unzip master.zip`
 	* `rm master.zip`
 	* `sh /root/resolver-testbed-master/config-files/setup-servers-vm.sh`
-	* This will reboot when finished
 
 ## Create the clones for gateway-vm and resolvers-vm, and start all three
 
@@ -152,11 +151,6 @@ on VirtualBox VMs.
 * In the resolvers-vm window
 	* Log in as root / BadPassword
 	* `sh /root/resolver-testbed-master/config-files/setup-resolvers-vm.sh`
-
-* In the servers-vm window
-	* Log in as root / BadPassword
-	* Allow the system to reboot, and log in again
-	* `/usr/local/sbin/named -c /root/bind-configs/named.conf`
 
 ## Build the resolvers on resolvers-vm
 

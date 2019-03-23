@@ -13,16 +13,19 @@ CLONE_BASENAME = "debian960-base"
 ROOT_PASS = "BadPassword"
 GUESTCONTROL_TEMPLATE = "VBoxManage --nologo guestcontrol {} --username root --password PASSWORD_GOES_HERE".replace("PASSWORD_GOES_HERE", ROOT_PASS)
 RESOLVER_LIBRARIES = [
-"apt install -y build-essential"
-"apt-get -y install apt-transport-https lsb-release ca-certificates wget",
-"wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
-"sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
 "apt update",
-"apt install -y libknot-dev",
+"apt install -y build-essential"
 "apt install -y libssl-dev libcap-dev python3-ply dnsutils",
 "apt install -y pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
 "apt install -y libldns-dev libexpat-dev libboost-dev"
 ]
+
+''' Stuff for knot-resolver
+"apt-get -y install apt-transport-https lsb-release ca-certificates wget",
+"wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
+"sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
+"apt install -y libknot-dev",
+'''
 
 VM_INFO = {
 "gateway-vm": { "control_addr": "192.168.56.20" },
@@ -161,10 +164,12 @@ def do_make_resolvers():
     this_ret, this_str = ssh_cmd_to_vm("apt list --installed", "resolvers-vm")
     if not this_ret:
         die("Could not run 'apt list' on resolvers-vm.")
-    if not "libknot" in this_str:
-        log("Did not find libknot on servers-vm, so installing libraries.")
+    if not "build-essential" in this_str:
+        log("Did not find build-essential on servers-vm, so installing libraries.")
         for this_line in RESOLVER_LIBRARIES:
+            log("Running {}".format(this_line))
             this_ret, this_str = ssh_cmd_to_vm(this_line, "resolvers-vm")
+            log("Ran {}, got {}".format(this_line, this_str))
         log("Finished instsalling libraries on resolvers-vm")
     for this_build in rt_config["build_info"]["builds"]:
         # See if it is already there

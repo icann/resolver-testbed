@@ -208,13 +208,6 @@ if __name__ == "__main__":
     exit()
 
 ''' Still to do:
-- Work on building multiple knot-resolver versions
-  - RESOLVER_LIBRARIES needs to be fixed because libknot needs to be done version-by-version. The current only works for 3.7 and above
-
-- Set up the servers on servers-vm
-  - Modify the root zone to nclude a test TLD that can be used to be sure that the resolver is going to the testbed root servers
-  - Create new DNSSEC keys and sign
-  - Create the necessary BIND configuration for this new zone and keys
 
 - Start a test on resovers-vm
   - Be sure that the resolver cache is empy

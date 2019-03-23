@@ -11,20 +11,18 @@ For information on the project, please contact [Paul Hoffman](mailto:paul.hoffma
 
 ## Installation and Requirements
 
-The testbed has been tested on Ubuntu workstation (and derivatives like Xubuntu),
-as well as MacOS.
+The testbed has been tested on MacOS, and should run
+similarly on Ubuntu workstation (and derivatives like Xubuntu).
 
-Install the testbed by cloning from GitHub at <https://github.com/icann/resolver-testbed>.
+Install the testbed by following [the setup instructions](https://github.com/icann/resolver-testbed/blob/master/setup-and-running.md).
 
 You need to have Python 3 installed. Other than the standard library, you also need
-a recent version of the [Fabric library](http://www.fabfile.org/). `pip install fabric` will work.
+a recent version of the [Fabric library](http://www.fabfile.org/). `pip3 install fabric` should work.
 
 VMs are kept in [VirtualBox](https://www.virtualbox.org/).
 On Ubuntu hosts, use `sudo apt install -y virtualbox` instead of installing from the software store.
 
 The VMs are all accessed using the "root" user only.
-
-@@ MORE REQUIREMENTS WILL GO HERE @@
 
 ## Other Documents
 

@@ -19,7 +19,7 @@ RESOLVER_LIBRARIES = [
 "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
 "apt update",
 "apt install -y libknot-dev",
-"apt install -y libssl-dev libcap-dev python3-ply",
+"apt install -y libssl-dev libcap-dev python3-ply dnsutils",
 "apt install -y pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
 "apt install -y libldns-dev libexpat-dev libboost-dev"
 ]

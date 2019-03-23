@@ -135,7 +135,8 @@ on VirtualBox VMs.
 	* `fetch --no-verify-peer https://github.com/icann/resolver-testbed/archive/master.zip`
 	* `unzip master.zip`
 	* `rm master.zip`
-	* `shutdown -p now`
+	* `sh /root/resolver-testbed-master/config-files/setup-servers-vm.sh`
+	* This will reboot when finished
 
 ## Create the clones for gateway-vm and resolvers-vm, and start all three
 
@@ -154,7 +155,6 @@ on VirtualBox VMs.
 
 * In the servers-vm window
 	* Log in as root / BadPassword
-	* `sh /root/resolver-testbed-master/config-files/setup-servers-vm.sh`
 	* Allow the system to reboot, and log in again
 	* `/usr/local/sbin/named -c /root/bind-configs/named.conf`
 

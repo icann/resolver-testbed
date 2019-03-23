@@ -10,7 +10,7 @@ cp /root/resolver-testbed-master/config-files/resolv-with-8844 /etc/resolv.conf 
 echo "Copy the sshd config"
 cp /root/resolver-testbed-master/config-files/sshd-config /etc/ssh/sshd_config || exit
 echo "Installing dig"
-pkg install -y dnstools
+apt install -y dnsutils
 
 
 ### Stuff specific to the gateway-vm

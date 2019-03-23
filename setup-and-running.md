@@ -130,6 +130,12 @@ on VirtualBox VMs.
 		* `shutdown -p now`
 * In VirtualBox, unmount the CD-ROM
 	* Storage &rarr; Controller: IDE: Select the FreeBSD ISO, then under Optical Drive, select "Remove Disk from Virtual Drive"
+* Start the VM up again. In the servers-vm window
+	* Log in as root / BadPassword
+	* `fetch --no-verify-peer https://github.com/icann/resolver-testbed/archive/master.zip`
+	* `unzip master.zip`
+	* `rm master.zip`
+	* `shutdown -p now`
 
 ## Create the clones for gateway-vm and resolvers-vm, and start all three
 
@@ -148,14 +154,9 @@ on VirtualBox VMs.
 
 * In the servers-vm window
 	* Log in as root / BadPassword
-	* `fetch --no-verify-peer https://github.com/icann/resolver-testbed/archive/master.zip`
-	* `unzip master.zip`
-	* `rm master.zip`
 	* `sh /root/resolver-testbed-master/config-files/setup-servers-vm.sh`
 	* Allow the system to reboot, and log in again
 	* `/usr/local/sbin/named -c /root/bind-configs/named.conf`
-	
-XXXXXXXX Still need to do something for routing
 
 ## Build the resolvers on resolvers-vm
 

@@ -16,6 +16,7 @@ echo "Copy the rc.local"
 cp /root/resolver-testbed-master/config-files/servers-rc.local /etc/rc.local
 
 ### Finish up
-echo "Rebooting in 2 seconds"
+echo "Shutting down"
 sleep 2
-reboot
+shutdown -p now
+

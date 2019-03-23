@@ -13,7 +13,7 @@ CLONE_BASENAME = "debian960-base"
 ROOT_PASS = "BadPassword"
 GUESTCONTROL_TEMPLATE = "VBoxManage --nologo guestcontrol {} --username root --password PASSWORD_GOES_HERE".replace("PASSWORD_GOES_HERE", ROOT_PASS)
 RESOLVER_LIBRARIES = [
-"apt install -y build-essential git"
+"apt install -y build-essential"
 "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
 "wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
 "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
@@ -39,7 +39,7 @@ CLI_COMMANDS = [
 HELP_TEXT = '''
 Available commands for rt.py are:
 help                   Show this text
-make_resolvers_clone   Make the resolvers-vm VM
+make_resolvers         Make the resolvers on the resolvers-vm VM
 '''.strip()
 
 # Do very early check for contents of the directory that we're running in

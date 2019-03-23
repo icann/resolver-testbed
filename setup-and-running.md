@@ -156,9 +156,9 @@ on VirtualBox VMs.
 	* `pkg install -y bind912`
 	* `mkdir /root/bind-configs
 	* `cp /root/resolver-testbed-master/config-files/root-zone-basic/* /root/bind-configs`
-	* `/usr/local/sbin/named -c /root/bind-configs`
+	* `/usr/local/sbin/named -c /root/bind-configs/named.conf`
 	
-XXXXXXXX Still need to do something like "iptables -A FORWARD -i enp0s8 -o enp0s9 -j ACCEPT"
+XXXXXXXX Still need to do something for routing
 
 ## Build the resolvers on resolvers-vm
 

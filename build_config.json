@@ -1,6 +1,9 @@
 {
 
 	"builds": {
+		"knot-resolver-3.2.1":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-3.2.1.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
+
 		"knot-resolver-1.5.3":
 			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.5.3.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
 
@@ -10,14 +13,17 @@
 		"knot-resolver-1.2.6":
 			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-1.2.6.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
 
+		"bind-9.14.0":
+			{ "url": "https://ftp.isc.org/isc/bind9/bind-9.14.0/bind-9.14.0.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
+
 		"bind-9.13.6":
 			{ "url": "https://ftp.isc.org/isc/bind9/9.13.6/bind-9.13.6.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
 		"bind-9.12.4":
 			{ "url": "https://ftp.isc.org/isc/bind9/9.12.4/bind-9.12.4.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
-		"bind-9.11.5":
-			{ "url": "https://ftp.isc.org/isc/bind9/9.11.5/bind-9.11.5.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
+		"bind-9.11.6":
+			{ "url": "https://ftp.isc.org/isc/bind9/9.11.6/bind-9.11.6.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
 		"bind-9.10.8":
 			{ "url": "https://ftp.isc.org/isc/bind9/9.10.8/bind-9.10.8.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },

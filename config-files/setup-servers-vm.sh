@@ -6,7 +6,13 @@ echo "Copy the rc.conf"
 cp /root/resolver-testbed-master/config-files/servers-rc.conf /etc/rc.conf
 echo "Set the resolver"
 cp /root/resolver-testbed-master/config-files/resolv-with-8844 /etc/resolv.conf
+echo "Installing BIND 9.12"
 pkg install -y bind912
+echo "Making the bind-configs"
+mkdir /root/bind-configs
+echo "Copying root files"
+cp /root/resolver-testbed-master/config-files/root-zone-basic/* /root/bind-configs
+
 
 ##### Still need to install and set up BIND for authoritative
 

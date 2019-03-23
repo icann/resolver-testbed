@@ -153,9 +153,6 @@ on VirtualBox VMs.
 	* `rm master.zip`
 	* `sh /root/resolver-testbed-master/config-files/setup-servers-vm.sh`
 	* Allow the system to reboot, and log in again
-	* `pkg install -y bind912`
-	* `mkdir /root/bind-configs
-	* `cp /root/resolver-testbed-master/config-files/root-zone-basic/* /root/bind-configs`
 	* `/usr/local/sbin/named -c /root/bind-configs/named.conf`
 	
 XXXXXXXX Still need to do something for routing

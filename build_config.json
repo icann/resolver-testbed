@@ -31,8 +31,8 @@
 		"bind-9.9.11":
 			{ "url": "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
 
-		"unbound-1.9.0":
-			{ "url": "http://unbound.net/downloads/unbound-1.9.0.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
+		"unbound-1.9.1":
+			{ "url": "http://unbound.net/downloads/unbound-1.9.1.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
 
 		"unbound-1.8.3":
 			{ "url": "http://unbound.net/downloads/unbound-1.8.3.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
@@ -45,6 +45,9 @@
 
 		"unbound-1.5.10":
 			{ "url": "http://unbound.net/downloads/unbound-1.5.10.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
+
+		"pdns-recursor-4.1.11":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.11.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },
 
 		"pdns-recursor-4.0.9":
 			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },

@@ -36,8 +36,8 @@ def die(in_str):
 
 log("## Starting run on date {}".format(time.strftime("%Y-%m-%d")))
 # Parse the input
-if len(sys.argv) < 2:
-    die("There were no arguments on the command line.")
+if len(sys.argv) < 4:
+    die("There were not enough arguments on the command line.")
 # Get the build_config_dict from the config file
 try:
     build_f = open(BUILD_CONFIG, mode="rt")
@@ -62,20 +62,8 @@ package_name = sys.argv[1]
 if not package_name in build_config_dict["builds"]:
     all_builds = " ".join(sorted((build_config_dict["builds"]).keys()))
     die("The name '{}' was not found in the builds configuration:\n{}\n".format(package_name, all_builds))
-try:
-    package_url = build_config_dict["builds"][package_name]["url"]
-except:
-    die("There is no URL for {}.".format(package_name))
-try:
-    package_make_str = build_config_dict["builds"][package_name]["make_str"]
-except:
-    die("There is no make string for {}.".format(package_name))
-# Replace the make string abbreviation (starts with "!") with the full string
-if package_make_str.startswith("!"):
-    if package_make_str in build_config_dict["templates"]:
-        package_make_str = build_config_dict["templates"][package_make_str]
-    else:
-        die("{} has a make string of {}, but there is no equivalent for that.".format(package_name, package_make_str))
+package_url = sys.argv[2]
+package_make_str = sys.argv[3]
 try:
     os.chdir(SOURCE_DIR)
 except:

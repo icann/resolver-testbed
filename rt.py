@@ -178,7 +178,16 @@ def do_make_resolvers():
             log("{} already present".format(this_build))
         else:
             log("Building {}".format(this_build))
-            this_ret, this_str = ssh_cmd_to_vm("cd /root/resolver-testbed-master; ./build_from_source.py {}".format(this_build), "resolvers-vm")
+            # Replace the make string abbreviation (starts with "!") with the full string
+            build_url = rt_config[this_build]["url"]
+            build_make_str = rt_config[this_build]["make_str"]
+            if build_make_str.startswith("!"):
+                if build_make_str in rt_config["templates"]:
+                    build_make_str = rt_config["templates"][build_make_str]
+                else:
+                    die("{} has a make string of {}, but there is no equivalent for that.".format(this_build, build_make_str))
+            this_ret, this_str = ssh_cmd_to_vm("cd /root/resolver-testbed-master; ./build_from_source.py '{}' '{}' '{}'"\
+                .format(this_build, build_url, build_make_str), "resolvers-vm")
             if not this_ret:
                 log("Could not build {}:\n{}\nContinuing".format(this_build, this_str))
 

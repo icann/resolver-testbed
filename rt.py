@@ -210,7 +210,7 @@ if __name__ == "__main__":
 ''' Still to do:
 
 - Start a test on resovers-vm
-  - Be sure that the resolver cache is empy
+  - Be sure that the resolver cache is empty
   - Generate a test instance name
   - Start dnstap on gateway-vm
   - Start the test

@@ -45,24 +45,11 @@
 
 	},
 	
-	"not currently building": {
-		"knot-resolver-3.2.1":
-			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-3.2.1.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
-
-		"knot-resolver-2.4.1":
-			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-2.4.1.tar.xz", "make_str": "!knotresmake", "start": "!knotstart" },
-
-		"pdns-recursor-4.1.9":
-			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.9.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" }
-			
-		},
-
 	"templates": {
 		"!bind9make": "./configure --prefix=PREFIX_GOES_HERE && make && make install",
 		"!unboundmake": "./configure --prefix=PREFIX_GOES_HERE && make && make install",
 		"!pdns3make": "./configure && SYSCONFDIR=PREFIX_GOES_HERE/etc/powerdns make -e && DESTDIR=PREFIX_GOES_HERE make -e install",
 		"!pdns4make": "./configure && SYSCONFDIR=PREFIX_GOES_HERE/etc/powerdns make -e && DESTDIR=PREFIX_GOES_HERE make -e install",
-		"!knotresmake": "make PREFIX=PREFIX_GOES_HERE LDFLAGS=\"-Wl,-rpath=PREFIX_GOES_HERE/lib\" && make install PREFIX=PREFIX_GOES_HERE",
 		"!bind9start": "PREFIX_GOES_HERE/sbin/named -c CONF_FILE_NAME",
 		"!unboundstart": "PREFIX_GOES_HERE/sbin/unbound -c CONF_FILE_NAME",
 		"!pdns3start": [ "cp CONF_FILE_NAME PREFIX_GOES_HERE/usr/etc/recursor.conf",

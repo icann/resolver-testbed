@@ -158,7 +158,6 @@ def startup_and_config_general():
 
 def do_make_resolvers():
     ''' Make the resolvers_vm '''
-    this_vm = "resolvers-vm"
     # Build all the resolvers on resolvers-vm
     # Install all the stuff for building if it isn't already there
     this_ret, this_str = ssh_cmd_to_vm("apt list --installed", "resolvers-vm")
@@ -179,11 +178,11 @@ def do_make_resolvers():
         else:
             log("Building {}".format(this_build))
             # Replace the make string abbreviation (starts with "!") with the full string
-            build_url = rt_config[this_build]["url"]
-            build_make_str = rt_config[this_build]["make_str"]
+            build_url = rt_config["build_info"]["builds"][this_build]["url"]
+            build_make_str = rt_config["build_info"]["builds"][this_build]["make_str"]
             if build_make_str.startswith("!"):
-                if build_make_str in rt_config["templates"]:
-                    build_make_str = rt_config["templates"][build_make_str]
+                if build_make_str in rt_config["build_info"]["templates"]:
+                    build_make_str = rt_config["build_info"]["templates"][build_make_str]
                 else:
                     die("{} has a make string of {}, but there is no equivalent for that.".format(this_build, build_make_str))
             this_ret, this_str = ssh_cmd_to_vm("cd /root/resolver-testbed-master; ./build_from_source.py '{}' '{}' '{}'"\

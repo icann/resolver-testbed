@@ -5,11 +5,10 @@ See https://github.com/icann/resolver-testbed for more information
 Must be run in the same directory as the config files
 '''
 
-import os, subprocess, sys, time, json, tempfile
+import os, subprocess, sys, time, tempfile
 
 # Some program-wide constants
 PROG_DIR = os.path.abspath(os.getcwd())
-BUILD_CONFIG = "{}/build_config.json".format(PROG_DIR)
 SOURCE_DIR = "/root/Source"
 TARGET_DIR = "/root/Target"
 
@@ -38,18 +37,6 @@ log("## Starting run on date {}".format(time.strftime("%Y-%m-%d")))
 # Parse the input
 if len(sys.argv) < 4:
     die("There were not enough arguments on the command line.")
-# Get the build_config_dict from the config file
-try:
-    build_f = open(BUILD_CONFIG, mode="rt")
-except:
-    die("Could not find {}.".format(BUILD_CONFIG))
-try:
-    build_config_dict = json.load(build_f)
-except:
-    die("The JSON in {} is broken.".format(BUILD_CONFIG))
-# Sanity check the input
-if not (("builds" in build_config_dict) and ("templates" in build_config_dict)):
-    die("{} does not have the right components.".format(BUILD_CONFIG))
 # Be sure that the needed directories are there
 for this_dir in (SOURCE_DIR, TARGET_DIR):
     if not os.path.exists(this_dir):
@@ -59,9 +46,6 @@ for this_dir in (SOURCE_DIR, TARGET_DIR):
             die("Could not create {}.".format(this_dir))
 # Get the name to build
 package_name = sys.argv[1]
-if not package_name in build_config_dict["builds"]:
-    all_builds = " ".join(sorted((build_config_dict["builds"]).keys()))
-    die("The name '{}' was not found in the builds configuration:\n{}\n".format(package_name, all_builds))
 package_url = sys.argv[2]
 package_make_str = sys.argv[3]
 try:

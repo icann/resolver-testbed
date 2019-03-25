@@ -45,7 +45,7 @@ It has many functions:
  
 gateway-vm has four NICs:
  
- * **gc** on the control network (192.168.56.2)
+ * **gc** on the control network (192.168.56.20)
  * **gr** on the resolvers network (172.20.1.1)
  * **gs** on the servers network (172.21.1.1)
  * **gi** on the Internet (via DHCP)
@@ -67,7 +67,7 @@ resolvers.
 
 Each resolver system has two NICs:
 
- * **rc** on the control network (192.168.56.4)
+ * **rc** on the control network (192.168.56.30)
  * **rr** on the resolvers network (172.20.1.2)
 
 ### Root Servers VM
@@ -83,6 +83,6 @@ on the same /24 network, the addresses for the root servers are each in their ow
 
 servers-vm has two NICs:
 
- * **sc** on the control network (192.168.56.3)
+ * **sc** on the control network (192.168.56.40)
  * **ss** on the servers network (172.21.1.2)
 

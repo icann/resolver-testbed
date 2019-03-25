@@ -6,8 +6,8 @@ echo "Copy the rc.conf"
 cp /root/resolver-testbed-master/config-files/servers-rc.conf /etc/rc.conf  || exit
 echo "Set the resolver"
 cp /root/resolver-testbed-master/config-files/resolv-with-8844 /etc/resolv.conf || exit
-echo "Installing BIND 9.12"
-pkg install -y bind912  || exit
+echo "Installing from pkg"
+pkg install -y bind912 wget nano ca_root_nss  || exit
 echo "Making the bind-configs"
 mkdir /root/bind-configs || exit
 echo "Copying root files"

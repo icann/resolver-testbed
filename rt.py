@@ -36,13 +36,15 @@ VM_INFO = {
 CLI_COMMANDS = [
 "help",
 "initial_vm_config",
-"make_resolvers"
+"make_resolvers",
+"refresh_repo"
 ]
 
 HELP_TEXT = '''
 Available commands for rt.py are:
 help                   Show this text
 make_resolvers         Make the resolvers on the resolvers-vm VM
+refresh_repo           Update the testbed software on the VMs
 '''.strip()
 
 # Do very early check for contents of the directory that we're running in
@@ -190,6 +192,24 @@ def do_make_resolvers():
             if not this_ret:
                 log("Could not build {}:\n{}\nContinuing".format(this_build, this_str))
 
+def do_refresh_repo():
+    ''' Refresh the repo software on all three VMs'''
+    for this_vm in VM_INFO:
+        log("Refreshing repo software in {}".format(this_vm))
+        this_ret, this_str = ssh_cmd_to_vm("wget https://github.com/icann/resolver-testbed/archive/master.zip ", this_vm)
+        if not this_ret:
+            die("Could not wget: {}".format(this_str))
+        this_ret, this_str = ssh_cmd_to_vm("rm -r resolver-testbed-master", this_vm)
+        if not this_ret:
+            die("Could not remove resolver-testbed-master: {}".format(this_str))
+        this_ret, this_str = ssh_cmd_to_vm("unzip master.zip ", this_vm)
+        if not this_ret:
+            die("Could not unzip: {}".format(this_str))
+        this_ret, this_str = ssh_cmd_to_vm("rm master.zip", this_vm)
+        if not this_ret:
+            die("Could not remove master.zip: {}".format(this_str))
+        
+
 # Run the main program
 if __name__ == "__main__":
     log("## Starting run on date {}".format(time.strftime("%Y-%m-%d")))
@@ -211,6 +231,9 @@ if __name__ == "__main__":
     elif cmd == "make_resolvers":
         do_make_resolvers()
         log("Done making the resolvers")
+    elif cmd == "refresh_repo":
+        do_refresh_repo()
+        log("Done refreshing the software on the VMs")
     # We're done, so exit
     log("## Finished run")
     exit()

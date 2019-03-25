@@ -4,15 +4,13 @@
 
 The steps can be summarized as:
 
-0. Build the base VM image in VirtualBox
-0. Clone this VM for other VMs in the testbed
-0. Do initial setup from the control host
-0. Push configurations out to the VMs
+1. Install and configure VirtualBox and get the testbed software
+0. Build and configure the base VM images in VirtualBox
 0. Run tests
 
-The last two steps can be repeated as the configurations change for different testing.
+## Install VirtualBox
 
-## Create the host mangement network _vboxnet0_
+VirtualBox can be downloaded from `https://www.virtualbox.org/wiki/Downloads`. 
 
 In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
 
@@ -22,12 +20,12 @@ In the Virtualbox _Host Network Manager_ create a new management network called 
 * `unzip master.zip`
 * `rm master.zip`
 
-## Build the gateway-vm and resolvers-vm VMs
+## Build the base VM for gateway-vm and resolvers-vm VMs
 
 Because the gateway-vm and resolvers-vm VMs are both based on Debian, build a base VM
 that will be cloned into the two VMs.
 
-* Get the recent Debiain image from ` https://cdimage.debian.org/mirror/cdimage/archive/9.6.0/amd64/iso-cd/debian-9.6.0-amd64-netinst.iso`
+* Get the recent Debiain image from `https://cdimage.debian.org/mirror/cdimage/archive/9.6.0/amd64/iso-cd/debian-9.6.0-amd64-netinst.iso`
                                     
 * In VirtualBox, choose File &rarr; Host Network Manager and make sure that vboxnet0 is defined. If it is not,
 click the "Create" button to define it.
@@ -138,12 +136,14 @@ on VirtualBox VMs.
 	* `sh /root/resolver-testbed-master/config-files/setup-servers-vm.sh`
 	* This will shutdown when finished
 
-## Create the clones for gateway-vm and resolvers-vm, and start all three
+## Create the clones for gateway-vm and resolvers-vm
 
 * On the control host, change into the directory for the testbed
 	* `cd resolver-testbed`
 * The following does the necessary VirtualBox steps to get the VMs cloned and started
 	* `sh config-files/clone-and-start-vms.sh`
+
+## Initial configuration for the VMs
 
 * In the gateway-vm window
 	* Log in as root / BadPassword

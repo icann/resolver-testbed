@@ -14,6 +14,8 @@ VirtualBox can be downloaded from `https://www.virtualbox.org/wiki/Downloads`.
 
 In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
 
+The control host also needs to have Python 3 installed. It also needs Frabic (`https://fabfile.org`) for Python 3; Fabric is best installed with `pip3 install fabric`.
+
 ## Get a local copy of the testbed software
 
 * `wget https://github.com/icann/resolver-testbed/archive/master.zip`

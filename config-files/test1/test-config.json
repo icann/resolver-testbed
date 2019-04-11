@@ -1,0 +1,7 @@
+{
+"queries": [
+	[ "example.com", "5" ],
+	[ "example.com", "60" ]	
+	],
+"targets": [ "bind-9.14.0", "unbound-1.9.1" ]
+}

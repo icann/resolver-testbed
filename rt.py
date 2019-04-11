@@ -17,15 +17,16 @@ RESOLVER_LIBRARIES = [
 "apt install -y build-essential",
 "apt install -y libssl-dev libcap-dev python3-ply dnsutils",
 "apt install -y pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
-"apt install -y libldns-dev libexpat-dev libboost-dev"
-]
-
-''' Stuff for knot-resolver
+"apt install -y libldns-dev libexpat-dev libboost-dev",
+"apt install -y python3-pip",
+"pip3 install meson",
 "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
 "wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
 "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
-"apt install -y libknot-dev",
-'''
+"apt update",
+"apt install -y libknot-dev liblmdb-dev ninja-build"
+]
+REMOTE_REPO = "/root/resolver-testbed-master"
 
 VM_INFO = {
 "gateway-vm": { "control_addr": "192.168.56.20" },
@@ -37,7 +38,8 @@ CLI_COMMANDS = [
 "help",
 "initial_vm_config",
 "make_resolvers",
-"refresh_repo"
+"refresh_repo",
+"run_test"
 ]
 
 HELP_TEXT = '''
@@ -45,6 +47,7 @@ Available commands for rt.py are:
 help                   Show this text
 make_resolvers         Make the resolvers on the resolvers-vm VM
 refresh_repo           Update the testbed software on the VMs
+run_test <testname>    Run the specified test
 '''.strip()
 
 # Do very early check for contents of the directory that we're running in
@@ -95,11 +98,11 @@ def ssh_cmd_to_vm(cmd_to_run, vm_name):
         die("The host at {} is not {}: '{}'".format(this_control_address, vm_name, ret_text))
     # Run the command
     ret_main_cmd = fabconn.run(cmd_to_run, hide=True, warn=True)
+    fabconn.close()
     if ret_main_cmd.failed:
         return False, "Error: {}".format(ret_main_cmd.stderr.strip())
     else:
         return True, ret_main_cmd.stdout.strip()
-    fabconn.close()
 
 def send_with_guestcontrol(this_cmd):
     ''' Send a message and look for the response; die if it failed '''
@@ -187,8 +190,8 @@ def do_make_resolvers():
                     build_make_str = rt_config["build_info"]["templates"][build_make_str]
                 else:
                     die("{} has a make string of {}, but there is no equivalent for that.".format(this_build, build_make_str))
-            this_ret, this_str = ssh_cmd_to_vm("cd /root/resolver-testbed-master; ./build_from_source.py '{}' '{}' '{}'"\
-                .format(this_build, build_url, build_make_str), "resolvers-vm")
+            this_ret, this_str = ssh_cmd_to_vm("cd {}; ./build_from_source.py '{}' '{}' '{}'"\
+                .format(REMOTE_REPO, this_build, build_url, build_make_str), "resolvers-vm")
             if not this_ret:
                 log("Could not build {}:\n{}\nContinuing".format(this_build, this_str))
 
@@ -199,16 +202,101 @@ def do_refresh_repo():
         this_ret, this_str = ssh_cmd_to_vm("wget https://github.com/icann/resolver-testbed/archive/master.zip ", this_vm)
         if not this_ret:
             die("Could not wget: {}".format(this_str))
-        this_ret, this_str = ssh_cmd_to_vm("rm -r resolver-testbed-master", this_vm)
+        this_ret, this_str = ssh_cmd_to_vm("rm -r {}".format(REMOTE_REPO), this_vm)
         if not this_ret:
-            die("Could not remove resolver-testbed-master: {}".format(this_str))
+            die("Could not remove {}: {}".format(REMOTE_REPO, this_str))
         this_ret, this_str = ssh_cmd_to_vm("unzip master.zip ", this_vm)
         if not this_ret:
             die("Could not unzip: {}".format(this_str))
         this_ret, this_str = ssh_cmd_to_vm("rm master.zip", this_vm)
         if not this_ret:
             die("Could not remove master.zip: {}".format(this_str))
-        
+
+def start_tcpdump_on_gateway(test_name, this_resolver):
+    ''' Starts tcpdump for a test run '''
+    pass #######
+    
+def stop_tcpdump_on_gateway():
+    ''' Gracefully stops any tcpdump running on gateway-vm '''
+    pass #########
+
+def get_pid_of_resolver(this_resolver):
+    ''' Returns the PID of the named resolver running on resolvers-vm; returns nothing if it failed '''
+    this_ret, this_str = ssh_cmd_to_vm("ps ax | grep Target", "resolver-vm")
+    if not this_ret:
+        log("Could not get the PID of the resolver; continuing.")
+        return
+    ps_lines = this_str.splitlines()
+    if len(ps_lines) != 1:
+        die("When getting the PID of the resolver, got multiple lines. Exiting.\n{}".format(this_str))
+    ps_parts = ps_lines.strip().split()
+    return ps_parts[0]
+
+def do_run_test(test_name):
+    ''' Run the named test against all resolvers'''
+    # Read the test description
+    test_dir = "config-files/{}".format(test_name)
+    if not os.path.exists(test_dir):
+        log("Could not find {}".format(test_dir))
+        return
+    test_file_name = "{}/test-config.json".format(test_dir)
+    if not os.path.exists(test_file_name):
+        log("Could not find {}".format(test_file_name))
+        return
+    test_file_f = open(test_file_name, mode="rt")
+    try:
+        test_description = json.load(test_file_f)
+    except:
+        log("Bad JSON found in {}".format(test_file_name))
+        return
+    # Find the target resolvers to send the queries
+    if (test_description.get("targets") == None) or (test_description.get("targets") == "all"):
+        these_targets = rt_config["build_info"]["builds"]
+        log("Testing all targets ({} tests)".format(len(these_targets)))
+    else:
+        these_targets = test_description["targets"]
+        for named_target in these_targets:
+            if not named_target in rt_config["build_info"]["builds"]:
+                die("Found target named '{}', but that doesn't exist in the main configuration. Exiting.".format(named_target))
+        log("Testing {} targets".format(len(these_targets)))
+    # Run the tests on each resolver
+    for this_resolver in these_targets:
+        log("Starting test on {}".format(this_resolver))
+        # Start a new tcpdump capture on middlebox-vm
+        start_tcpdump_on_gateway(test_name, this_resolver)
+        # Start the resolver, including clearing out any saved state; verify that this happened
+        this_start = rt_config["build_info"]["builds"][this_resolver].get("start")
+        if not this_start:
+            log("There was no start string for {}".format(this_resolver))
+            pass
+        else:
+            full_start = this_start.replace("TEST_DIR", "{}/{}".format(REMOTE_REPO, test_dir))
+            log("Running {}".format(full_start))
+            this_ret, this_str = ssh_cmd_to_vm(full_start, "resolver-vm")
+            if not this_ret:
+                log("Running '{}' on resolver-vm returned '{}'. Skipping.".format(full_start, this_str))
+                stop_tcpdump_on_gateway()
+            start_pid = get_pid_of_resolver(this_resolver)
+        # Send the queries
+        for this_query in test_description["queries"]:
+            (this_qname, this_time) = this_query
+            # Wait for the given time; this somewhat assumes that each query takes zero time to complete
+            time.sleep(this_time)
+            # Use "dig" to send a query to 127.0.0.1
+            this_ret, this_str =  ssh_cmd_to_vm("dig @127.0.0.1 {}".format(this_qname), "resolver-vm")
+            if not this_ret:
+                log("Dig for time {} failed. Continuing.".format(this_time))
+            # Maybe process this_answer in a later version of the testbed
+            log("Result was {}".format(this_str)) ###################################
+        # Shut down the resolver; verify that this happened
+        if start_pid:
+            this_ret, this_str = ssh_cmd_to_vm("kill {}".format(start_pid), "resolver-vm")
+            if not this_ret:
+                log("Killing {} on resolvers-test failed: '{}'".format(this_resolver, this_str))
+        # Stop the tcpdump on the middlebox-vm
+        stop_tcpdump_on_gateway()
+    # Get the results from the middlebox-vm
+    pass #######################
 
 # Run the main program
 if __name__ == "__main__":
@@ -234,6 +322,12 @@ if __name__ == "__main__":
     elif cmd == "refresh_repo":
         do_refresh_repo()
         log("Done refreshing the software on the VMs")
+    elif cmd == "run_test":
+        if len(sys.argv) < 3:
+            die("Need to give a name for the test to run.") 
+        test_name = sys.argv[2]
+        do_run_test(test_name)
+        log("Done running test {}".format(test_name))
     # We're done, so exit
     log("## Finished run")
     exit()

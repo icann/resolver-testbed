@@ -48,17 +48,15 @@
 	"templates": {
 		"!bind9make": "./configure --prefix=PREFIX_GOES_HERE && make && make install",
 		"!unboundmake": "./configure --prefix=PREFIX_GOES_HERE && make && make install",
-		"!pdns3make": "./configure && SYSCONFDIR=PREFIX_GOES_HERE/etc/powerdns make -e && DESTDIR=PREFIX_GOES_HERE make -e install",
 		"!pdns4make": "./configure && SYSCONFDIR=PREFIX_GOES_HERE/etc/powerdns make -e && DESTDIR=PREFIX_GOES_HERE make -e install",
-		"!bind9start": "PREFIX_GOES_HERE/sbin/named -c CONF_FILE_NAME",
-		"!unboundstart": "PREFIX_GOES_HERE/sbin/unbound -c CONF_FILE_NAME",
-		"!pdns3start": [ "cp CONF_FILE_NAME PREFIX_GOES_HERE/usr/etc/recursor.conf",
-			"PREFIX_GOES_HERE/usr/sbin/pdns_recursor --daemon --config-dir=PREFIX_GOES_HERE/usr/etc"
-			],
-		"!pdns4start": [ "cp CONF_FILE_NAME PREFIX_GOES_HERE/usr/local/etc/recursor.conf",
+		"!knotmake": "meson build_dir --prefix=PREFIX_GOES_HERE --default-library=static && ninja -C build_dir/ install",
+
+		"!bind9start": "PREFIX_GOES_HERE/sbin/named -c TEST_DIR/named.conf",
+		"!unboundstart": "PREFIX_GOES_HERE/sbin/unbound -c TEST_DIR/unbound.conf",
+		"!pdns4start": [ "cp TEST_DIR PREFIX_GOES_HERE/usr/local/etc/recursor.conf",
 			"PREFIX_GOES_HERE/usr/local/sbin/pdns_recursor --daemon --config-dir=PREFIX_GOES_HERE/usr/local/etc"
 			],
-		"!knotstart": "PREFIX_GOES_HERE/sbin/kresd -f 1 -c CONF_FILE_NAME &"
+		"!knotstart": "PREFIX_GOES_HERE/sbin/kresd -f 1 -c TEST_DIR &"
 	}
 	
 }

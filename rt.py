@@ -222,14 +222,20 @@ def stop_tcpdump_on_gateway():
 
 def get_pid_of_resolver(this_resolver):
     ''' Returns the PID of the named resolver running on resolvers-vm; returns nothing if it failed '''
-    this_ret, this_str = ssh_cmd_to_vm("ps ax | grep Target", "resolver-vm")
+    this_ret, this_str = ssh_cmd_to_vm("ps ax | grep Target", "resolvers-vm")
     if not this_ret:
-        log("Could not get the PID of the resolver; continuing.")
+        log("Getting the PID of the resolver failed in ps; continuing.")
         return
-    ps_lines = this_str.splitlines()
+    ps_lines = []
+    for this_line in this_str.splitlines():
+        if not ("grep Target" in this_line):
+            ps_lines.append(this_line)
+    if ps_lines == []:
+        log("There were no matching lines looking for the running resolver; continuing.")
+        return
     if len(ps_lines) != 1:
-        die("When getting the PID of the resolver, got multiple lines. Exiting.\n{}".format(this_str))
-    ps_parts = ps_lines.strip().split()
+        die("When getting the PID of the resolver, got multiple lines. Exiting.\n{}".format(ps_lines))
+    ps_parts = (ps_lines[0]).strip().split()
     return ps_parts[0]
 
 def do_run_test(test_name):
@@ -270,27 +276,37 @@ def do_run_test(test_name):
             log("There was no start string for {}".format(this_resolver))
             pass
         else:
+            if this_start.startswith("!"):
+                if this_start in rt_config["build_info"]["templates"]:
+                    this_start = rt_config["build_info"]["templates"][this_start]
+                else:
+                    die("{} has a start string of {}, but there is no equivalent for that.".format(this_resolver, this_start))
             full_start = this_start.replace("TEST_DIR", "{}/{}".format(REMOTE_REPO, test_dir))
+            full_start = full_start.replace("PREFIX_GOES_HERE", "/root/Target/{}".format(this_resolver))
             log("Running {}".format(full_start))
-            this_ret, this_str = ssh_cmd_to_vm(full_start, "resolver-vm")
+            this_ret, this_str = ssh_cmd_to_vm(full_start, "resolvers-vm")
             if not this_ret:
-                log("Running '{}' on resolver-vm returned '{}'. Skipping.".format(full_start, this_str))
+                log("Running '{}' on resolvers-vm returned '{}'. Skipping.".format(full_start, this_str))
                 stop_tcpdump_on_gateway()
             start_pid = get_pid_of_resolver(this_resolver)
         # Send the queries
         for this_query in test_description["queries"]:
             (this_qname, this_time) = this_query
             # Wait for the given time; this somewhat assumes that each query takes zero time to complete
-            time.sleep(this_time)
+            try:
+                time_as_int = int(this_time)
+            except:
+                die("In the test file, a time was not convertable to an int. Exiting.")
+            time.sleep(time_as_int)
             # Use "dig" to send a query to 127.0.0.1
-            this_ret, this_str =  ssh_cmd_to_vm("dig @127.0.0.1 {}".format(this_qname), "resolver-vm")
+            this_ret, this_str =  ssh_cmd_to_vm("dig @127.0.0.1 {}".format(this_qname), "resolvers-vm")
             if not this_ret:
                 log("Dig for time {} failed. Continuing.".format(this_time))
             # Maybe process this_answer in a later version of the testbed
             log("Result was {}".format(this_str)) ###################################
         # Shut down the resolver; verify that this happened
         if start_pid:
-            this_ret, this_str = ssh_cmd_to_vm("kill {}".format(start_pid), "resolver-vm")
+            this_ret, this_str = ssh_cmd_to_vm("kill {}".format(start_pid), "resolvers-vm")
             if not this_ret:
                 log("Killing {} on resolvers-test failed: '{}'".format(this_resolver, this_str))
         # Stop the tcpdump on the middlebox-vm

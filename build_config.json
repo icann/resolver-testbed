@@ -18,6 +18,9 @@
 
 		"bind-9.9.11":
 			{ "url": "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz", "make_str": "!bind9make", "start": "!bind9start" },
+		
+		"knot-resolver-4.0.0":
+			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.0.0.tar.xz", "make_str": "!knotmake", "start": "!knotstart" },
 
 		"unbound-1.9.1":
 			{ "url": "http://unbound.net/downloads/unbound-1.9.1.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },

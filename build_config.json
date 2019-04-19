@@ -59,7 +59,7 @@
 		"!pdns4start": [ "cp TEST_DIR PREFIX_GOES_HERE/usr/local/etc/recursor.conf",
 			"PREFIX_GOES_HERE/usr/local/sbin/pdns_recursor --daemon --config-dir=PREFIX_GOES_HERE/usr/local/etc"
 			],
-		"!knotstart": "PREFIX_GOES_HERE/sbin/kresd -f 1 -c TEST_DIR/kresd.conf &"
+		"!knotstart": "nohup PREFIX_GOES_HERE/sbin/kresd -f 1 -c TEST_DIR/kresd.conf &"
 	}
 	
 }

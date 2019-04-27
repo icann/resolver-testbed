@@ -55,7 +55,7 @@
 		"!unboundstart": "PREFIX/sbin/unbound -c TEST_DIR/unbound.conf",
 		"!pdns4start": [ "cp TEST_DIR PREFIX/usr/local/etc/recursor.conf",
 			"PREFIX/usr/local/sbin/pdns_recursor --daemon --config-dir=PREFIX/usr/local/etc"
-			],
+			]
 	},
 	
 	"hold for later": {

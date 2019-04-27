@@ -24,7 +24,7 @@ RESOLVER_LIBRARIES = [
 "wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
 "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
 "apt update",
-"apt install -y libknot-dev liblmdb-dev ninja-build"
+"apt install -y libknot-dev liblmdb-dev ninja-build dtach"
 ]
 REMOTE_REPO = "/root/resolver-testbed-master"
 
@@ -104,13 +104,6 @@ def ssh_cmd_to_vm(cmd_to_run, vm_name):
     else:
         return True, ret_main_cmd.stdout.strip()
 
-def send_with_guestcontrol(this_cmd):
-    ''' Send a message and look for the response; die if it failed '''
-    p = subprocess.Popen(this_cmd, shell=True)
-    ret_val = p.wait()
-    if ret_val > 0:
-        die("Failed run '{}'.".format(this_cmd))
-    
 def is_vm_running(vm_name):
     ''' Check if the VM is running; die if not '''
     p = subprocess.Popen("VBoxManage --nologo list runningvms", stdout=subprocess.PIPE, shell=True)  
@@ -229,7 +222,8 @@ def get_pid_of_resolver(this_resolver):
     ps_lines = []
     for this_line in this_str.splitlines():
         if not ("grep Target" in this_line):
-            ps_lines.append(this_line)
+            if not ("dtach -n" in this_line):
+                ps_lines.append(this_line)
     if ps_lines == []:
         log("There were no matching lines looking for the running resolver; continuing.")
         return
@@ -282,13 +276,15 @@ def do_run_test(test_name):
                 else:
                     die("{} has a start string of {}, but there is no equivalent for that.".format(this_resolver, this_start))
             full_start = this_start.replace("TEST_DIR", "{}/{}".format(REMOTE_REPO, test_dir))
-            full_start = full_start.replace("PREFIX_GOES_HERE", "/root/Target/{}".format(this_resolver))
+            full_start = full_start.replace("PREFIX", "/root/Target/{}".format(this_resolver))
             log("Running {}".format(full_start))
             this_ret, this_str = ssh_cmd_to_vm(full_start, "resolvers-vm")
             if not this_ret:
                 log("Running '{}' on resolvers-vm returned '{}'. Skipping.".format(full_start, this_str))
                 stop_tcpdump_on_gateway()
             start_pid = get_pid_of_resolver(this_resolver)
+            # Give the resolver some time to get started
+            time.sleep(2)
         # Send the queries
         for this_query in test_description["queries"]:
             (this_qname, this_time) = this_query

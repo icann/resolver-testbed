@@ -56,13 +56,11 @@
 		"!pdns4start": [ "cp TEST_DIR PREFIX/usr/local/etc/recursor.conf",
 			"PREFIX/usr/local/sbin/pdns_recursor --daemon --config-dir=PREFIX/usr/local/etc"
 			],
-	}
+	},
 	
 	"hold for later": {
-
 		"knot-resolver-4.0.0":
 			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.0.0.tar.xz", "make_str": "!knotmake", "start": "!knotstart" },
 		"!knotstart": "sleep 4; rm -rf PREFIX/workdir; mkdir PREFIX/workdir; dtach -n /tmp/tmpsocket PREFIX/sbin/kresd -f 1 -c TEST_DIR/kresd.conf PREFIX/workdir"
-	
 	}
 }

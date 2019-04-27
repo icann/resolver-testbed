@@ -32,35 +32,29 @@
 			{ "url": "http://unbound.net/downloads/unbound-1.6.8.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
 
 		"unbound-1.5.10":
-			{ "url": "http://unbound.net/downloads/unbound-1.5.10.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" },
-
-		"pdns-recursor-4.1.11":
-			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.11.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },
-
-		"pdns-recursor-4.0.9":
-			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },
-
-		"pdns-recursor-3.7.4":
-			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.7.4.tar.bz2", "make_str": "!pdns3make", "start": "!pdns3start" }
+			{ "url": "http://unbound.net/downloads/unbound-1.5.10.tar.gz", "make_str": "!unboundmake", "start": "!unboundstart" }
 
 	},
 	
 	"templates": {
 		"!bind9make": "./configure --prefix=PREFIX && make && make install",
 		"!unboundmake": "./configure --prefix=PREFIX && make && make install",
-		"!pdns4make": "./configure && SYSCONFDIR=PREFIX/etc/powerdns make -e && DESTDIR=PREFIX make -e install",
-		"!knotmake": "meson build_dir --prefix=PREFIX --default-library=static && ninja -C build_dir/ install",
-
 		"!bind9start": "PREFIX/sbin/named -c TEST_DIR/named.conf",
-		"!unboundstart": "PREFIX/sbin/unbound -c TEST_DIR/unbound.conf",
-		"!pdns4start": [ "cp TEST_DIR PREFIX/usr/local/etc/recursor.conf",
-			"PREFIX/usr/local/sbin/pdns_recursor --daemon --config-dir=PREFIX/usr/local/etc"
-			]
+		"!unboundstart": "PREFIX/sbin/unbound -c TEST_DIR/unbound.conf"
 	},
 	
 	"hold for later": {
 		"knot-resolver-4.0.0":
 			{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.0.0.tar.xz", "make_str": "!knotmake", "start": "!knotstart" },
-		"!knotstart": "sleep 4; rm -rf PREFIX/workdir; mkdir PREFIX/workdir; dtach -n /tmp/tmpsocket PREFIX/sbin/kresd -f 1 -c TEST_DIR/kresd.conf PREFIX/workdir"
+		"!knotmake": "meson build_dir --prefix=PREFIX --default-library=static && ninja -C build_dir/ install",
+		"!knotstart": "sleep 4; rm -rf PREFIX/workdir; mkdir PREFIX/workdir; dtach -n /tmp/tmpsocket PREFIX/sbin/kresd -f 1 -c TEST_DIR/kresd.conf PREFIX/workdir",
+		"pdns-recursor-4.1.11":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.11.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },
+		"pdns-recursor-4.0.9":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2", "make_str": "!pdns4make", "start": "!pdns4start" },
+		"pdns-recursor-3.7.4":
+			{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.7.4.tar.bz2", "make_str": "!pdns3make", "start": "!pdns3start" },
+		"!pdns4make": "./configure && SYSCONFDIR=PREFIX/etc/powerdns make -e && DESTDIR=PREFIX make -e install",
+		"!pdns4start": "PREFIX/usr/local/sbin/pdns_recursor --daemon --config-dir=TEST_DIR"
 	}
 }

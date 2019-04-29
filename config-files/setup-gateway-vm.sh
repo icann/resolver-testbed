@@ -10,6 +10,9 @@ cp /root/resolver-testbed-master/config-files/resolv-with-8844 /etc/resolv.conf 
 echo "Copy the sshd config"
 cp /root/resolver-testbed-master/config-files/sshd-config /etc/ssh/sshd_config || exit
 
+### Install additional things needed
+echo "Getting things from apt"
+apt update; apt install -y tcpdump dtach
 
 ### Stuff specific to the gateway-vm
 echo "Make /etc/rc.local to do NAT"

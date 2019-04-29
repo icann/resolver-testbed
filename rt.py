@@ -5,6 +5,8 @@ See https://github.com/icann/resolver-testbed for more information
 Must be run in the same directory as the config files 
 '''
 
+######### Change build_config.json to also have flags for kinds of tests that will work
+
 import os, subprocess, sys, time, logging, json
 import fabric
 
@@ -24,7 +26,7 @@ RESOLVER_LIBRARIES = [
 "wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
 "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
 "apt update",
-"apt install -y libknot-dev liblmdb-dev ninja-build dtach"
+"apt install -y libknot-dev liblmdb-dev ninja-build"
 ]
 REMOTE_REPO = "/root/resolver-testbed-master"
 
@@ -89,13 +91,6 @@ def ssh_cmd_to_vm(cmd_to_run, vm_name):
         fabconn.open()
     except Exception as this_e:
         die("Could not open an SSH connection to {} on {}: '{}'.".format(vm_name, this_control_address, this_e))
-    # Is this the right VM?
-    ret_hostname = fabconn.run("hostname", hide=True)
-    if ret_hostname.failed:
-        die("Could not run hostname on {}".format(vm_name))
-    ret_text = ret_hostname.stdout
-    if ret_text.rstrip() != vm_name:
-        die("The host at {} is not {}: '{}'".format(this_control_address, vm_name, ret_text))
     # Run the command
     ret_main_cmd = fabconn.run(cmd_to_run, hide=True, warn=True)
     fabconn.close()
@@ -103,6 +98,27 @@ def ssh_cmd_to_vm(cmd_to_run, vm_name):
         return False, "Error: {}".format(ret_main_cmd.stderr.strip())
     else:
         return True, ret_main_cmd.stdout.strip()
+
+def cp_from_vm(file_to_get, dest_dir, vm_name):
+    ''' Gets a file from a named VM. Returns success_boolean, output_text '''
+    if not vm_name in VM_INFO:
+        die("Attempt to run on {}, which is not a valid VM".format(vm_name))
+    is_vm_running(vm_name)
+    this_control_address = (rt_config["vm_info"][vm_name]).get("control_addr")
+    if not this_control_address:
+        die("There was no address for {}".format(vm_name))
+    fabconn = fabric.Connection(host=this_control_address, user="root", connect_kwargs= {"password": ROOT_PASS})
+    try:
+        fabconn.open()
+    except Exception as this_e:
+        die("Could not open an SSH connection to {} on {}: '{}'.".format(vm_name, this_control_address, this_e))
+    dest_file = "{}/{}".format(dest_dir, os.path.basename(file_to_get))    
+    # Get the file
+    try:
+        fabconn.get(file_to_get, local=dest_file)
+    except:
+        log("Could not get {} from {}. Continuing.")
+    fabconn.close()
 
 def is_vm_running(vm_name):
     ''' Check if the VM is running; die if not '''
@@ -205,13 +221,34 @@ def do_refresh_repo():
         if not this_ret:
             die("Could not remove master.zip: {}".format(this_str))
 
-def start_tcpdump_on_gateway(test_name, this_resolver):
-    ''' Starts tcpdump for a test run '''
-    pass #######
+def start_tcpdump_on_gateway(tcpdump_filename):
+    ''' Starts tcpdump for a test run; takes the name of the file to create in /tmp '''
+    this_cmd = "dtach -n /tmp/tmpsocket tcpdump -i enp0s8 -n -w /tmp/{}".format(tcpdump_filename)
+    this_ret, this_str = ssh_cmd_to_vm(this_cmd, "gateway-vm")
+    if not this_ret:
+        die("Starting tcpdump on gateway-vm with '{}' returned '{}'.".format(this_cmd, this_str))
+    return
     
 def stop_tcpdump_on_gateway():
     ''' Gracefully stops any tcpdump running on gateway-vm '''
-    pass #########
+    this_ret, this_str = ssh_cmd_to_vm("ps ax | grep tcpdump", "gateway-vm")
+    if not this_ret:
+        die("Getting the PID of the tcpdump running on gateway-vm failed in ps: '{}'".format(this_str))
+    ps_lines = []
+    for this_line in this_str.splitlines():
+        if not ("grep tcpdump" in this_line):
+            if not ("dtach -n" in this_line):
+                ps_lines.append(this_line)
+    if ps_lines == []:
+        die("There were no matching lines looking for tcpdump on gateway-vm.")
+    if len(ps_lines) != 1:
+        die("When getting the PID for tcpdump on gateway-vm, got multiple lines.\n{}".format(ps_lines))
+    ps_parts = (ps_lines[0]).strip().split()
+    tcpdump_pid = ps_parts[0]
+    this_ret, this_str = ssh_cmd_to_vm("kill -HUP {}".format(tcpdump_pid), "gateway-vm")
+    if not this_ret:
+        die("Killing tcpdump running on gateway-vm failed in ps: '{}'".format(this_str))
+    return
 
 def get_pid_of_resolver(this_resolver):
     ''' Returns the PID of the named resolver running on resolvers-vm; returns nothing if it failed '''
@@ -228,7 +265,7 @@ def get_pid_of_resolver(this_resolver):
         log("There were no matching lines looking for the running resolver; continuing.")
         return
     if len(ps_lines) != 1:
-        die("When getting the PID of the resolver, got multiple lines. Exiting.\n{}".format(ps_lines))
+        die("When getting the PID of the resolver, got multiple lines.\n{}".format(ps_lines))
     ps_parts = (ps_lines[0]).strip().split()
     return ps_parts[0]
 
@@ -257,13 +294,18 @@ def do_run_test(test_name):
         these_targets = test_description["targets"]
         for named_target in these_targets:
             if not named_target in rt_config["build_info"]["builds"]:
-                die("Found target named '{}', but that doesn't exist in the main configuration. Exiting.".format(named_target))
+                die("Found target named '{}', but that doesn't exist in the main configuration.".format(named_target))
         log("Testing {} targets".format(len(these_targets)))
+    # Save the filenames on gateway-vm to retrieve when done
+    tcpdump_filenames = []
     # Run the tests on each resolver
     for this_resolver in these_targets:
         log("Starting test on {}".format(this_resolver))
         # Start a new tcpdump capture on middlebox-vm
-        start_tcpdump_on_gateway(test_name, this_resolver)
+        tcpdump_timestring = time.strftime("%Y-%m-%d-%H-%M")
+        this_tcpdump_filename = "{}-{}-{}.pcap".format(test_name, this_resolver, tcpdump_timestring)
+        start_tcpdump_on_gateway(this_tcpdump_filename)
+        tcpdump_filenames.append(this_tcpdump_filename)
         # Start the resolver, including clearing out any saved state; verify that this happened
         this_start = rt_config["build_info"]["builds"][this_resolver].get("start")
         if not this_start:
@@ -287,19 +329,27 @@ def do_run_test(test_name):
             time.sleep(2)
         # Send the queries
         for this_query in test_description["queries"]:
-            (this_qname, this_time) = this_query
+            if len(this_query) < 2:
+                die("The query '{}' was too short.".format(this_query))
+            this_qname = this_query[0]
+            this_time = this_query[1]
+            if len(this_query) >= 3:
+                this_qtype = this_query[2]
+            else:
+                this_qtype = "A"
             # Wait for the given time; this somewhat assumes that each query takes zero time to complete
             try:
                 time_as_int = int(this_time)
             except:
-                die("In the test file, a time was not convertable to an int. Exiting.")
+                die("In the test file, a time was not convertable to an int.")
             time.sleep(time_as_int)
             # Use "dig" to send a query to 127.0.0.1
-            this_ret, this_str =  ssh_cmd_to_vm("dig @127.0.0.1 {}".format(this_qname), "resolvers-vm")
+            this_dig = "dig @127.0.0.1 {} {} +short".format(this_qname, this_qtype)
+            this_ret, this_str =  ssh_cmd_to_vm(this_dig, "resolvers-vm")
             if not this_ret:
                 log("Dig for time {} failed. Continuing.".format(this_time))
             # Maybe process this_answer in a later version of the testbed
-            log("Result was {}".format(this_str)) ###################################
+            log("Result for '{}': '{}'".format(this_dig, this_str))
         # Shut down the resolver; verify that this happened
         if start_pid:
             this_ret, this_str = ssh_cmd_to_vm("kill {}".format(start_pid), "resolvers-vm")
@@ -308,7 +358,11 @@ def do_run_test(test_name):
         # Stop the tcpdump on the middlebox-vm
         stop_tcpdump_on_gateway()
     # Get the results from the middlebox-vm
-    pass #######################
+    log("All tests finished, now getting saved pcaps.")
+    for this_to_get in tcpdump_filenames:
+        log("Getting {}".format(this_to_get))
+        cp_from_vm("/tmp/{}".format(this_to_get), test_dir, "gateway-vm")
+    log("Got pcaps in {}".format(test_dir))
 
 # Run the main program
 if __name__ == "__main__":
@@ -346,17 +400,6 @@ if __name__ == "__main__":
 
 ''' Still to do:
 
-- Start a test on resovers-vm
-  - Be sure that the resolver cache is empty
-  - Generate a test instance name
-  - Start dnstap on gateway-vm
-  - Start the test
-  - During the test, collect cache dumps
-  - During the test, collect system log changes
-  - Finish the test
-  - Stop dnstap on gateway-vm
-  - Collect the dnstap files from gateway-vm
-  
 - Start a test on something with less tooling than resovers-vm
   - Generate a test instance name
   - Start dnstap on gateway-vm

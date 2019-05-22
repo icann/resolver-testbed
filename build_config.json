@@ -4,56 +4,57 @@
 		{ "url": "https://ftp.isc.org/isc/bind9/9.14.0/bind-9.14.0.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
-		"use": "test1" },
+		"use_in_all": [ "test1" ] },
 	"bind-9.13.6":
 		{ "url": "https://ftp.isc.org/isc/bind9/9.13.6/bind-9.13.6.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
-		"use": "test1" },
+		"use_in_all": [ "test1" ] },
 	"bind-9.12.4":
 		{ "url": "https://ftp.isc.org/isc/bind9/9.12.4/bind-9.12.4.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
-		"use": "test1" },
+		"use_in_all": [ "test1" ] },
 	"bind-9.11.6":
 		{ "url": "https://ftp.isc.org/isc/bind9/9.11.6/bind-9.11.6.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
-		"use": "test1" },
+		"use_in_all": [ "test1" ] },
 	"bind-9.10.8":
 		{ "url": "https://ftp.isc.org/isc/bind9/9.10.8/bind-9.10.8.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
-		"use": "test1" },
+		"use_in_all": [ "test1" ] },
 	"bind-9.9.11":
 		{ "url": "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
-		"use": "test1" },
+		"use_in_all": [ "test1" ] },
 	"unbound-1.9.1":
 		{ "url": "http://unbound.net/downloads/unbound-1.9.1.tar.gz",
 		"make_str": "!unboundmake",
 		"start_str": "!unboundstart",
-		"use": "test1" },
+		"use_in_all": [ "test1" ] },
 	"unbound-1.8.3":
 		{ "url": "http://unbound.net/downloads/unbound-1.8.3.tar.gz",
 		"make_str": "!unboundmake",
 		"start_str": "!unboundstart",
-		"use": "test1" },
+		"use_in_all": [ "test1" ] },
 	"unbound-1.7.3":
 		{ "url": "http://unbound.net/downloads/unbound-1.7.3.tar.gz",
 		"make_str": "!unboundmake",
 		"start_str": "!unboundstart",
-		"use": "test1" },
+		"use_in_all": [ "test1" ] },
 	"unbound-1.6.8":
 		{ "url": "http://unbound.net/downloads/unbound-1.6.8.tar.gz",
 		"make_str": "!unboundmake",
 		"start_str": "!unboundstart",
-		"use": "test1" },
+		"use_in_all": [ "test1" ] },
 	"unbound-1.5.10":
 		{ "url": "http://unbound.net/downloads/unbound-1.5.10.tar.gz",
 		"make_str": "!unboundmake",
-		"start_str": "!unboundstart" }
+		"start_str": "!unboundstart",
+		"use_in_all": [ "test1" ] }
 	},
 
 "templates": {

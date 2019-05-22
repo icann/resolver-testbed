@@ -287,9 +287,12 @@ def do_run_test(test_name):
         log("Bad JSON found in {}".format(test_file_name))
         return
     # Find the target resolvers to send the queries
-    if (test_description.get("targets") == None) or (test_description.get("targets") == "all"):
-        these_targets = rt_config["build_info"]["builds"]
-        log("Testing all targets ({} tests)".format(len(these_targets)))
+    if (test_description.get("targets") == None) or (test_description.get("targets") == [ "all" ]):
+        these_targets = []
+        for this_target in rt_config["build_info"]["builds"]:
+            if test_name in rt_config["build_info"]["builds"][this_target].get("use_in_all"):
+                these_targets.append(this_target)
+        log("Testing {} targets".format(len(these_targets)))
     else:
         these_targets = test_description["targets"]
         for named_target in these_targets:

@@ -307,7 +307,7 @@ def do_run_test(test_name):
         start_tcpdump_on_gateway(this_tcpdump_filename)
         tcpdump_filenames.append(this_tcpdump_filename)
         # Start the resolver, including clearing out any saved state; verify that this happened
-        this_start = rt_config["build_info"]["builds"][this_resolver].get("start")
+        this_start = rt_config["build_info"]["builds"][this_resolver].get("start_str")
         if not this_start:
             log("There was no start string for {}".format(this_resolver))
             pass

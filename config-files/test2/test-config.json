@@ -1,0 +1,8 @@
+{
+"queries": [
+	[ "example.com", "1" ],
+	[ ".", 1, "SOA" ],
+	[ "example.com", "60" ]	
+	],
+"targets": [ "all" ]
+}

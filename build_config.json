@@ -1,57 +1,75 @@
 {
 "builds": {
-	"bind-9.14.0":
-		{ "url": "https://ftp.isc.org/isc/bind9/9.14.0/bind-9.14.0.tar.gz",
+	"bind-9.14.0": {
+		"url": "https://ftp.isc.org/isc/bind9/9.14.0/bind-9.14.0.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
 		"use_in_all": [ "test1", "test2" ] },
-	"bind-9.13.6":
-		{ "url": "https://ftp.isc.org/isc/bind9/9.13.6/bind-9.13.6.tar.gz",
+	"bind-9.13.6": {
+		"url": "https://ftp.isc.org/isc/bind9/9.13.6/bind-9.13.6.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
 		"use_in_all": [ "test1", "test2" ] },
-	"bind-9.12.4":
-		{ "url": "https://ftp.isc.org/isc/bind9/9.12.4/bind-9.12.4.tar.gz",
+	"bind-9.12.4": {
+		"url": "https://ftp.isc.org/isc/bind9/9.12.4/bind-9.12.4.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
 		"use_in_all": [ "test1", "test2" ] },
-	"bind-9.11.6":
-		{ "url": "https://ftp.isc.org/isc/bind9/9.11.6/bind-9.11.6.tar.gz",
+	"bind-9.11.6": {
+		"url": "https://ftp.isc.org/isc/bind9/9.11.6/bind-9.11.6.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
 		"use_in_all": [ "test1", "test2" ] },
-	"bind-9.10.8":
-		{ "url": "https://ftp.isc.org/isc/bind9/9.10.8/bind-9.10.8.tar.gz",
+	"bind-9.10.8": {
+		"url": "https://ftp.isc.org/isc/bind9/9.10.8/bind-9.10.8.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
 		"use_in_all": [ "test1", "test2" ] },
-	"bind-9.9.11":
-		{ "url": "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz",
+	"bind-9.9.11": {
+		"url": "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
 		"use_in_all": [ "test1", "test2" ] },
-	"unbound-1.9.1":
-		{ "url": "http://unbound.net/downloads/unbound-1.9.1.tar.gz",
+	"knot-resolver-4.0.0": {
+		"url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.0.0.tar.xz",
+		"make_str": "!knotmake",
+		"start_str": "!knotstart",
+		"use_in_all": [ ],
+		"NOTES": "See note 1 about having just one version; see note 2 aboout use_in_all" },
+	"pdns-recursor-4.1.13": {
+		"url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.13.tar.bz2",
+		"make_str": "!pdns4make",
+		"start_str": "!pdns4start",
+		"use_in_all": [ "test2"],
+		"NOTES": "Can't use in test1 because can't pull in non-standard root trust anchors" },
+	"pdns-recursor-4.0.9": {
+		"url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2",
+		"make_str": "!pdns4make",
+		"start_str": "!pdns4start",
+		"use_in_all": [ "test2"],
+		"NOTES": "Can't use in test1 because can't pull in non-standard root trust anchors" },
+	"unbound-1.9.1": {
+		"url": "http://unbound.net/downloads/unbound-1.9.1.tar.gz",
 		"make_str": "!unboundmake",
 		"start_str": "!unboundstart",
 		"use_in_all": [ "test1", "test2" ] },
-	"unbound-1.8.3":
-		{ "url": "http://unbound.net/downloads/unbound-1.8.3.tar.gz",
+	"unbound-1.8.3": {
+		"url": "http://unbound.net/downloads/unbound-1.8.3.tar.gz",
 		"make_str": "!unboundmake",
 		"start_str": "!unboundstart",
 		"use_in_all": [ "test1", "test2" ] },
-	"unbound-1.7.3":
-		{ "url": "http://unbound.net/downloads/unbound-1.7.3.tar.gz",
+	"unbound-1.7.3": {
+		"url": "http://unbound.net/downloads/unbound-1.7.3.tar.gz",
 		"make_str": "!unboundmake",
 		"start_str": "!unboundstart",
 		"use_in_all": [ "test1", "test2" ] },
-	"unbound-1.6.8":
-		{ "url": "http://unbound.net/downloads/unbound-1.6.8.tar.gz",
+	"unbound-1.6.8": {
+		"url": "http://unbound.net/downloads/unbound-1.6.8.tar.gz",
 		"make_str": "!unboundmake",
 		"start_str": "!unboundstart",
 		"use_in_all": [ "test1", "test2" ] },
-	"unbound-1.5.10":
-		{ "url": "http://unbound.net/downloads/unbound-1.5.10.tar.gz",
+	"unbound-1.5.10": {
+		"url": "http://unbound.net/downloads/unbound-1.5.10.tar.gz",
 		"make_str": "!unboundmake",
 		"start_str": "!unboundstart",
 		"use_in_all": [ "test1", "test2" ] }
@@ -59,23 +77,22 @@
 
 "templates": {
 	"!bind9make": "./configure --prefix=PREFIX && make && make install",
+	"!knotmake": "meson build_dir --prefix=PREFIX --default-library=static && ninja -C build_dir/ install",
+	"!pdns4make": "./configure && SYSCONFDIR=PREFIX/etc/powerdns make -e && DESTDIR=PREFIX make -e install",
 	"!unboundmake": "./configure --prefix=PREFIX && make && make install",
 	"!bind9start": "PREFIX/sbin/named -c TEST_DIR/named.conf",
+	"!knotstart": "sleep 4; rm -rf PREFIX/workdir; mkdir PREFIX/workdir; dtach -n /tmp/tmpsocket PREFIX/sbin/kresd -f 1 -c TEST_DIR/kresd.conf PREFIX/workdir",
+	"!pdns4start": "PREFIX/usr/local/sbin/pdns_recursor --daemon --config-dir=TEST_DIR",
 	"!unboundstart": "PREFIX/sbin/unbound -c TEST_DIR/unbound.conf"
 },
 
-"hold for later": {
-	"knot-resolver-4.0.0":
-	{ "url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.0.0.tar.xz", "make_str": "!knotmake", "start_str": "!knotstart" },
-	"!knotmake": "meson build_dir --prefix=PREFIX --default-library=static && ninja -C build_dir/ install",
-	"!knotstart": "sleep 4; rm -rf PREFIX/workdir; mkdir PREFIX/workdir; dtach -n /tmp/tmpsocket PREFIX/sbin/kresd -f 1 -c TEST_DIR/kresd.conf PREFIX/workdir",
-	"pdns-recursor-4.1.11":
-	{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.11.tar.bz2", "make_str": "!pdns4make", "start_str": "!pdns4start" },
-	"pdns-recursor-4.0.9":
-	{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2", "make_str": "!pdns4make", "start_str": "!pdns4start" },
-	"pdns-recursor-3.7.4":
-	{ "url": "https://downloads.powerdns.com/releases/pdns-recursor-3.7.4.tar.bz2", "make_str": "!pdns3make", "start_str": "!pdns3start" },
-	"!pdns4make": "./configure && SYSCONFDIR=PREFIX/etc/powerdns make -e && DESTDIR=PREFIX make -e install",
-	"!pdns4start": "PREFIX/usr/local/sbin/pdns_recursor --daemon --config-dir=TEST_DIR"
-	}
+"notes": [
+	"1: Before version 4.0.0, it was impossible to build knot-resolver reliably due to needing particular versions of libraries
+	that did could not predicably be made on the development system. Also, CZ.nic said they only support the latest version,
+	and they assume that all their users come up to the current version almost immediately.",
+	"2: From the knot-resolver developers 2019-04-23:
+	Priming is done asynchronously and does not block other requests so you might get old data for a while if you query right after daemon start.
+	Also, . NS is cached in persistent cache between restarts for duration of TTL."
+] 
+
 }

@@ -5,7 +5,9 @@ See https://github.com/icann/resolver-testbed for more information
 Must be run in the same directory as the config files 
 '''
 
-######### Change build_config.json to also have flags for kinds of tests that will work
+######### Add IPv6
+
+######### Run tests for preferred root server selection
 
 import os, subprocess, sys, time, logging, json
 import fabric
@@ -160,7 +162,7 @@ def startup_and_config_general():
     except:
         die("Could not find {}".format(build_config_file))
     try:
-        build_input = json.load(build_f)
+        build_input = json.load(build_f, strict=False)
     except:
         die("The JSON in {} is broken.".format(build_config_file))
     # Sanity check the input

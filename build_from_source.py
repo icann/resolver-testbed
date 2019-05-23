@@ -73,7 +73,7 @@ try:
 except:
     die("Could not chdir into {}".format(package_source_dir))
 # Change PREFIX_GOES_HERE in package_make_str into TARGET_DIR/package_name
-full_make_str = package_make_str.replace("PREFIX_GOES_HERE", "{}/{}".format(TARGET_DIR, package_source_dir))
+full_make_str = package_make_str.replace("PREFIX", "{}/{}".format(TARGET_DIR, package_source_dir))
 log("Making with '{}'".format(full_make_str))
 # Make
 p = subprocess.Popen(full_make_str, stderr=subprocess.PIPE, shell=True)

@@ -7,7 +7,9 @@ Must be run in the same directory as the config files
 
 ######### Add IPv6
 
-######### Run tests for preferred root server selection
+######### Run tests for preferred root server selection with a small number of delays
+
+######### Show that you can run a different VM in the tests (maybe Windows Server)
 
 import os, subprocess, sys, time, logging, json
 import fabric

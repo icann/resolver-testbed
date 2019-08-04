@@ -21,7 +21,7 @@ RESOLVER_LIBRARIES = [
 "apt install -y build-essential",
 "apt install -y libssl-dev libcap-dev python3-ply dnsutils",
 "apt install -y pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
-"apt install -y libldns-dev libexpat-dev libboost-dev",
+"apt install -y libldns-dev libexpat-dev libboost-dev libboost-system-dev libboost-thread-dev libboost-context-dev",
 "apt install -y python3-pip",
 "pip3 install meson",
 "apt-get -y install apt-transport-https lsb-release ca-certificates wget",

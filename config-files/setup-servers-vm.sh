@@ -14,7 +14,7 @@ echo "Copying root files"
 cp /root/resolver-testbed-master/config-files/root-zone-basic/* /root/bind-configs || exit
 echo "Copy the rc.local"
 cp /root/resolver-testbed-master/config-files/servers-rc.local /etc/rc.local
-echo "Setting permissions on servers-ipfw-long-to-short.sh
+echo "Setting permissions on servers-ipfw-long-to-short.sh"
 chmod a+x /root/resolver-testbed-master/config-files/servers-ipfw-long-to-short.sh
 echo "Making boot faster"
 echo 'autoboot_delay="2"' >/boot/loader.conf

@@ -1,4 +1,4 @@
-some-servers.p53. 60 IN SOA a.some-servers.p53. foo.some-servers.p53. 2019021799 1800 900 604800 60
+some-servers.p53. 60 IN SOA a.some-servers.p53. foo.some-servers.p53. 2019080499 1800 900 604800 60
 some-servers.p53. 60 IN NS a.some-servers.p53.
 some-servers.p53. 60 IN NS b.some-servers.p53.
 some-servers.p53. 60 IN NS c.some-servers.p53.
@@ -25,3 +25,16 @@ j.some-servers.p53. 60 IN A 172.21.109.10
 k.some-servers.p53. 60 IN A 172.21.109.11
 l.some-servers.p53. 60 IN A 172.21.109.12
 m.some-servers.p53. 60 IN A 172.21.109.13
+a.some-servers.p53. 60 IN AAAA fd00::21:101:1
+b.some-servers.p53. 60 IN AAAA fd00::21:102:1
+c.some-servers.p53. 60 IN AAAA fd00::21:103:1
+d.some-servers.p53. 60 IN AAAA fd00::21:104:1
+e.some-servers.p53. 60 IN AAAA fd00::21:105:1
+f.some-servers.p53. 60 IN AAAA fd00::21:106:1
+g.some-servers.p53. 60 IN AAAA fd00::21:107:1
+h.some-servers.p53. 60 IN AAAA fd00::21:108:1
+i.some-servers.p53. 60 IN AAAA fd00::21:109:1
+j.some-servers.p53. 60 IN AAAA fd00::21:110:1
+k.some-servers.p53. 60 IN AAAA fd00::21:111:1
+l.some-servers.p53. 60 IN AAAA fd00::21:112:1
+m.some-servers.p53. 60 IN AAAA fd00::21:113:1

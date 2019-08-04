@@ -11,5 +11,5 @@ address 172.20.1.2/24
 gateway 172.20.1.1
 
 iface enp0s8 inet6 static
-address fd00::20:1:2/112
+address fd00::20:1:2/96
 gateway fd00::20:1:1

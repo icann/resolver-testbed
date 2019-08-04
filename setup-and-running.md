@@ -27,7 +27,7 @@ The control host also needs to have Python 3 installed. It also needs Fabbic (`h
 Because the gateway-vm and resolvers-vm VMs are both based on Debian, build a base VM
 that will be cloned into the two VMs.
 
-* Get the recent Debiain image from `https://cdimage.debian.org/mirror/cdimage/archive/9.6.0/amd64/iso-cd/debian-9.6.0-amd64-netinst.iso`
+* Get a recent Debiain image from `https://cdimage.debian.org/mirror/cdimage/archive/9.6.0/amd64/iso-cd/debian-9.6.0-amd64-netinst.iso`
                                     
 * In VirtualBox, choose File &rarr; Host Network Manager and make sure that vboxnet0 is defined. If it is not,
 click the "Create" button to define it.

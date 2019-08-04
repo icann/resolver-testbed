@@ -5,9 +5,6 @@ reasonably well for the current design (as far as we know now).
 
 The overall design is to use multiple VMs and multiple networks to segregate traffic so that packet captures are cleaner.
 
-The initial plan only covers IPv4. The requirements for IPv6 will include an IPv6 gateway on the control host or
-on the network on which the control host resides; this might restrict some testing.
-
 ## Network Layout
 
 <img src="testbed-layout.png" width=700px>
@@ -41,14 +38,13 @@ It has many functions:
 
  * Routing with interfaces for the resolvers, the simulated roots, and the Internet
  * Packet capture, logging, and display during tests
- * Delaying of packets bound for the simulated root servers
  
 gateway-vm has four NICs:
  
  * **gc** on the control network (192.168.56.20)
- * **gr** on the resolvers network (172.20.1.1)
- * **gs** on the servers network (172.21.1.1)
- * **gi** on the Internet (via DHCP)
+ * **gr** on the resolvers network (172.20.1.1, fd00::20:1:1)
+ * **gs** on the servers network (172.21.1.1, fd00::21:1:1)
+ * **gi** on the Internet (via DHCP and/or RADV)
  
 ### Resolver Systems
 
@@ -68,21 +64,25 @@ resolvers.
 Each resolver system has two NICs:
 
  * **rc** on the control network (192.168.56.30)
- * **rr** on the resolvers network (172.20.1.2)
+ * **rr** on the resolvers network (172.20.1.2, fd00::20:1:2)
 
 ### Root Servers VM
 
 **servers-vm** is all the simulated root servers on a single VM.
-The tentative plan is to have 13 IPv4 and 13 IPv6 addresses on the VM
+The VM has 13 IPv4 and 13 IPv6 addresses
 with one copy of BIND running as an authoritative server listening to
 all 26 addresses.
+The VM's operating system is able to add delay to the incoming
+packets in order to model the real root server system.
 
 In order to avoid issues with resolvers that might coalesce views of servers
 on the same /24 network, the addresses for the root servers are each in their own
 /24: 172.21.101.1, 172.21.102.1, and so on through 172.21.113.1.
+For IPv6, this is done with fd00::21:101:1 through fd00::21:113:1
+in the hopes that resolvers will not coalesce for a /120.
 
 servers-vm has two NICs:
 
  * **sc** on the control network (192.168.56.40)
- * **ss** on the servers network (172.21.1.2)
+ * **ss** on the servers network (172.21.1.2 and 172.21.101.1 through 172.21.113.1, fd00::21:1:2 and fd00::21:101:1 through fd00::21:113:1)
 

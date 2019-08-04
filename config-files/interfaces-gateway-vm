@@ -8,10 +8,14 @@ address 192.168.56.20/24
 auto enp0s8
 iface enp0s8 inet static
 address 172.20.1.1/24
+iface enp0s8 inet6 static
+address fd00::20:1:1/112
 
 auto enp0s9
 iface enp0s9 inet static
 address 172.21.1.1/16
+iface enp0s9 inet6 static
+address fd00::21:1:1/112
 
 auto enp0s10
 iface enp0s10 inet dhcp

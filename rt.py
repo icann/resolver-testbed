@@ -5,8 +5,6 @@ See https://github.com/icann/resolver-testbed for more information
 Must be run in the same directory as the config files 
 '''
 
-######### Add IPv6
-
 ######### Run tests for preferred root server selection with a small number of delays
 
 ######### Show that you can run a different VM in the tests (maybe Windows Server)

@@ -9,7 +9,6 @@ import os, subprocess, sys, time, logging, json
 import fabric
 
 # Some program-wide constants
-CLONE_BASENAME = "debian960-base"
 ROOT_PASS = "BadPassword"
 GUESTCONTROL_TEMPLATE = "VBoxManage --nologo guestcontrol {} --username root --password PASSWORD_GOES_HERE".replace("PASSWORD_GOES_HERE", ROOT_PASS)
 RESOLVER_LIBRARIES = [

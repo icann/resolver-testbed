@@ -19,3 +19,4 @@ address fd00::21:1:1/96
 
 auto enp0s10
 iface enp0s10 inet dhcp
+iface enp0s10 inet6 auto

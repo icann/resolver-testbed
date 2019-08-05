@@ -5,10 +5,6 @@ See https://github.com/icann/resolver-testbed for more information
 Must be run in the same directory as the config files 
 '''
 
-######### Run tests for preferred root server selection with a small number of delays
-
-######### Show that you can run a different VM in the tests (maybe Windows Server)
-
 import os, subprocess, sys, time, logging, json
 import fabric
 
@@ -410,5 +406,9 @@ if __name__ == "__main__":
   - Start dnstap on gateway-vm
   - Stop dnstap on gateway-vm
   - Collect the dnstap files from gateway-vm
+
+- Run tests for preferred root server selection with a small number of delays
+
+- Show that you can run a different VM in the tests (maybe Windows Server)
 
 '''

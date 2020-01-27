@@ -1,12 +1,12 @@
 {
 "builds": {
-	"bind-9.15.2": {
-		"url": "https://ftp.isc.org/isc/bind9/9.15.2/bind-9.15.2.tar.gz",
+	"bind-9.15.8": {
+		"url": "https://ftp.isc.org/isc/bind9/9.15.8/bind-9.15.8.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
 		"use_in_all": [ "test1", "test2" ] },
-	"bind-9.14.4": {
-		"url": "https://ftp.isc.org/isc/bind9/9.14.4/bind-9.14.4.tar.gz",
+	"bind-9.14.10": {
+		"url": "https://ftp.isc.org/isc/bind9/9.14.10/bind-9.14.10.tar.gz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
 		"use_in_all": [ "test1", "test2" ] },
@@ -35,20 +35,26 @@
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
 		"use_in_all": [ "test1", "test2" ] },
-	"pdns-recursor-4.2.0": {
-		"url": "https://downloads.powerdns.com/releases/pdns-recursor-4.2.0.tar.bz2",
-		"make_str": "!pdns4make",
-		"start_str": "!pdns4start",
-		"use_in_all": [ "test1", "test2"],
-		"NOTES": "??? Can't use in test1 because can't pull in non-standard root trust anchors" },
 	"knot-resolver-4.1.0": {
 		"url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.1.0.tar.xz",
 		"make_str": "!knotmake",
 		"start_str": "!knotstart",
 		"use_in_all": [ ],
 		"NOTES": "See note 1 about having just one version; see note 2 aboout use_in_all" },
-	"pdns-recursor-4.1.14": {
-		"url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.14.tar.bz2",
+	"knot-resolver-5.0.0": {
+		"url": "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.0.0.tar.xz",
+		"make_str": "!knotmake",
+		"start_str": "!knotstart",
+		"use_in_all": [ ],
+		"NOTES": "See note 1 about having just one version; see note 2 aboout use_in_all" },
+	"pdns-recursor-4.2.1": {
+		"url": "https://downloads.powerdns.com/releases/pdns-recursor-4.2.1.tar.bz2",
+		"make_str": "!pdns4make",
+		"start_str": "!pdns4start",
+		"use_in_all": [ "test1", "test2"],
+		"NOTES": "??? Can't use in test1 because can't pull in non-standard root trust anchors" },
+	"pdns-recursor-4.1.15": {
+		"url": "https://downloads.powerdns.com/releases/pdns-recursor-4.1.15.tar.bz2",
 		"make_str": "!pdns4make",
 		"start_str": "!pdns4start",
 		"use_in_all": [ "test2"],
@@ -59,8 +65,8 @@
 		"start_str": "!pdns4start",
 		"use_in_all": [ "test2"],
 		"NOTES": "Can't use in test1 because can't pull in non-standard root trust anchors" },
-	"unbound-1.9.2": {
-		"url": "http://unbound.net/downloads/unbound-1.9.2.tar.gz",
+	"unbound-1.9.6": {
+		"url": "http://unbound.net/downloads/unbound-1.9.6.tar.gz",
 		"make_str": "!unboundmake",
 		"start_str": "!unboundstart",
 		"use_in_all": [ "test1", "test2" ] },

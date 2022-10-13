@@ -27,14 +27,14 @@ The control host also needs to have Python 3 installed. It also needs Fabbic (`h
 Because the gateway-vm and resolvers-vm VMs are both based on Debian, build a base VM
 that will be cloned into the two VMs.
 
-* Get a Debiain Buster image from `https://cdimage.debian.org/mirror/cdimage/release/10.0.0/amd64/iso-cd//debian-10.0.0-amd64-netinst.iso`
+* Get a Debiain Buster image from `https://cdimage.debian.org/mirror/cdimage/release/11.5.0/amd64/iso-cd/debian-11.5.0-amd64-netinst.iso`
                                     
 * In VirtualBox, choose File &rarr; Host Network Manager and make sure that vboxnet0 is defined. If it is not,
 click the "Create" button to define it.
 
 * Start VirtualBox
 	* Machine &rarr; New
-		* Name: debian100-base
+		* Name: debian115-base
 		* Type: Linux
 		* Version: Debian (64-bit)
 		* Memory: 2048M  (Changed from default of 1024)
@@ -49,9 +49,9 @@ click the "Create" button to define it.
 	* Network &rarr; Adapter 1: Attached to "NAT"
 	* Ports &rarr; USB: off
 
-* Boot the new `debian100-base` VM
+* Boot the new `debian115-base` VM
 	* Use Non-graphical installation (the "Install" option), and use the default choices other than these:
-		* Hostname: debian100-base
+		* Hostname: debian115-base
 		* Domain name: Make sure this is blank
 		* Root password: BadPassword
 		* User: Any name, any password (this user will not be used in the testbed)
@@ -84,7 +84,7 @@ In the instructions below, you tell VirtualBox that the system will be a Linux D
 it will really be a FreeBSD system. This is necessary due to a recent bug in the way FreeBSD is installed
 on VirtualBox VMs.
 
-* Get a FreeBSD 12.0 image from `https://download.freebsd.org/ftp/releases/amd64/amd64/ISO-IMAGES/12.0/FreeBSD-12.0-RELEASE-amd64-bootonly.iso`
+* Get a FreeBSD 12.3 image from `https://download.freebsd.org/ftp/releases/amd64/amd64/ISO-IMAGES/12.3/FreeBSD-12.3-RELEASE-amd64-bootonly.iso`
 
 * Start VirtualBox
 	* Machine &rarr; New

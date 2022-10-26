@@ -1,7 +1,7 @@
 {
 "builds": {
 	"bind-9.15.8": {
-		"url": "https://ftp.isc.org/isc/bind9/9.15.8/bind-9.15.8.tar.gz",
+		"url": "https://ftp.isc.org/isc/bind9/9.15.8/bind-9.15.8.tar.xz",
 		"make_str": "!bind9make",
 		"start_str": "!bind9start",
 		"use_in_all": [ "test1", "test2" ] },

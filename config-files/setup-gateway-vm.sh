@@ -12,7 +12,7 @@ cp /root/resolver-testbed-master/config-files/sshd-config /etc/ssh/sshd_config |
 
 ### Install additional things needed
 echo "Getting things from apt"
-apt update; apt install -y tcpdump dtach
+apt update; apt install -y tcpdump dtach iptables
 
 ### Stuff specific to the gateway-vm
 echo "Make /etc/rc.local to do NAT"

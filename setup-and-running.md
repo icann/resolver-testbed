@@ -10,7 +10,7 @@ The steps can be summarized as:
 
 ## Install VirtualBox
 
-VirtualBox can be downloaded from `https://www.virtualbox.org/wiki/Downloads`. 
+VirtualBox can be downloaded from `https://www.virtualbox.org/wiki/Downloads`.
 
 In the Virtualbox _Host Network Manager_ create a new management network called _vboxnet0_. It should use the network 192.168.56/24 and have DHCP enabled.
 
@@ -27,8 +27,8 @@ The control host also needs to have Python 3 installed. It also needs Fabbic (`h
 Because the gateway-vm and resolvers-vm VMs are both based on Debian, build a base VM
 that will be cloned into the two VMs.
 
-* Get a Debiain Buster image from `https://cdimage.debian.org/mirror/cdimage/release/11.5.0/amd64/iso-cd/debian-11.5.0-amd64-netinst.iso`
-                                    
+* Get a Debian Buster image from `https://cdimage.debian.org/mirror/cdimage/release/11.5.0/amd64/iso-cd/debian-11.5.0-amd64-netinst.iso`
+
 * In VirtualBox, choose File &rarr; Host Network Manager and make sure that vboxnet0 is defined. If it is not,
 click the "Create" button to define it.
 
@@ -149,6 +149,10 @@ on VirtualBox VMs.
 * The gateway VM needs another adapter, NIC4, to be configured
 	* In VirtualBox, select "gateway-vm" in the list on the left and select Machine &rarr; Settings &rarr; Network
 	* In Adapter 4, select "Enable Network Adapter", set "Attached to" "Bridged Adapter", and under "Name" choose the adapter on your
+	  system that is connected to the outside Internet connection and a DHCP server for IPv4 and automatic configuration for IPv6.
+* The resolvers VM needs another adapter, NIC3, to be configured
+	* In VirtualBox, select "gateway-vm" in the list on the left and select Machine &rarr; Settings &rarr; Network
+	* In Adapter 3, select "Enable Network Adapter", set "Attached to" "Bridged Adapter", and under "Name" choose the adapter on your
 	  system that is connected to the outside Internet connection and a DHCP server for IPv4 and automatic configuration for IPv6.
 
 ## Initial configuration for the VMs

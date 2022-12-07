@@ -1,0 +1,6 @@
+VBox-host
+
+[vms]
+resolvers-vm
+servers-vm
+gateway-vm

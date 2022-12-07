@@ -1,0 +1,205 @@
+---
+- hosts: VBox-host
+  connection: local
+  gather_facts: False
+
+  tasks:
+    - name: List hostonly interfaces.
+      ansible.builtin.command:
+        cmd: "VBoxManage list hostonlyifs"
+      register: hostonlyifs
+
+    - name: Get hostonly interface names.
+      ansible.builtin.set_fact:
+        hostonlyif_names: "{{ hostonlyifs.stdout | regex_findall(_regex, multiline=True) }}"
+      vars:
+        _regex: "{{ vbox_hostonlyif_name_regex }}"
+
+    - name: Check hostonly interface existence.
+      ansible.builtin.set_fact:
+        hostonlyif_present: "{{ vbox_hostonlyif_name in hostonlyif_names }}"
+
+    - name: Hostonly interface not found; creating.
+      block:
+        - name: Create hostonly interface.
+          ansible.builtin.command:
+            cmd: "VBoxManage hostonlyif create"
+          # Use _2 because this is registered even when skipped.
+          # It will be copied to the correct variable if this block is not skipped.
+          register: hostonlyifs_2
+
+        - name: Get name of created hostonly interface.
+          ansible.builtin.set_fact:
+            hostonlyif_name: "{{ hostonlyifs_2.stdout | regex_search(_regex, '\\1', multiline=True) | first }}"
+          vars:
+            _regex: "{{ vbox_hostonlyif_create_regex }}"
+
+        - name: The created hostonly interface should be the one configured.
+          assert:
+            that: "vbox_hostonlyif_name == hostonlyif_name"
+
+        - name: Configure the newly created hostonly interface.
+          ansible.builtin.command:
+            cmd: "VBoxManage hostonlyif ipconfig {{ hostonlyif_name }} --ip={{ vbox_hostonlyif_ip }} --netmask={{ vbox_hostonlyif_netmask }}"
+
+        - name: List hostonly interfaces (again).
+          ansible.builtin.command:
+            cmd: "VBoxManage list hostonlyifs"
+          register: hostonlyifs_2
+
+        - name: Get hostonly interface names (again).
+          ansible.builtin.set_fact:
+            hostonlyif_names: "{{ hostonlyifs_2.stdout | regex_findall(_regex, multiline=True) }}"
+          vars:
+            _regex: "{{ vbox_hostonlyif_name_regex }}"
+
+        - name: (Move the result in the correct variable).
+          ansible.builtin.set_fact:
+            hostonlyifs: "{{ hostonlyifs_2 }}"
+      rescue:
+        - name: Delete newly created hostonly interface.
+          ansible.builtin.command:
+            cmd: "VBoxManage hostonlyif remove {{ hostonlyif_name }}"
+
+        - fail:
+            msg: >
+              Cannot figure out the hostonly interface configuration!
+              Tried to create '{{ vbox_hostonlyif_name }}' but
+              '{{ hostonlyif_name }}' was the next available instead.
+              Revisit the Vbox-host configuration file!
+      when: "hostonlyif_present == False"
+
+    - name: Verify present hostonly interface configuration.
+      block:
+      - name: Get hostonly interface index and values.
+        ansible.builtin.set_fact:
+          hostonlyif_index: "{{ lookup('ansible.utils.index_of', data=hostonlyif_names, test='eq', value=vbox_hostonlyif_name) }}"
+          hostonlyif_ips: "{{ hostonlyifs.stdout | regex_findall(_regex_ip, multiline=True) }}"
+          hostonlyif_nets: "{{ hostonlyifs.stdout | regex_findall(_regex_netmask, multiline=True) }}"
+          hostonlyif_names: "{{ hostonlyifs.stdout | regex_findall(_regex_netname, multiline=True) }}"
+        vars:
+          _regex_ip: "{{ vbox_hostonlyif_ip_regex }}"
+          _regex_netmask: "{{ vbox_hostonlyif_netmask_regex }}"
+          _regex_netname: "{{ vbox_hostonlyif_netname_regex }}"
+
+      - name: Get hostonly interface configuration.
+        ansible.builtin.set_fact:
+          hostonlyif_ip: "{{ hostonlyif_ips[hostonlyif_index | int] }}"
+          hostonlyif_net: "{{ hostonlyif_nets[hostonlyif_index | int] }}"
+          hostonlyif_netname: "{{ hostonlyif_names[hostonlyif_index | int] }}"
+
+      - name: Verify the hostonly interface configuration.
+        assert:
+          that:
+            - "hostonlyif_ip == vbox_hostonlyif_ip"
+            - "hostonlyif_net == vbox_hostonlyif_netmask"
+      rescue:
+        - name: Delete newly created hostonly interface.
+          ansible.builtin.command:
+            cmd: "VBoxManage hostonlyif remove {{ hostonlyif_name }}"
+          when: "hostonlyif_present == False"
+
+        - fail:
+            msg: >
+              Cannot figure out the hostonly interface configuration!
+              '{{ vbox_hostonlyif_name }}' does not have the expected
+              network configuration.
+              Revisit the Vbox-host configuration file!
+
+    - name: List DHCP servers.
+      ansible.builtin.command:
+        cmd: "VBoxManage list dhcpservers"
+      register: dhcpservers
+
+    - name: Get DHCP server names.
+      ansible.builtin.set_fact:
+        dhcpserver_names: "{{ dhcpservers.stdout | regex_findall(_regex, multiline=True) }}"
+      vars:
+        _regex: "{{ vbox_dhcp_netname_regex }}"
+
+    - name: Check DHCP server existence.
+      ansible.builtin.set_fact:
+        dhcpserver_present: "{{ hostonlyif_netname in dhcpserver_names }}"
+
+    - name: DHCP server not found; try to create.
+      block:
+        - name: Create DHCP server.
+          ansible.builtin.command:
+            cmd: "VBoxManage dhcpserver add --ifname={{ vbox_hostonlyif_name }} --ip={{ vbox_dhcp_ip }} --lowerip={{ vbox_dhcp_lowerip }} --upperip={{ vbox_dhcp_upperip }} --netmask={{ vbox_dhcp_netmask }} --enable"
+
+        - name: List DHCP servers (again).
+          ansible.builtin.command:
+            cmd: "VBoxManage list dhcpservers"
+          # Use _2 because this is registered even when skipped.
+          # It will be copied to the correct variable if this block is not skipped.
+          register: dhcpservers_2
+
+        - name: Get DHCP server names (again).
+          ansible.builtin.set_fact:
+            dhcpserver_names: "{{ dhcpservers_2.stdout | regex_findall(_regex, multiline=True) }}"
+          vars:
+            _regex: "{{ vbox_dhcp_netname_regex }}"
+
+        - name: (Move the result in the correct variable).
+          ansible.builtin.set_fact:
+            dhcpservers: "{{ dhcpservers_2 }}"
+      when: "dhcpserver_present == False"
+
+    - name: Get DHCP configurations.
+      ansible.builtin.set_fact:
+        dhcpserver_index: "{{ lookup('ansible.utils.index_of', data=dhcpserver_names, test='eq', value=hostonlyif_netname) }}"
+        dhcpserver_ips: "{{ dhcpservers.stdout | regex_findall(_regex_ip, multiline=True) }}"
+        dhcpserver_nets: "{{ dhcpservers.stdout | regex_findall(_regex_netmask, multiline=True) }}"
+        dhcpserver_lowers: "{{ dhcpservers.stdout | regex_findall(_regex_lower, multiline=True) }}"
+        dhcpserver_uppers: "{{ dhcpservers.stdout | regex_findall(_regex_upper, multiline=True) }}"
+      vars:
+        _regex_ip: "{{ vbox_dhcp_ip_regex }}"
+        _regex_netmask: "{{ vbox_dhcp_netmask_regex }}"
+        _regex_lower: "{{ vbox_dhcp_lower_regex }}"
+        _regex_upper: "{{ vbox_dhcp_upper_regex }}"
+
+    - name: Get alternate DHCP IPs.
+      ansible.builtin.set_fact:
+        dhcpserver_ips: "{{ dhcpservers.stdout | regex_findall(_regex_ip, multiline=True) }}"
+      vars:
+        _regex_ip: "{{ vbox_dhcp_ip_regex_alt }}"
+      when: dhcpserver_ips == []
+
+    - name: Get alternate DHCP lower IPs.
+      ansible.builtin.set_fact:
+        dhcpserver_lowers: "{{ dhcpservers.stdout | regex_findall(_regex_lower, multiline=True) }}"
+      vars:
+        _regex_lower: "{{ vbox_dhcp_lower_regex_alt }}"
+      when: dhcpserver_lowers == []
+
+    - name: Get alternate DHCP upper IPs.
+      ansible.builtin.set_fact:
+        dhcpserver_uppers: "{{ dhcpservers.stdout | regex_findall(_regex_upper, multiline=True) }}"
+      vars:
+        _regex_upper: "{{ vbox_dhcp_upper_regex_alt }}"
+      when: dhcpserver_uppers == []
+
+    - name: Get the DHCP configuration.
+      ansible.builtin.set_fact:
+        dhcpserver_ip: "{{ dhcpserver_ips[dhcpserver_index | int] }}"
+        dhcpserver_net: "{{ dhcpserver_nets[dhcpserver_index | int] }}"
+        dhcpserver_lower: "{{ dhcpserver_lowers[dhcpserver_index | int] }}"
+        dhcpserver_upper: "{{ dhcpserver_uppers[dhcpserver_index | int] }}"
+
+    - name: Verify the DHCP configuration.
+      assert:
+        that:
+          - "dhcpserver_ip == vbox_dhcp_ip"
+          - "dhcpserver_net == vbox_dhcp_netmask"
+          - "dhcpserver_lower == vbox_dhcp_lowerip"
+          - "dhcpserver_upper == vbox_dhcp_upperip"
+
+    - name: Make sure the DHCP server is enabled.
+      ansible.builtin.command:
+        cmd: "VBoxManage dhcpserver modify --ifname={{ vbox_hostonlyif_name }} --enable"
+
+    #- name: Download image files  XXX not needed - vagrant image
+    #- name: Create and register base VM  XXX vagrant
+    #- name: Configure base VM  XXX another playbook
+    #- name: Create HDD  XXX not needed - vagrant image
+    #- name: Create CD  XXX not needed - vagrant image

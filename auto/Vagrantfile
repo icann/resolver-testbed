@@ -1,0 +1,77 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+HOSTONLY_NET = "vboxnet1"
+BRIDGE_NET = "bge0"
+RESOLVER_INTNET = "restest"
+SERVER_INTNET = "servtest"
+
+# These names should be identical to the ansible inventory
+RESOLVERS_VM_NAME = "resolvers-vm"
+GATEWAY_VM_NAME = "gateway-vm"
+SERVERS_VM_NAME = "servers-vm"
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  config.vm.box_check_update = false
+
+  # The resolvers-vm
+  config.vm.define RESOLVERS_VM_NAME do |r|
+    r.vm.box = "debian/bullseye64"
+    r.vm.provider "virtualbox" do |v|
+      v.name = RESOLVERS_VM_NAME
+      v.cpus = 2
+      v.memory = "2048"
+      # XXX template away the below lines
+      v.customize ["modifyvm", :id, "--nic2", "hostonly", "--hostonlyadapter2", HOSTONLY_NET]
+      v.customize ["modifyvm", :id, "--nic3", "intnet", "--intnet3", RESOLVER_INTNET]
+      v.customize ["modifyvm", :id, "--nic4", "bridged", "--bridgeadapter4", BRIDGE_NET]
+    end
+    # XXX the script is only copying files; replace with better provisioning
+    r.vm.provision "shell", path: "helper_scripts/setup-resolvers-vm.sh"
+  end
+
+  # The gateway-vm
+  config.vm.define GATEWAY_VM_NAME do |g|
+    g.vm.box = "debian/bullseye64"
+    g.vm.provider "virtualbox" do |v|
+      v.name = GATEWAY_VM_NAME
+      v.cpus = 2
+      v.memory = "1024"
+      # XXX template away the below lines
+      v.customize ["modifyvm", :id, "--nic2", "hostonly", "--hostonlyadapter2", HOSTONLY_NET]
+      v.customize ["modifyvm", :id, "--nic3", "intnet", "--intnet3", RESOLVER_INTNET]
+      v.customize ["modifyvm", :id, "--nic4", "intnet", "--intnet4", SERVER_INTNET]
+      v.customize ["modifyvm", :id, "--nic5", "bridged", "--bridgeadapter5", BRIDGE_NET]
+    end
+    # XXX the script is only copying files; replace with better provisioning
+    g.vm.provision "shell", path: "helper_scripts/setup-gateway-vm.sh"
+  end
+
+  # The servers-vm
+  config.vm.define SERVERS_VM_NAME do |s|
+    s.vm.box = "freebsd/FreeBSD-12.3-RELEASE"
+    s.vm.provider "virtualbox" do |v|
+      v.name = SERVERS_VM_NAME
+      v.cpus = 2
+      v.memory = "2048"
+      # XXX template away the below lines
+      v.customize ["modifyvm", :id, "--nic2", "hostonly", "--hostonlyadapter2", HOSTONLY_NET]
+      v.customize ["modifyvm", :id, "--nic3", "intnet", "--intnet3", SERVER_INTNET]
+    end
+    s.vm.boot_timeout = 600
+    # XXX the script is only copying files; replace with better provisioning
+    s.vm.provision "shell", path: "helper_scripts/setup-servers-vm.sh"
+  end
+
+end

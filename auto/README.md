@@ -28,6 +28,7 @@ Current implementation
 
 TODO
 ----
+- Check Ansible inventory variable inheritance together with Vagrant inventory
 - Compile the resolver software in parallel on the resolvers-vm with Ansible
 - Run the tests and properly clean up if the test is cancelled midway
 - vboxnetN is probably not needed anymore since we rely on Vagrant for

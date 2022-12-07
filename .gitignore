@@ -2,4 +2,4 @@ Local/
 local_config.txt
 log_*
 *.pcap
-
+auto/.vagrant

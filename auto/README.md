@@ -35,5 +35,8 @@ TODO
   connecting to the VMs.
 - One place configuration instead of hunting values in different files?
   Mainly because two different tools are used (Vagrant and Ansible).
-  Idea: Jinja templating before starting anything i.e., to generate Vagrantfile
-  and host_vars?
+  ~Idea: Jinja templating before starting anything i.e., to generate Vagrantfile
+  and host_vars?~
+  Another idea: Vagrantfile is plain ruby; the Ansible inventory can be the
+  canonical configuration place and Vagrantfile just reads those YAML files.
+  Some host_vars values will only be relevant for vagrant but that is fine.

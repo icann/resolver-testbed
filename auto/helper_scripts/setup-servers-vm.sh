@@ -1,5 +1,11 @@
 #!/usr/bin/env sh
 
+# Nope operation.
+# There is a directory access error on the Vagrant shared folder with the copy
+# command that follows.
+# Running this first solves the issue.
+ls -al /vagrant > /dev/null 2>&1
+
 #### Copy the normal files that will be the config after reboot
 echo "Copy the rc.conf"
 # This sets the hostname and makes the needed sshd config

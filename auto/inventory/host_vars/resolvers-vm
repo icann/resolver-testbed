@@ -3,7 +3,7 @@
 box: "debian/bullseye64"
 
 # (Vagrant) cpus
-cpus: 1
+cpus: 2
 
 # (Vagrant) memory
 memory: 2048

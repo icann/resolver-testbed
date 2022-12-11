@@ -1,0 +1,22 @@
+---
+# (Vagrant) box - change needs recreation
+box: "debian/bullseye64"
+
+# (Vagrant) cpus
+cpus: 2
+
+# (Vagrant) memory
+memory: 1024
+
+# (Vagrant) network configuration
+networks:
+  - ['--nic2', 'hostonly', '--hostonlyadapter2', 'HOSTONLY_NET']
+  - ['--nic3', 'intnet', '--intnet3', 'RESOLVER_INTNET']
+  - ['--nic4', 'intnet', '--intnet4', 'SERVER_INTNET']
+  - ['--nic5', 'bridged', '--bridgeadapter5', 'BRIDGE_NET']
+
+# (Vagrant)
+provision: "helper_scripts/setup-gateway-vm.sh"
+
+# (Vagrant) any extra configuration for the 'vm' object
+extra: ""

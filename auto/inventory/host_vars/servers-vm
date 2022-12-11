@@ -1,0 +1,21 @@
+---
+# (Vagrant) box - change needs recreation
+box: "freebsd/FreeBSD-12.3-RELEASE"
+
+# (Vagrant) cpus
+cpus: 2
+
+# (Vagrant) memory
+memory: 2048
+
+# (Vagrant) network configuration
+networks:
+  - ['--nic2', 'hostonly', '--hostonlyadapter2', 'HOSTONLY_NET']
+  - ['--nic3', 'intnet', '--intnet3', 'SERVER_INTNET']
+
+# (Vagrant) provision
+provision: "helper_scripts/setup-servers-vm.sh"
+
+# (Vagrant) any extra configuration for the 'vm' object
+extra:
+  boot_timeout: 900

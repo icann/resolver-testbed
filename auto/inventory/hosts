@@ -1,6 +1,10 @@
-VBox-host
-
-[vms]
-resolvers-vm
-servers-vm
-gateway-vm
+all:
+  hosts:
+    VBox-host
+  children:
+    vms:
+      # Make sure to tidy the vagrant environment (destroy boxes prior of their
+      # removal here) before changing values here.
+      resolvers-vm:
+      servers-vm:
+      gateway-vm:

@@ -2,6 +2,15 @@
 # IP of the Virtual Box host
 ansible_ssh_host: 127.0.0.1
 
+# (Vagrant) Bridge network
+bridge_net: "bge0"
+
+# (Vagrant) Resolver internal network
+resolver_intnet: "restest"
+
+# (Vagrant) Server internal network
+server_intnet: "servtest"
+
 # Desired configuration for hostonly interface
 vbox_hostonlyif_name: vboxnet1
 vbox_hostonlyif_ip: 192.168.57.1
@@ -13,7 +22,7 @@ vbox_dhcp_lowerip: 192.168.57.2
 vbox_dhcp_upperip: 192.168.57.254
 vbox_dhcp_netmask: 255.255.255.0
 
-# Tool configuration follows; should not edit
+# Tool configuration follows; SHOULD NOT EDIT
 
 # Regex for hostonly interface creation
 # Output of 'VBoxManage hostonlyif create'

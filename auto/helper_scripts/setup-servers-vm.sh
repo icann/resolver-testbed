@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
 #### Copy the normal files that will be the config after reboot
-#echo "Copy the rc.conf"
-## This sets the hostname and makes the needed sshd config
-#cp /vagrant/files/servers-rc.conf /etc/rc.conf  || exit
-#echo "Set the resolver"
-#cp /vagrant/files/resolv-with-8844 /etc/resolv.conf || exit
+echo "Copy the rc.conf"
+# This sets the hostname and makes the needed sshd config
+cp /vagrant/files/servers-rc.conf /etc/rc.conf || exit
+echo "Set the resolver"
+cp /vagrant/files/resolv-with-8844 /etc/resolv.conf || exit
 
 # XXX This can happen later with Ansible
 #echo "Installing from pkg"

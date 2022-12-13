@@ -40,3 +40,17 @@ TODO
   Another idea: Vagrantfile is plain ruby; the Ansible inventory can be the
   canonical configuration place and Vagrantfile just reads those YAML files.
   Some host_vars values will only be relevant for vagrant but that is fine.
+
+NOTES
+-----
+- There is a dependency on the ansible utils plugin, which needs to be
+  installed with: `ansible-galaxy collection install ansible.utils`
+- The bridge_net or BRIDGE_NET VirtualBox network is only necessary on our
+  FreeBSD machine where VirtualBox NAT doesn't work. To run this on different
+  systems, there should be no nic5 and no nic4 in gateway-vm and resolvers-vm.
+  I commented out the lines containing:
+  `['--nic5', 'bridged', '--bridgeadapter5', 'BRIDGE_NET']` in
+  `auto/inventory/host_vars/gateway-vm` and
+  `['--nic4', 'bridged', '--bridgeadapter4', 'BRIDGE_NET']` in
+  `auto/inventory/host_vars/resolvers-vm`.
+

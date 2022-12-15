@@ -1,0 +1,51 @@
+---
+- hosts: servers-vm
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: rc.conf for hostname/network/system configuration.
+      ansible.builtin.copy:
+        src: files/servers-rc.conf
+        dest: /etc/rc.conf
+
+    - name: Set the resolver.
+      ansible.builtin.copy:
+        src: files/resolve-with-8844
+        dest: /etc/resolv.conf
+
+    - name: Making the bind-configs directory.
+      ansible.builtin.file:
+        path: /root/bind-configs
+        state: directory
+
+    - name: Copying the root files.
+      ansible.builtin.copy:
+        src: files/root-zone-basic/
+        dest: /root/bind-configs
+
+    - name: rc.local for named and ipfw init.
+      ansible.builtin.copy:
+        src: files/servers-rc.local
+        dest: /etc/rc.local
+
+    - name: Copy ipfw configuration.
+      ansible.builtin.copy:
+        src: files/servers-ipfw-long-to-short.sh
+        dest: /root/servers-ipfw-long-to-short.sh
+        mode: "a+x"
+
+    - name: Install packages.
+      community.general.pkgng:
+        name:
+          - bind916
+          - wget
+          - nano
+          - vim
+          - ca_root_nss
+        state: present
+
+    - name: Making boot faster; always autoboot.
+      ansible.builtin.copy:
+        content: 'autoboot_delay="-1"'
+        dest: /boot/loader.conf

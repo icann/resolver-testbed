@@ -20,6 +20,7 @@ cp /vagrant/ansible/files/resolv-with-8844 /etc/resolv.conf || exit
 #mkdir /root/bind-configs || exit
 #echo "Copying root files"
 #cp /vagrant/files/root-zone-basic/* /root/bind-configs || exit
+
 #echo "Copy the rc.local"
 #cp /vagrant/files/servers-rc.local /etc/rc.local
 #echo "Setting permissions on servers-ipfw-long-to-short.sh"

@@ -10,8 +10,8 @@
         dest: /etc/network/interfaces
 
     - name: Set hostname.
-      ansible.builtin.template:
-        src: templates/linux_hostname.j2
+      ansible.builtin.copy:
+        content: "{{ inventory_hostname }}\n"
         dest: /etc/hostname
 
     - ansible.builtin.import_tasks:

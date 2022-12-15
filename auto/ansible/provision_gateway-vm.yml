@@ -1,0 +1,20 @@
+---
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+
+  tasks:
+    - ansible.builtin.import_tasks:
+        file: tasks/ping.yml
+
+    - ansible.builtin.import_tasks:
+        file: tasks/install_generic_packages_apt.yml
+
+    - name: Install VM specific packages
+      ansible.builtin.apt:
+        pkg:
+          - tcpdump
+          - dtach
+          - iptables
+        state: present
+        update_cache: yes

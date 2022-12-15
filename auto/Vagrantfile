@@ -5,10 +5,10 @@
 require 'yaml'
 
 # Read the hosts configuration.
-hosts_conf = YAML.load_file('inventory/hosts')
+hosts_conf = YAML.load_file('ansible/hosts')
 
 # Read the VirtualBox host configuration.
-vbox_conf = YAML.load_file('inventory/host_vars/VBox-host')
+vbox_conf = YAML.load_file('ansible/host_vars/VBox-host')
 
 # These are used in each VM inventory host_vars file for the network names.
 # They are eval'ed later.
@@ -34,14 +34,15 @@ Vagrant.configure(2) do |config|
   # Setup each configured VM.
   hosts_conf['all']['children']['vms'].each do |vhost, _|
     config.vm.define vhost do |h|
-      vm_conf = YAML.load_file('inventory/host_vars/' + vhost)
+      vm_conf = YAML.load_file('ansible/host_vars/' + vhost)
       h.vm.box = vm_conf['box']
       h.vm.provider "virtualbox" do |v|
         v.name = vhost
         v.cpus = vm_conf['cpus']
         v.memory = vm_conf['memory']
         vm_conf['networks'].each do |n|
-          v.customize ["modifyvm", :id, n[0], n[1], n[2], eval(n[3])]
+          a = n['vbox_arguments']
+          v.customize ["modifyvm", :id, a[0], a[1], a[2], eval(a[3])]
         end
       end
       if vm_conf['extra'].nil? || vm_conf['extra'].empty?
@@ -51,8 +52,25 @@ Vagrant.configure(2) do |config|
             h.vm.instance_variable_set('@'+k, v)
         end
       end
-      # XXX the script is only copying files; replace with better provisioning?
-      h.vm.provision "shell", path: vm_conf['provision']
+
+      # Provision the network once...
+      if vm_conf['provision']['net_script'].nil? || vm_conf['provision']['net_script'].empty?
+        h.vm.provision "ansible" do |ansible|
+          ansible.playbook = vm_conf['provision']['net_playbook']
+        end
+      else
+        h.vm.provision "shell", path: vm_conf['provision']['net_script']
+      end
+      # ... and shutdown
+      h.vm.provision "shell", inline: vm_conf['provision']['shutdown_inline']
+      # Run the normal provisioning the rest of the time
+      if vm_conf['provision']['playbook'].nil? || vm_conf['provision']['playbook'].empty?
+        # Left empty for ruby's weird empty check above
+      else
+        h.vm.provision "ansible", run: "always" do |ansible|
+          ansible.playbook = vm_conf['provision']['playbook']
+        end
+      end
     end
   end
 

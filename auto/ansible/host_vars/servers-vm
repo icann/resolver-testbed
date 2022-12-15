@@ -10,11 +10,13 @@ memory: 2048
 
 # (Vagrant) network configuration
 networks:
-  - ['--nic2', 'hostonly', '--hostonlyadapter2', 'HOSTONLY_NET']
-  - ['--nic3', 'intnet', '--intnet3', 'SERVER_INTNET']
+  - vbox_arguments: ['--nic2', 'hostonly', '--hostonlyadapter2', 'HOSTONLY_NET']
+  - vbox_arguments: ['--nic3', 'intnet', '--intnet3', 'SERVER_INTNET']
 
 # (Vagrant) provision
-provision: "helper_scripts/setup-servers-vm.sh"
+provision:
+  net_script: "helper_scripts/setup-servers-vm.sh"
+  shutdown_inline: "echo Shutting down; sleep 1; shutdown -p now"
 
 # (Vagrant) any extra configuration for the 'vm' object
 extra:

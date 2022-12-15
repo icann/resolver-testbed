@@ -1,0 +1,30 @@
+auto lo
+iface lo inet loopback
+
+# Vagrant NAT
+auto enp0s3
+iface enp0s3 inet dhcp
+metric 100  # Low preference on this default route (NAT)
+
+{% for n in networks %}
+auto {{ n.name }}
+{% if 'v4' in n %}
+iface {{ n.name }} inet {{ n.v4.type }}
+{% if 'addr' in n.v4 %}
+address {{ n.v4.addr }}
+{% endif %}
+{% if 'metric' in n.v4 %}
+metric {{ n.v4.metric }}
+{% endif %}
+{% endif %}
+{% if 'v6' in n %}
+iface {{ n.name }} inet6 {{ n.v6.type }}
+{% if 'addr' in n.v6 %}
+address {{ n.v6.addr }}
+{% endif %}
+{% if 'metric' in n.v6 %}
+metric {{ n.v6.metric }}
+{% endif %}
+{% endif %}
+
+{% endfor %}

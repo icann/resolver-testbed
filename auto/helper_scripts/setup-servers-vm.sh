@@ -29,7 +29,8 @@ cp /vagrant/files/resolv-with-8844 /etc/resolv.conf || exit
 echo "Making boot faster; always autoboot"
 echo 'autoboot_delay="-1"' >/boot/loader.conf
 
-### Finish up
-echo "Shutting down"
-sleep 2
-shutdown -p now
+# XXX seperate provisioner
+# ### Finish up
+# echo "Shutting down"
+# sleep 2
+# shutdown -p now

@@ -48,9 +48,7 @@ NOTES
 - The bridge_net or BRIDGE_NET VirtualBox network is only necessary on our
   FreeBSD machine where VirtualBox NAT doesn't work. To run this on different
   systems, there should be no nic5 and no nic4 in gateway-vm and resolvers-vm.
-  I commented out the lines containing:
-  `['--nic5', 'bridged', '--bridgeadapter5', 'BRIDGE_NET']` in
-  `auto/inventory/host_vars/gateway-vm` and
-  `['--nic4', 'bridged', '--bridgeadapter4', 'BRIDGE_NET']` in
-  `auto/inventory/host_vars/resolvers-vm`.
+  I commented out the following network items:
+  - `enp0s16` in `auto/ansible/host_vars/gateway-vm`, and
+  - `enp0s10` in `auto/ansible/host_vars/resolvers-vm`.
 

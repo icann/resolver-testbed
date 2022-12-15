@@ -1,0 +1,24 @@
+---
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Configure interfaces.
+      ansible.builtin.template:
+        src: templates/linux_interfaces.j2
+        dest: /etc/network/interfaces
+
+    - name: Set hostname.
+      ansible.builtin.template:
+        src: templates/linux_hostname.j2
+        dest: /etc/hostname
+
+    - ansible.builtin.import_tasks:
+        file: tasks/resolv.conf.yml
+
+    - name: Configure for NAT
+      ansible.builtin.copy:
+        src: files/rc-local-on-gateway-vm
+        dest: /etc/rc.local
+        mode: "u+x"

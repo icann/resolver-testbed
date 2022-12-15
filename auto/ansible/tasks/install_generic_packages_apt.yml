@@ -1,0 +1,7 @@
+---
+- name: Install generic packages
+  ansible.builtin.apt:
+    pkg:
+      - vim
+      - tmux
+    update_cache: yes

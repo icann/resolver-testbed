@@ -11,7 +11,7 @@
 
     - name: Set the resolver.
       ansible.builtin.copy:
-        src: files/resolve-with-8844
+        src: files/resolv-with-8844
         dest: /etc/resolv.conf
 
     - name: Making the bind-configs directory.

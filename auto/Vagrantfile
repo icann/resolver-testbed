@@ -54,12 +54,25 @@ Vagrant.configure(2) do |config|
       end
 
       # Provision the network once...
+      # ... first net_inline if present ...
+      if vm_conf['provision']['net_inline'].nil? || vm_conf['provision']['net_inline'].empty?
+        # Left empty for ruby's weird empty check above
+      else
+        h.vm.provision "shell", inline: vm_conf['provision']['net_inline']
+      end
+      # ... then net_script if present ...
       if vm_conf['provision']['net_script'].nil? || vm_conf['provision']['net_script'].empty?
+        # Left empty for ruby's weird empty check above
+      else
+        h.vm.provision "shell", path: vm_conf['provision']['net_script']
+      end
+      # ... then net_playbook if present ...
+      if vm_conf['provision']['net_playbook'].nil? || vm_conf['provision']['net_playbook'].empty?
+        # Left empty for ruby's weird empty check above
+      else
         h.vm.provision "ansible" do |ansible|
           ansible.playbook = vm_conf['provision']['net_playbook']
         end
-      else
-        h.vm.provision "shell", path: vm_conf['provision']['net_script']
       end
       # ... and shutdown
       h.vm.provision "shell", inline: vm_conf['provision']['shutdown_inline']

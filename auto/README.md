@@ -24,16 +24,20 @@ Current implementation
   issue `vagrant reload --provision servers-vm` to continue initial provisioning.
 - VMs will be shutdown after initial provisioning for configuration to take
   effect with the next boot; `vagrant up` to bring them up.
+- Provision the resolvers-vm and gateway-vm with
+  `ansible-playbook ansible/provision_resolvers-vm.yml` and
+  `ansible-playbook ansible/provision_gateway-vm.yml`.
 - Further interaction with the VMs should only be done through vagrant cli.
 
 TODO
 ----
-- Check Ansible inventory variable inheritance together with Vagrant inventory
+- Figure out if vagrant can not delete entries from the inventory upon shutdown.
 - Compile the resolver software in parallel on the resolvers-vm with Ansible
 - Run the tests and properly clean up if the test is cancelled midway
 - vboxnetN is probably not needed anymore since we rely on Vagrant for
   connecting to the VMs.
-- One place configuration instead of hunting values in different files?
+- [DONE] Check Ansible inventory variable inheritance together with Vagrant inventory
+- [DONE] One place configuration instead of hunting values in different files?
   Mainly because two different tools are used (Vagrant and Ansible).
   ~Idea: Jinja templating before starting anything i.e., to generate Vagrantfile
   and host_vars?~

@@ -1,0 +1,65 @@
+p53. 60 IN SOA a.p53. foo.p53. 2019080499 1800 900 604800 60
+p53. 60 IN NS a.some-servers.p53.
+p53. 60 IN NS b.some-servers.p53.
+p53. 60 IN NS c.some-servers.p53.
+p53. 60 IN NS d.some-servers.p53.
+p53. 60 IN NS e.some-servers.p53.
+p53. 60 IN NS f.some-servers.p53.
+p53. 60 IN NS g.some-servers.p53.
+p53. 60 IN NS h.some-servers.p53.
+p53. 60 IN NS i.some-servers.p53.
+p53. 60 IN NS j.some-servers.p53.
+p53. 60 IN NS k.some-servers.p53.
+p53. 60 IN NS l.some-servers.p53.
+p53. 60 IN NS m.some-servers.p53.
+; This is a key-signing key, keyid 28021, for p53.
+; Created: 20190804162106 (Sun Aug  4 09:21:06 2019)
+; Publish: 20190804162106 (Sun Aug  4 09:21:06 2019)
+; Activate: 20190804162106 (Sun Aug  4 09:21:06 2019)
+p53. 60 IN DNSKEY 257 3 8 AwEAAc4V3hMIO721IK616AXGpBnIFKy8DBdzDqP9Efe6PSpPjG94yi9Z viT6iV6IXcTE7XnttN3pZmNEgJHjZB66pVy446/Fxrj00E9E8utw3RhY 81IRjXHKCt33km7q7sYbqe6F6r7zgHzHESCjPLJieMU7A6J2g7l8xxXL vFokjM9bs7lOeaUJWqake7ayLH3Gq7mOYS4KknoS7rm2IVz8yBD5ryKL TL4Ek4TuMNaarByhCpgAJlDvRtahu2DwV+2NExKaR2zdfWG+W3evP8/W LxH+IuhNg1T9JDlM+dMGhFMJrL4VHLlgC5u64gjnZPVEEXbNrrsAWSVZ mLX11CDQgS0=
+
+; This is a zone-signing key, keyid 32811, for p53.
+; Created: 20190804162106 (Sun Aug  4 09:21:06 2019)
+; Publish: 20190804162106 (Sun Aug  4 09:21:06 2019)
+; Activate: 20190804162106 (Sun Aug  4 09:21:06 2019)
+p53. 60 IN DNSKEY 256 3 8 AwEAAdBp3p0GPYfa0aIey6uj+xRmOpiGD/KCtaiM/FC/ES9pp5n2CgiN 4x49XS+W395KGH3u3X+vhbHOZ6FDL+60/dUVMVcVF3TWUhvrPS4XDwqT QlAJEPKLpTdpNi044dV2jJcL73SDCqYtjOBguBzNGj/8Z/G3eSLoS+tl UyTAunW8/Br99piYd5vNLzzPrnUdZ74QvX5qYrC6w2BrpOBG/2+EwdxV j9o1U+zjgv1iOzaV1fxbhV8nmeMe6EsJLdMiU8b/R3iDyye4tdkuJtrI ivgMwhmnrTXtH3UFITVVXxTpQXwe2LvCTEsLNR/pMNefZeSPF4kFj+Jf DqcU/TJd0Ck=
+
+some-servers.p53. 60 IN NS a.some-servers.p53.
+some-servers.p53. 60 IN NS b.some-servers.p53.
+some-servers.p53. 60 IN NS c.some-servers.p53.
+some-servers.p53. 60 IN NS d.some-servers.p53.
+some-servers.p53. 60 IN NS e.some-servers.p53.
+some-servers.p53. 60 IN NS f.some-servers.p53.
+some-servers.p53. 60 IN NS g.some-servers.p53.
+some-servers.p53. 60 IN NS h.some-servers.p53.
+some-servers.p53. 60 IN NS i.some-servers.p53.
+some-servers.p53. 60 IN NS j.some-servers.p53.
+some-servers.p53. 60 IN NS k.some-servers.p53.
+some-servers.p53. 60 IN NS l.some-servers.p53.
+some-servers.p53. 60 IN NS m.some-servers.p53.
+a.some-servers.p53. 60 IN A 172.21.101.1
+b.some-servers.p53. 60 IN A 172.21.102.1
+c.some-servers.p53. 60 IN A 172.21.103.1
+d.some-servers.p53. 60 IN A 172.21.104.1
+e.some-servers.p53. 60 IN A 172.21.105.1
+f.some-servers.p53. 60 IN A 172.21.106.1
+g.some-servers.p53. 60 IN A 172.21.107.1
+h.some-servers.p53. 60 IN A 172.21.108.1
+i.some-servers.p53. 60 IN A 172.21.109.1
+j.some-servers.p53. 60 IN A 172.21.109.10
+k.some-servers.p53. 60 IN A 172.21.109.11
+l.some-servers.p53. 60 IN A 172.21.109.12
+m.some-servers.p53. 60 IN A 172.21.109.13
+a.some-servers.p53. 60 IN AAAA fd00::21:101:1
+b.some-servers.p53. 60 IN AAAA fd00::21:102:1
+c.some-servers.p53. 60 IN AAAA fd00::21:103:1
+d.some-servers.p53. 60 IN AAAA fd00::21:104:1
+e.some-servers.p53. 60 IN AAAA fd00::21:105:1
+f.some-servers.p53. 60 IN AAAA fd00::21:106:1
+g.some-servers.p53. 60 IN AAAA fd00::21:107:1
+h.some-servers.p53. 60 IN AAAA fd00::21:108:1
+i.some-servers.p53. 60 IN AAAA fd00::21:109:1
+j.some-servers.p53. 60 IN AAAA fd00::21:110:1
+k.some-servers.p53. 60 IN AAAA fd00::21:111:1
+l.some-servers.p53. 60 IN AAAA fd00::21:112:1
+m.some-servers.p53. 60 IN AAAA fd00::21:113:1

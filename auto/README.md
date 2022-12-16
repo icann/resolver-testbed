@@ -9,7 +9,7 @@ For now bullet point documentation follows.
 
 Current implementation
 ----------------------
-- Configure inventory/host_vars/VBox-host; either specify an existing one or
+- Configure `ansible/host_vars/VBox-host`; either specify an existing one or
   the new one to be created by VirtualBox.
   Current configuration is for testing on the same VirtualBox installation as
   the old testbed so vboxnet1 with 192.168.57.0/24.
@@ -22,8 +22,10 @@ Current implementation
   Vagrant may timeout while trying to connect.
   **If that happens**, after the VM is ready (try with `vagrant ssh servers-vm`)
   issue `vagrant reload --provision servers-vm` to continue initial provisioning.
-- VMs will be shutdown after initial provisioning for configuration to take
-  effect with the next boot; `vagrant up` to bring them up.
+- VMs **need** to be reloaded for possible OS changes to take effect with
+  `vagrant reload`.
+- If system changes are needed in the future, after editing the relevant files,
+  run `vagrant provision` followed by `vagrant reload`.
 - Provision the resolvers-vm and gateway-vm with
   `ansible-playbook ansible/provision_resolvers-vm.yml` and
   `ansible-playbook ansible/provision_gateway-vm.yml`.

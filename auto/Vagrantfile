@@ -60,12 +60,14 @@ Vagrant.configure(2) do |config|
       else
         h.vm.provision "shell", inline: vm_conf['provision']['net_inline']
       end
+
       # ... then net_script if present ...
       if vm_conf['provision']['net_script'].nil? || vm_conf['provision']['net_script'].empty?
         # Left empty for ruby's weird empty check above
       else
         h.vm.provision "shell", path: vm_conf['provision']['net_script']
       end
+
       # ... then net_playbook if present ...
       if vm_conf['provision']['net_playbook'].nil? || vm_conf['provision']['net_playbook'].empty?
         # Left empty for ruby's weird empty check above
@@ -74,9 +76,17 @@ Vagrant.configure(2) do |config|
           ansible.playbook = vm_conf['provision']['net_playbook']
         end
       end
+
       # ... and shutdown
-      h.vm.provision "shell", inline: vm_conf['provision']['shutdown_inline']
-      ## Run the normal provisioning the rest of the time
+      # XXX DISABLED: recent Vagrant versions do not like that and record
+      # the host as shutdown outside of Vagrant; messes with the auto-generated
+      # inventory file.
+      #h.vm.provision "shell", inline: vm_conf['provision']['shutdown_inline']
+
+      # Run the normal provisioning the rest of the time
+      # XXX DISABLED: We need an explicit shutdown action for the VMs to be sure
+      #               that any system changes above will be enabled for all
+      #               possible OSes.
       #if vm_conf['provision']['playbook'].nil? || vm_conf['provision']['playbook'].empty?
       #  # Left empty for ruby's weird empty check above
       #  # This if is still here because servers-vm has no Ansible yet.

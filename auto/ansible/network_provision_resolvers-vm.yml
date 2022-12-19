@@ -17,10 +17,5 @@
     - ansible.builtin.import_tasks:
         file: tasks/resolv.conf.yml
 
-    - name: Provisioning done; shutting down.
-      community.general.shutdown:
-
-    - name: Wait for SSH port to disappear.
-      ansible.builtin.wait_for:
-        port: "{{ ansible_ssh_port }}"
-        state: "stopped"
+    - ansible.builtin.import_tasks:
+        file: tasks/finish_provisioning.yml

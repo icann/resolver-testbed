@@ -1,0 +1,11 @@
+---
+- name: Provisioning done; shutting down.
+  community.general.shutdown:
+
+- name: Wait for SSH port to disappear.
+  ansible.builtin.wait_for:
+    host: "{{ ansible_ssh_host }}"
+    port: "{{ ansible_ssh_port }}"
+    state: "stopped"
+  delegate_to: "localhost"
+  become: false

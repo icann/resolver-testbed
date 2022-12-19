@@ -16,7 +16,7 @@ networks:
 # (Vagrant) provision
 provision:
   net_inline: "pkg install -y python"
-  net_playbook: "ansible/network_provision_servers-vm.yml"
+  #net_playbook: "ansible/network_provision_servers-vm.yml"
   # shutdown_inline: "echo Shutting down; sleep 1; shutdown -p now"
 
 # (Vagrant) any extra configuration for the 'vm' object

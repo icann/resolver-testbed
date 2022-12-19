@@ -9,35 +9,55 @@ For now bullet point documentation follows.
 
 Current implementation
 ----------------------
-- Configure `ansible/host_vars/VBox-host`; either specify an existing one or
-  the new one to be created by VirtualBox.
+
+Virtual Box configuration
+.........................
+
+- Configure `ansible/host_vars/VBox-host`; either specify an existing host-only
+  interface or _the_ new one to be created by VirtualBox.
   Current configuration is for testing on the same VirtualBox installation as
   the old testbed so vboxnet1 with 192.168.57.0/24.
 - `ansible-playbook playbooks/setup_VirtualBox.yml`; this will setup the
   configured vboxnet and DHCP server.
-- `vagrant up`; this will fetch the images (boxes), configure them, bring them
-  up and provision their initial networking configuration.
+
+VM creation and network provisioning
+....................................
+
+- `vagrant up`; this will fetch the images (boxes), configure them and bring
+  them up.
 - servers-vm (FreeBSD) takes a lot of time for _initial_ boot; it seems to be
   installing itself.
   Vagrant may timeout while trying to connect.
-  **If that happens**, after the VM is ready (try with `vagrant ssh servers-vm`)
-  issue `vagrant reload --provision servers-vm` to continue initial provisioning.
-- VMs **need** to be reloaded for possible OS changes to take effect with
-  `vagrant reload`.
+  **If that happens**, just reissue `vagrant up` to make sure the VMs are up.
+- VMs **need** to be provisioned for their initial network/system configuration.
+  Do that with `ansible-playbook ansible/network_provision_*`; _it will shutdown the
+  VMs when done_.
+- Bring the VMs up again with `vagrant up`. This will make sure the system
+  configuration changes that were made, will take effect regardless of OS
+  services peculiarities.
 - If system changes are needed in the future, after editing the relevant files,
-  run `vagrant provision` followed by `vagrant reload`.
-- Provision the resolvers-vm and gateway-vm with
-  `ansible-playbook ansible/provision_resolvers-vm.yml` and
-  `ansible-playbook ansible/provision_gateway-vm.yml`.
-- Further interaction with the VMs should only be done through vagrant cli.
+  run `ansible-playbook ansible/network_provision_*` followed by `vagrant up`.
+- Further interaction with the Virtual Box VMs should only be done through the
+  vagrant cli.
+
+Regular provisioning
+....................
+
+- Provision the VMs with `ansible-playbook ansible/provision_*`. This will
+  ensure that the VMs are always in a predictable state and updated with the
+  latest configuration changes.
 
 TODO
 ----
-- Figure out if vagrant can not delete entries from the inventory upon shutdown.
 - Compile the resolver software in parallel on the resolvers-vm with Ansible
 - Run the tests and properly clean up if the test is cancelled midway
 - vboxnetN is probably not needed anymore since we rely on Vagrant for
   connecting to the VMs.
+- We can have cloned Virtual Boxes by using `v.linked_clone = true` in the
+  virtualbox configuration. Not done at the moment because we are actively
+  still testing and Vagrant does not destroy the master VM when the last cloned
+  VM is destroyed. For cleaner environment now, useful when we need to spin up
+  identical boxes.
 - [DONE] Check Ansible inventory variable inheritance together with Vagrant inventory
 - [DONE] One place configuration instead of hunting values in different files?
   Mainly because two different tools are used (Vagrant and Ansible).
@@ -46,6 +66,9 @@ TODO
   Another idea: Vagrantfile is plain ruby; the Ansible inventory can be the
   canonical configuration place and Vagrantfile just reads those YAML files.
   Some host_vars values will only be relevant for vagrant but that is fine.
+- [DONE] Figure out if vagrant can not delete entries from the inventory upon
+  shutdown; can't find an option/workaround. Vagrant provisioning is stripped
+  to the bare minimum for the auto-generated inventory to be created.
 
 NOTES
 -----

@@ -49,3 +49,11 @@
       ansible.builtin.copy:
         content: 'autoboot_delay="-1"'
         dest: /boot/loader.conf
+
+    - name: Provisioning done; shutting down.
+      community.general.shutdown:
+
+    - name: Wait for SSH port to disappear.
+      ansible.builtin.wait_for:
+        port: "{{ ansible_ssh_port }}"
+        state: "stopped"

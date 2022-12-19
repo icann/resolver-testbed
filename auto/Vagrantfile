@@ -69,6 +69,9 @@ Vagrant.configure(2) do |config|
       end
 
       # ... then net_playbook if present ...
+      # XXX DISABLED: change to dummy playbook to get the vagrant genrated
+      #               inventory; with current behavior makes more sense to
+      #               provision manually.
       if vm_conf['provision']['net_playbook'].nil? || vm_conf['provision']['net_playbook'].empty?
         # Left empty for ruby's weird empty check above
       else
@@ -77,24 +80,28 @@ Vagrant.configure(2) do |config|
         end
       end
 
+      # h.vm.provision 'ansible' do |ansible|
+      #   ansible.playbook = 'ansible/dummy_vagrant_provision.yml'
+      # end
+
       # ... and shutdown
       # XXX DISABLED: recent Vagrant versions do not like that and record
-      # the host as shutdown outside of Vagrant; messes with the auto-generated
-      # inventory file.
+      #               the host as shutdown outside of Vagrant; messes with the
+      #               auto-generated inventory file.
       #h.vm.provision "shell", inline: vm_conf['provision']['shutdown_inline']
 
       # Run the normal provisioning the rest of the time
       # XXX DISABLED: We need an explicit shutdown action for the VMs to be sure
       #               that any system changes above will be enabled for all
       #               possible OSes.
-      #if vm_conf['provision']['playbook'].nil? || vm_conf['provision']['playbook'].empty?
-      #  # Left empty for ruby's weird empty check above
-      #  # This if is still here because servers-vm has no Ansible yet.
-      #else
-      #  h.vm.provision "ansible", run: "always" do |ansible|
-      #    ansible.playbook = vm_conf['provision']['playbook']
-      #  end
-      #end
+      if vm_conf['provision']['playbook'].nil? || vm_conf['provision']['playbook'].empty?
+        # Left empty for ruby's weird empty check above
+        # This if is still here because servers-vm has no Ansible yet.
+      else
+        h.vm.provision "ansible", run: "always" do |ansible|
+          ansible.playbook = vm_conf['provision']['playbook']
+        end
+      end
     end
   end
 

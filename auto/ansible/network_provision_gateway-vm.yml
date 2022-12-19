@@ -22,3 +22,11 @@
         src: files/rc-local-on-gateway-vm
         dest: /etc/rc.local
         mode: "u+x"
+
+    - name: Provisioning done; shutting down.
+      community.general.shutdown:
+
+    - name: Wait for SSH port to disappear.
+      ansible.builtin.wait_for:
+        port: "{{ ansible_ssh_port }}"
+        state: "stopped"

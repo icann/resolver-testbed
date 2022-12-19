@@ -5,7 +5,7 @@ box: "freebsd/FreeBSD-12.3-RELEASE"
 # (Vagrant) cpus
 cpus: 2
 
-# (Vagrant) memory
+# (Vagrant) memory in MB
 memory: 2048
 
 # (Vagrant) network configuration

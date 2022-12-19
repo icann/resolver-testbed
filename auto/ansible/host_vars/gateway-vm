@@ -42,8 +42,8 @@ networks:
 # (Vagrant) provision configuration
 provision:
   #net_playbook: "ansible/network_provision_gateway-vm.yml"
-  playbook: "ansible/provision_gateway-vm.yml"
-  #shutdown_inline: "echo Shutting down; sleep 1; shutdown -h now"
+  #playbook: "ansible/provision_gateway-vm.yml"
+  shutdown_command: "shutdown -h now"
 
 # (Vagrant) any extra configuration for the 'vm' object
 extra: ""

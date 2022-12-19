@@ -30,15 +30,15 @@ VM creation and network provisioning
   Vagrant may timeout while trying to connect.
   **If that happens**, just reissue `vagrant up` to make sure the VMs are up.
 - VMs **need** to be provisioned for their initial network/system configuration.
-  Do that with `ansible-playbook ansible/network_provision_*`; _it will shutdown the
-  VMs when done_.
+  Do that with `ansible-playbook ansible/network_provision_*`; _it will
+  shutdown the VMs when done_.
 - Bring the VMs up again with `vagrant up`. This will make sure the system
   configuration changes that were made, will take effect regardless of OS
   services peculiarities.
 - If system changes are needed in the future, after editing the relevant files,
   run `ansible-playbook ansible/network_provision_*` followed by `vagrant up`.
 - Further interaction with the Virtual Box VMs should only be done through the
-  vagrant cli.
+  Vagrant cli to allow Vagrant specific actions to take effect.
 
 Regular provisioning
 ....................
@@ -80,4 +80,9 @@ NOTES
   I commented out the following network items:
   - `enp0s16` in `auto/ansible/host_vars/gateway-vm`, and
   - `enp0s10` in `auto/ansible/host_vars/resolvers-vm`.
+- VM state must not be altered outside of Vagrant. It will bypass Vagrant
+  specific actions like sharing the current directory with the VM and making
+  sure the NAT SSH forwarding works.
+  - Shutting down is allowed but needs to be followed by `vagrant up`.
+  - Rebooting is forbidden.
 

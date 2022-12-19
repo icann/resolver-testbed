@@ -4,8 +4,8 @@
 
 - name: Wait for SSH port to disappear.
   ansible.builtin.wait_for:
-    host: "{{ ansible_ssh_host }}"
-    port: "{{ ansible_ssh_port }}"
+    host: "{% if ansible_host is defined %}{{ ansible_host }}{% else %}{{ ansible_ssh_host }}{% endif %}"
+    port: "{% if ansible_port is defined %}{{ ansible_port }}{% else %}{{ ansible_ssh_port }}{% endif %}"
     state: "stopped"
   delegate_to: "localhost"
   become: false

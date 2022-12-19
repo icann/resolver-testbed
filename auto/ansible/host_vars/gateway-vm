@@ -38,6 +38,8 @@ networks:
     v6:
       type: auto
     vbox_arguments: ['--nic5', 'bridged', '--bridgeadapter5', 'BRIDGE_NET']
+    freebsd_only: true
+    when: ansible_facts['os_family'] == "FreeBSD"
 
 # (Vagrant) provision configuration
 provision:

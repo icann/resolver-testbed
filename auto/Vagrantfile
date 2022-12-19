@@ -42,7 +42,9 @@ Vagrant.configure(2) do |config|
         v.memory = vm_conf['memory']
         vm_conf['networks'].each do |n|
           a = n['vbox_arguments']
-          v.customize ["modifyvm", :id, a[0], a[1], a[2], eval(a[3])]
+          if ! n['freebsd_only'] || Vagrant::Util::Platform.freebsd? then
+            v.customize ["modifyvm", :id, a[0], a[1], a[2], eval(a[3])]
+          end
         end
       end
       if vm_conf['extra'].nil? || vm_conf['extra'].empty?

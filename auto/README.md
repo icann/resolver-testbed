@@ -17,7 +17,7 @@ Virtual Box configuration
   interface or _the_ new one to be created by VirtualBox.
   Current configuration is for testing on the same VirtualBox installation as
   the old testbed so vboxnet1 with 192.168.57.0/24.
-- `ansible-playbook playbooks/setup_VirtualBox.yml`; this will setup the
+- `ansible-playbook ansible/setup_VirtualBox.yml`; this will setup the
   configured vboxnet and DHCP server.
 
 VM creation and network provisioning

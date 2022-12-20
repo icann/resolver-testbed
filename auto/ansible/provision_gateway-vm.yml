@@ -7,7 +7,7 @@
     - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages_apt.yml
 
-    - name: Install VM specific packages
+    - name: Install VM specific packages.
       ansible.builtin.apt:
         pkg:
           - tcpdump

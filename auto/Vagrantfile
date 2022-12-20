@@ -82,8 +82,8 @@ Vagrant.configure(2) do |config|
       #end
 
       # This is a dummy ping command to make Vagrant auto generate an Ansible
-      # inventory.
-      h.vm.provision 'ansible' do |ansible|
+      # inventory. Run always so that the inventory is always updated.
+      h.vm.provision "ansible", run: "always" do |ansible|
         ansible.playbook = 'ansible/dummy_vagrant_provision.yml'
       end
 

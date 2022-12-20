@@ -1,8 +1,55 @@
 ---
 - hosts: resolvers-vm
-  gather_facts: false
+  gather_subset: "!all,!min,distribution_release"
   become: true
 
   tasks:
     - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages_apt.yml
+
+    - name: Add CZ.nic apt key.
+      ansible.builtin.get_url:
+        url: https://deb.knot-dns.cz/knot-latest/apt.gpg
+        dest: /etc/apt/trusted.gpg.d/knot-latest.gpg
+
+    - name: Add CZ.nic repository.
+      ansible.builtin.apt_repository:
+        repo: "deb https://deb.knot-dns.cz/knot-latest/ {{ ansible_distribution_release }} main"
+        filename: knot-latest.list
+        state: present
+        update_cache: yes
+
+    - name: Install VM specific packages.
+      ansible.builtin.apt:
+        pkg:
+          - build-essential
+          - libssl-dev
+          - libcap-dev
+          - python3-ply
+          - dnsutils
+          - pkg-config
+          - libuv1-dev
+          - libcmocka-dev
+          - libluajit-5.1-dev
+          - liblua5.1-0-dev
+          - autoconf
+          - libtool
+          - liburcu-dev
+          - libgnutls28-dev
+          - libedit-dev
+          - libldns-dev
+          - libexpat-dev
+          - libboost-dev
+          - libboost-system-dev
+          - libboost-thread-dev
+          - libboost-context-dev
+          - libknot-dev
+          - liblmdb-dev
+          - ninja-build
+        state: present
+        update_cache: yes
+
+    - name: Install meson for Python3.
+      ansible.builtin.pip:
+        name: meson
+        executable: pip3

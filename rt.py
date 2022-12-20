@@ -25,7 +25,7 @@ RESOLVER_LIBRARIES = [
     "apt install -y python3-pip",
     "pip3 install meson",
     "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
-    "wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
+    "wget -O /etc/apt/trusted.gpg.d/knot.gpg https://deb.knot-dns.cz/apt.gpg",
     "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
     "apt update",
     "apt install -y libknot-dev liblmdb-dev ninja-build"

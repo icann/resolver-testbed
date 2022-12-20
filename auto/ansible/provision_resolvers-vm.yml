@@ -9,8 +9,8 @@
 
     - name: Add CZ.nic apt key.
       ansible.builtin.get_url:
-        url: https://deb.knot-dns.cz/knot-latest/apt.gpg
-        dest: /etc/apt/trusted.gpg.d/knot-latest.gpg
+        url: https://deb.knot-dns.cz/apt.gpg
+        dest: /etc/apt/trusted.gpg.d/knot.gpg
 
     - name: Add CZ.nic repository.
       ansible.builtin.apt_repository:

@@ -40,7 +40,6 @@ VM_INFO = {
 
 CLI_COMMANDS = [
     "help",
-    "initial_vm_config",
     "make_resolvers",
     "refresh_repo",
     "run_test"

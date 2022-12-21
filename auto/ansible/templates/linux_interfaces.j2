@@ -29,10 +29,10 @@ address {{ n.v6.addr }}
 {% if 'metric' in n.v6 %}
 metric {{ n.v6.metric }}
 {% endif %}
-#{% if 'static_route' in n.v6 %}
-#up ip route add {{ n.v6.static_route.network }} via {{ n.v6.static_route.gateway }}
-#down ip route del {{ n.v6.static_route.network }} via {{ n.v6.static_route.gateway }}
-#{% endif %}
+{% if 'static_route' in n.v6 %}
+up ip route add {{ n.v6.static_route.network }} via {{ n.v6.static_route.gateway }}
+down ip route del {{ n.v6.static_route.network }} via {{ n.v6.static_route.gateway }}
+{% endif %}
 {% endif %}
 
 {% endfor %}

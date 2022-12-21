@@ -17,8 +17,8 @@ address {{ n.v4.addr }}
 metric {{ n.v4.metric }}
 {% endif %}
 {% if 'static_route' in n.v4 %}
-post-up route add -net {{ n.v4.static_route.network }} netmask {{ n.v4.static_route.netmask }} gw {{ n.v4.static_route.gateway }}
-pre-down route del -net {{ n.v4.static_route.network }} netmask {{ n.v4.static_route.netmask }} gw {{ n.v4.static_route.gateway }}
+up ip route add {{ n.v4.static_route.network }} via {{ n.v4.static_route.gateway }}
+down ip route del {{ n.v4.static_route.network }} via {{ n.v4.static_route.gateway }}
 {% endif %}
 {% endif %}
 {% if 'v6' in n %}

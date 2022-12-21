@@ -6,6 +6,8 @@ require 'yaml'
 
 # Read the hosts configuration.
 hosts_conf = YAML.load_file('ansible/hosts')
+#hosts_extensions_conf = YAML.load_file('../../ansible/hosts')
+#hosts_conf += hosts_extensions_conf
 
 # Read the VirtualBox host configuration.
 vbox_conf = YAML.load_file('ansible/host_vars/VBox-host')
@@ -35,6 +37,9 @@ Vagrant.configure(2) do |config|
   hosts_conf['all']['children']['vms'].each do |vhost, _|
     config.vm.define vhost do |h|
       vm_conf = YAML.load_file('ansible/host_vars/' + vhost)
+      #vm_extension_conf = YAML.load_file('../../ansible/host_vars/' + vhost)
+      #vm_conf += vm_extension_conf
+
       h.vm.box = vm_conf['box']
       h.vm.provider "virtualbox" do |v|
         v.name = vhost

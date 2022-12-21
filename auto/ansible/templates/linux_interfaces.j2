@@ -16,6 +16,10 @@ address {{ n.v4.addr }}
 {% if 'metric' in n.v4 %}
 metric {{ n.v4.metric }}
 {% endif %}
+{% if 'static_route' in n.v4 %}
+post-up route add -net {{ n.v4.static_route.network }} netmask {{ n.v4.static_route.netmask }} gw {{ n.v4.static_route.gateway }}
+pre-down route del -net {{ n.v4.static_route.network }} netmask {{ n.v4.static_route.netmask }} gw {{ n.v4.static_route.gateway }}
+{% endif %}
 {% endif %}
 {% if 'v6' in n %}
 iface {{ n.name }} inet6 {{ n.v6.type }}
@@ -25,6 +29,10 @@ address {{ n.v6.addr }}
 {% if 'metric' in n.v6 %}
 metric {{ n.v6.metric }}
 {% endif %}
+#{% if 'static_route' in n.v6 %}
+#post-up route add -net {{ n.v6.static_route.network }} netmask {{ n.v6.static_route.netmask }} gw {{ n.v6.static_route.gateway }}
+#pre-down route del -net {{ n.v6.static_route.network }} netmask {{ n.v6.static_route.netmask }} gw {{ n.v6.static_route.gateway }}
+#{% endif %}
 {% endif %}
 
 {% endfor %}

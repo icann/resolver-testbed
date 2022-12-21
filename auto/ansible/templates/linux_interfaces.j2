@@ -30,8 +30,8 @@ address {{ n.v6.addr }}
 metric {{ n.v6.metric }}
 {% endif %}
 #{% if 'static_route' in n.v6 %}
-#post-up route add -net {{ n.v6.static_route.network }} netmask {{ n.v6.static_route.netmask }} gw {{ n.v6.static_route.gateway }}
-#pre-down route del -net {{ n.v6.static_route.network }} netmask {{ n.v6.static_route.netmask }} gw {{ n.v6.static_route.gateway }}
+#up ip route add {{ n.v6.static_route.network }} via {{ n.v6.static_route.gateway }}
+#down ip route del {{ n.v6.static_route.network }} via {{ n.v6.static_route.gateway }}
 #{% endif %}
 {% endif %}
 

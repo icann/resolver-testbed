@@ -1,0 +1,20 @@
+---
+- name: Per software compilation tasks.
+  block:
+  - name: test
+    debug:
+      var: hostvars
+
+  - name: Get the source and decompress.
+    ansible.builtin.get_url:
+      url: "{{ url }}"
+      decompress: true
+      dest: "{{ BUILD_SOURCE_DIR }}/{{ host_name }}"
+
+  - name: Stop!
+    ansible.builtin.meta: end_play
+
+      #- name: Make sure we have the directory.
+      #- name: Make the source.
+
+  delegate_to: "{{ on_host }}"

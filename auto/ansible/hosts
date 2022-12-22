@@ -2,9 +2,10 @@ all:
   hosts:
     VBox-host
   children:
+    # Make sure to tidy the vagrant environment (destroy boxes prior of their
+    # removal here) before changing values here.
     vms:
-      # Make sure to tidy the vagrant environment (destroy boxes prior of their
-      # removal here) before changing values here.
-      resolvers-vm:
-      gateway-vm:
-      servers-vm:
+      hosts:
+        resolvers-vm:
+        gateway-vm:
+        servers-vm:

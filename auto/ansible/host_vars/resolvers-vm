@@ -47,3 +47,41 @@ provision:
 
 # (Vagrant) any extra configuration for the 'vm' object
 extra:
+
+build_config:
+  templates:
+  software:
+    bind-9.9.11:
+      url: "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz"
+    bind-9.10.8:
+      url: "https://ftp.isc.org/isc/bind9/9.10.8/bind-9.10.8.tar.gz"
+    bind-9.11.6:
+      url: "https://ftp.isc.org/isc/bind9/9.11.6/bind-9.11.6.tar.gz"
+    bind-9.12.4:
+      url: "https://ftp.isc.org/isc/bind9/9.12.4/bind-9.12.4.tar.gz"
+    bind-9.13.7:
+      url: "https://ftp.isc.org/isc/bind9/9.13.7/bind-9.13.7.tar.gz"
+    bind-9.14.10:
+      url: "https://ftp.isc.org/isc/bind9/9.14.10/bind-9.14.10.tar.gz"
+    bind-9.15.8:
+      url: "https://ftp.isc.org/isc/bind9/9.15.8/bind-9.15.8.tar.xz"
+    knot-resolver-4.1.0:
+      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.1.0.tar.xz"
+    knot-resolver-5.0.0:
+      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.0.0.tar.xz"
+    pdns-recursor-4.0.9:
+      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
+    pdns-recursor-4.1.15:
+      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.1.15.tar.bz2"
+    pdns-recursor-4.2.1:
+      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.2.1.tar.bz2"
+    unbound-1.5.10:
+      url: "http://unbound.net/downloads/unbound-1.5.10.tar.gz"
+    unbound-1.6.8:
+      url: "http://unbound.net/downloads/unbound-1.6.8.tar.gz"
+    unbound-1.7.3:
+      url: "http://unbound.net/downloads/unbound-1.7.3.tar.gz"
+    unbound-1.8.3:
+      url: "http://unbound.net/downloads/unbound-1.8.3.tar.gz"
+    unbound-1.9.6:
+      url: "http://unbound.net/downloads/unbound-1.9.6.tar.gz"

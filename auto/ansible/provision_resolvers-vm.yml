@@ -4,6 +4,23 @@
   become: true
 
   tasks:
+    - name: Add the build software as hosts.
+      ansible.builtin.add_host:
+        name: "{{ item.key }}"
+        groups: build_group
+        url: "{{ item.value['url'] }}"
+        host_name: "{{ item.key }}"
+      loop: "{{ build_config['software'] | dict2items }}"
+      # loop: "{{ build_config['software'] | dict2items | selectattr('key', 'equalto', 'unbound-1.5.10') }}"
+
+    - name: Make sure the needed directories are there.
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ BUILD_SOURCE_DIR }}"
+        - "{{ BUILD_TARGET_DIR }}"
+
     - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages_apt.yml
 
@@ -53,3 +70,12 @@
       ansible.builtin.pip:
         name: meson
         executable: pip3
+
+- hosts: build_group
+  gather_facts: false
+  become: true
+  vars:
+    on_host: resolvers-vm
+  tasks:
+    - ansible.builtin.import_tasks:
+        file: tasks/compile_resolver.yml

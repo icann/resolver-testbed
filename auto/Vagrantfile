@@ -95,7 +95,7 @@ Vagrant.configure(2) do |config|
         (vm_conf['networks'] + extra_networks).each do |n|
           a = n['vbox_arguments']
           # Enable any bridge interfaces conditionally
-          if a[3] == 'BRIDGE_NET' and use_bridge and ! BRIDGE_NET.empty? then
+          if a[3] != 'BRIDGE_NET' || (use_bridge and ! BRIDGE_NET.empty?) then
             v.customize ["modifyvm", :id, a[0], a[1], a[2], eval(a[3])]
           end
         end

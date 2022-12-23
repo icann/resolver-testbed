@@ -4,54 +4,106 @@
 # Require YAML module to parse the Ansible inventory configuration.
 require 'yaml'
 
-# Read the hosts configuration.
-hosts_conf = YAML.load_file('ansible/hosts')
-#hosts_extensions_conf = YAML.load_file('../../ansible/hosts')
-#hosts_conf += hosts_extensions_conf
+# Helper - Try to read YAML contents if a condition is true and the file exists.
+def yaml_contents(filepath, as_long_as: true, otherwise: {})
+  if as_long_as and ! filepath.empty? and File.file?(filepath) then
+    YAML.load_file(filepath)
+  else
+    otherwise
+  end
+end
 
-# Read the VirtualBox host configuration.
+# Helper - Try to get a value from a hash
+def get_value(dict, name, as_long_as: true, otherwise: '')
+  if as_long_as and ! name.empty? and ! dict.empty? and dict.has_key?(name) then
+    dict[name]
+  else
+    otherwise
+  end
+end
+
+# Read optional local (non-versioned) configuration
+local_conf = yaml_contents '.local_config.yml'
+extra_hosts_path = get_value local_conf, 'extra_hosts_path'
+extra_host_vars_path = get_value local_conf, 'extra_host_vars_path'
+use_bridge = get_value local_conf, 'use_bridge', otherwise: false
+use_linked_clones = get_value local_conf, 'use_linked_clones', otherwise: false
+
+# Read the hosts file ...
+hosts_conf = YAML.load_file('ansible/hosts')
+# ... and any extra local host file
+extra_hosts_conf = yaml_contents extra_hosts_path, as_long_as: ! extra_hosts_path.empty?
+
+# Read the VirtualBox host configuration ...
 vbox_conf = YAML.load_file('ansible/host_vars/VBox-host')
+# ... and any extra local configuration
+extra_vbox_conf = yaml_contents extra_host_vars_path + '/VBox-host', as_long_as: ! extra_host_vars_path.empty?
+vbox_conf.merge!(extra_vbox_conf)
 
 # These are used in each VM inventory host_vars file for the network names.
 # They are eval'ed later.
 HOSTONLY_NET = vbox_conf['vbox_hostonlyif_name']
-BRIDGE_NET = vbox_conf['bridge_net']
 RESOLVER_INTNET = vbox_conf['resolver_intnet']
 SERVER_INTNET = vbox_conf['server_intnet']
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
-Vagrant.configure(2) do |config|
-  # The most common configuration options are documented and commented below.
-  # For a complete reference, please see the online documentation at
-  # https://docs.vagrantup.com.
+# The bridge network is only relevant based on local configuration
+BRIDGE_NET = get_value vbox_conf, 'bridge_net'
 
+Vagrant.configure(2) do |config|
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
   config.vm.box_check_update = false
 
-  # Setup each configured VM.
-  hosts_conf['all']['children']['vms']['hosts'].each do |vhost, _|
-    config.vm.define vhost do |h|
-      vm_conf = YAML.load_file('ansible/host_vars/' + vhost)
-      #vm_extension_conf = YAML.load_file('../../ansible/host_vars/' + vhost)
-      #vm_conf += vm_extension_conf
+  # Gather all vms
+  vms = hosts_conf['all']['children']['vms']['hosts']
+  extra_vms = {}
+  if !extra_hosts_conf.empty? then
+    extra_vms = extra_hosts_conf['all']['children']['vms']['hosts']
+  end
+  all_vms = vms.merge(extra_vms.nil? ? {} : extra_vms)
 
+  # Setup each configured VM
+  all_vms.each do |vhost, _|
+    config.vm.define vhost do |h|
+      # Load host_vars of the host ...
+      vm_conf = yaml_contents 'ansible/host_vars/' + vhost
+      # ... and any possible local host_vars
+      extra_vm_conf = yaml_contents extra_host_vars_path + '/' + vhost, as_long_as: ! extra_host_vars_path.empty?
+      vm_conf.merge!(extra_vm_conf)
+
+      # Extra networks if configured locally
+      extra_networks = get_value vm_conf, 'extra_networks', otherwise: []
+
+      # Trivial check for non-existing configuration
+      if vm_conf.empty? then
+        warn "VM '" + vhost + "' does not have a configuration!"
+        warn "Looked at:"
+        warn "  - ansible/host_vars/" + vhost
+        if ! extra_host_vars_path.empty? then
+          warn "  - " + extra_host_vars_path + '/' + vhost
+        end
+        warn "Aborting!"
+        exit 1
+      end
+
+      # Normal Vargant box configuration
       h.vm.box = vm_conf['box']
       h.vm.provider "virtualbox" do |v|
         v.name = vhost
         v.cpus = vm_conf['cpus']
         v.memory = vm_conf['memory']
-        vm_conf['networks'].each do |n|
+        v.linked_clone = use_linked_clones
+        (vm_conf['networks'] + extra_networks).each do |n|
           a = n['vbox_arguments']
-          if ! n['freebsd_only'] || Vagrant::Util::Platform.freebsd? then
+          # Enable any bridge interfaces conditionally
+          if a[3] != 'BRIDGE_NET' || (use_bridge and ! BRIDGE_NET.empty?) then
             v.customize ["modifyvm", :id, a[0], a[1], a[2], eval(a[3])]
           end
         end
       end
+
+      # Extra options for Vagrant
       if vm_conf['extra'].nil? || vm_conf['extra'].empty?
         # Left empty for ruby's weird empty check above
       else
@@ -89,6 +141,7 @@ Vagrant.configure(2) do |config|
       # This is a dummy ping command to make Vagrant auto generate an Ansible
       # inventory. Run always so that the inventory is always updated.
       h.vm.provision "ansible", run: "always" do |ansible|
+        #ansible.config_file = ansible_cfg
         ansible.playbook = 'ansible/dummy_vagrant_provision.yml'
       end
 

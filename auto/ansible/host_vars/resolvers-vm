@@ -29,15 +29,6 @@ networks:
         network: fd00::21:0:0/96
         gateway: fd00::20:1:1
     vbox_arguments: ['--nic3', 'intnet', '--intnet3', 'RESOLVER_INTNET']
-  - name: enp0s10
-    v4:
-      type: dhcp
-      metric: 1
-    v6:
-      type: auto
-    vbox_arguments: ['--nic4', 'bridged', '--bridgeadapter4', 'BRIDGE_NET']
-    when: ansible_facts['os_family'] == "FreeBSD"
-    freebsd_only: true
 
 # (Vagrant) provision configuration
 provision:

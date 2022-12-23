@@ -1,17 +1,17 @@
-Work In Progress for further automating the testbed with Vagrant and Ansible
-============================================================================
+# Work In Progress for further automating the testbed with Vagrant and Ansible
 
-Notes
------
+
+## Notes
+
 Requires VirtualBox, Vagrant and Ansible to be already installed on the system.
 
 For now bullet point documentation follows.
 
-Current implementation
-----------------------
+## Current implementation
 
-Virtual Box configuration
-.........................
+
+### Virtual Box configuration
+
 
 - Configure `ansible/host_vars/VBox-host`; either specify an existing host-only
   interface or _the_ new one to be created by VirtualBox.
@@ -20,8 +20,8 @@ Virtual Box configuration
 - `ansible-playbook ansible/setup_VirtualBox.yml`; this will setup the
   configured vboxnet and DHCP server.
 
-VM creation and network provisioning
-....................................
+### VM creation and network provisioning
+
 
 - `vagrant up`; this will fetch the images (boxes), configure them and bring
   them up.
@@ -40,15 +40,26 @@ VM creation and network provisioning
 - Further interaction with the Virtual Box VMs should only be done through the
   Vagrant cli to allow Vagrant specific actions to take effect.
 
-Regular provisioning
-....................
+### Regular provisioning
+
 
 - Provision the VMs with `ansible-playbook ansible/provision_*`. This will
   ensure that the VMs are always in a predictable state and updated with the
   latest configuration changes.
 
-TODO
-----
+### Local extra configuration
+
+It is possible to include extra configuration and hosts that are not part of
+this testbed.
+
+You can use `.local_config.yml` for extra settings; have a look at `.local_config.yml.sample`.
+
+If you specify extra inventory, you would need to also change the shipped
+`ansible.cfg` file to reflect those changes, or point to a different one with
+the `ANSIBLE_CONFIG` environmnet variable.
+
+## TODO
+
 - Compile the resolver software in parallel on the resolvers-vm with Ansible
 - Run the tests and properly clean up if the test is cancelled midway
 - vboxnetN is probably not needed anymore since we rely on Vagrant for
@@ -70,8 +81,8 @@ TODO
   shutdown; can't find an option/workaround. Vagrant provisioning is stripped
   to the bare minimum for the auto-generated inventory to be created.
 
-NOTES
------
+## NOTES
+
 - There is a dependency on the ansible utils plugin, which needs to be
   installed with: `ansible-galaxy collection install ansible.utils`
 - The bridge_net or BRIDGE_NET VirtualBox network is only necessary on our
@@ -86,4 +97,3 @@ NOTES
   sure the NAT SSH forwarding works.
   - Shutting down is allowed but needs to be followed by `vagrant up`.
   - Rebooting is forbidden.
-

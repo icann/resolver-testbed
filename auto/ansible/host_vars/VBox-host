@@ -2,8 +2,9 @@
 # IP of the Virtual Box host
 ansible_ssh_host: 127.0.0.1
 
-# (Vagrant) Bridge network
-bridge_net: "bge0"
+# (Vagrant) Optional bridge network
+# To be updated with local configuration if needed
+bridge_net: ""
 
 # (Vagrant) Resolver internal network
 resolver_intnet: "restest"

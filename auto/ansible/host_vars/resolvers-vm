@@ -13,7 +13,7 @@ networks:
   - name: enp0s8
     v4:
       type: static
-      addr: 192.168.56.30/24
+      addr: 192.168.57.30/24
     vbox_arguments: ['--nic2', 'hostonly', '--hostonlyadapter2', 'HOSTONLY_NET']
   - name: enp0s9
     v4:

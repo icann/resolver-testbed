@@ -11,7 +11,6 @@
         url: "{{ item.value['url'] }}"
         host_name: "{{ item.key }}"
       loop: "{{ build_config['software'] | dict2items }}"
-      # loop: "{{ build_config['software'] | dict2items | selectattr('key', 'equalto', 'unbound-1.5.10') }}"
 
     - name: Make sure the needed directories are there.
       ansible.builtin.file:

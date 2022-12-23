@@ -67,12 +67,12 @@ build_config:
     pdns-recursor-4.2.1:
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.2.1.tar.bz2"
     unbound-1.5.10:
-      url: "http://unbound.net/downloads/unbound-1.5.10.tar.gz"
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.5.10.tar.gz"
     unbound-1.6.8:
-      url: "http://unbound.net/downloads/unbound-1.6.8.tar.gz"
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.6.8.tar.gz"
     unbound-1.7.3:
-      url: "http://unbound.net/downloads/unbound-1.7.3.tar.gz"
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.7.3.tar.gz"
     unbound-1.8.3:
-      url: "http://unbound.net/downloads/unbound-1.8.3.tar.gz"
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.8.3.tar.gz"
     unbound-1.9.6:
-      url: "http://unbound.net/downloads/unbound-1.9.6.tar.gz"
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.9.6.tar.gz"

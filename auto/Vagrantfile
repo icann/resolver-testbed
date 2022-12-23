@@ -27,6 +27,7 @@ local_conf = yaml_contents '.local_config.yml'
 extra_hosts_path = get_value local_conf, 'extra_hosts_path'
 extra_host_vars_path = get_value local_conf, 'extra_host_vars_path'
 use_bridge = get_value local_conf, 'use_bridge', otherwise: false
+use_linked_clones = get_value local_conf, 'use_linked_clones', otherwise: false
 
 # Read the hosts file ...
 hosts_conf = YAML.load_file('ansible/hosts')
@@ -92,6 +93,7 @@ Vagrant.configure(2) do |config|
         v.name = vhost
         v.cpus = vm_conf['cpus']
         v.memory = vm_conf['memory']
+        v.linked_clone = use_linked_clones
         (vm_conf['networks'] + extra_networks).each do |n|
           a = n['vbox_arguments']
           # Enable any bridge interfaces conditionally

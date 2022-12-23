@@ -9,3 +9,12 @@ extra_host_vars_path: "absolute or relative path to the Vagrantfile"
 # NAT does not seem to work. The network itself needs to be defined in the
 # VBox-host configuration.
 use_bridge: false
+
+# For Vagrant - Use linked clones VMs for identical boxes
+# Speeds up box creation (it only needs to import the main one once) but leads
+# to populating Virtual Box with the base VMs that may need manual intervention
+# for cleaning up based on Vagrant version.  Newer Vagrant versions recreate
+# the base VM when not there.  Older Vagrant versions may complain when the
+# base VM is not there when it is supposed to be. In that case you would need
+# to remove `.vagrant/machines/<box name>/virtualbox/index_uuid`
+use_linked_clones: false

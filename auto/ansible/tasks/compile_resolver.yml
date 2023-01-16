@@ -25,6 +25,8 @@
       src: "{{ url }}"
       dest: "{{ BUILD_SOURCE_DIR }}/"
       remote_src: yes
+      owner: "root"
+      group: "root"
     when: software_received.files == []
 
   - name: Mark as received.

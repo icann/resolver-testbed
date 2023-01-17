@@ -45,8 +45,14 @@
 
   - name: Build the resolver.
     ansible.builtin.shell:
-      cmd: "{{ make_str.format(PREFIX=this_target_dir) ~ ' && touch ' ~ this_target_dir ~ '/.compiled_this' }}"
+      cmd: "{{ make_str.format(PREFIX=this_target_dir) }}"
       chdir: "{{ this_source_dir }}"
+    when: software_compiled.files == []
+
+  - name: Mark as compiled.
+    ansible.builtin.file:
+      path: "{{ this_target_dir }}/.compiled.this"
+      state: touch
     when: software_compiled.files == []
 
 

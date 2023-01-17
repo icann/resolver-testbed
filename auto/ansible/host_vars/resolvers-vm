@@ -41,11 +41,11 @@ extra:
 
 build_config:
   templates:
-    # @@PREFIX@@ will be replaced by the actual prefix during the ansible run.
-    bind9make: "./configure --prefix=@@PREFIX@@ && make && make install"
-    knotmake: "meson build_dir --prefix=@@PREFIX@@ --default-library=static && ninja -C build_dir/ install"
-    pdns4make: "./configure && SYSCONFDIR=@@PREFIX@@/etc/powerdns make -e && DESTDIR=@@PREFIX@@ make -e install"
-    unboundmake: "./configure --prefix=@@PREFIX@@ && make && make install"
+    # {PREFIX} will be replaced by the actual prefix during the ansible run.
+    bind9make: "./configure --prefix={PREFIX} && make && make install"
+    knotmake: "meson build_dir --prefix={PREFIX} --default-library=static && ninja -C build_dir/ install"
+    pdns4make: "./configure && SYSCONFDIR={PREFIX}/etc/powerdns make -e && DESTDIR={PREFIX} make -e install"
+    unboundmake: "./configure --prefix={PREFIX} && make && make install"
   software:
     bind-9.9.11:
       url: "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz"

@@ -35,10 +35,6 @@
       state: touch
     when: software_received.files == []
 
-  - name: Prepare the make_str.
-    ansible.builtin.set_fact:
-      make_str: "{{ make_str | replace('@@PREFIX@@', this_target_dir) }}"
-
   - name: Check if we already built the source.
     ansible.builtin.find:
       paths: "{{ this_target_dir }}"
@@ -49,14 +45,8 @@
 
   - name: Build the resolver.
     ansible.builtin.shell:
-      cmd: "{{ make_str }}"
+      cmd: "{{ make_str.format(PREFIX=this_target_dir) ~ ' && touch ' ~ this_target_dir ~ '/.compiled_this' }}"
       chdir: "{{ this_source_dir }}"
-    when: software_compiled.files == []
-
-  - name: Mark as compiled.
-    ansible.builtin.file:
-      path: "{{ this_target_dir }}/.compiled.this"
-      state: touch
     when: software_compiled.files == []
 
 

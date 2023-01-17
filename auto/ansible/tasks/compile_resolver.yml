@@ -35,10 +35,29 @@
       state: touch
     when: software_received.files == []
 
-  - name: Stop!
-    ansible.builtin.meta: end_play
+  - name: Prepare the make_str.
+    ansible.builtin.set_fact:
+      make_str: "{{ make_str | replace('@@PREFIX@@', this_target_dir) }}"
 
-      #- name: Make sure we have the directory.
-      #- name: Make the source. We could build in separate steps (configure, make) but I don't think it is relevant in this case; we don't recompile the same source.
+  - name: Check if we already built the source.
+    ansible.builtin.find:
+      paths: "{{ this_target_dir }}"
+      patterns: ".compiled.this"
+      file_type: file
+      hidden: yes
+    register: software_compiled
+
+  - name: Build the resolver.
+    ansible.builtin.shell:
+      cmd: "{{ make_str }}"
+      chdir: "{{ this_source_dir }}"
+    when: software_compiled.files == []
+
+  - name: Mark as compiled.
+    ansible.builtin.file:
+      path: "{{ this_target_dir }}/.compiled.this"
+      state: touch
+    when: software_compiled.files == []
+
 
   delegate_to: "{{ on_host }}"

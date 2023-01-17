@@ -9,6 +9,7 @@
         name: "{{ item.key }}"
         groups: build_group
         url: "{{ item.value['url'] }}"
+        make_str: "{{ build_config['templates'][item.value['make_str']] }}"
         host_name: "{{ item.key }}"
       loop: "{{ build_config['software'] | dict2items }}"
 
@@ -16,7 +17,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-      with_items:
+      loop:
         - "{{ BUILD_SOURCE_DIR }}"
         - "{{ BUILD_TARGET_DIR }}"
 

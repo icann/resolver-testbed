@@ -40,7 +40,7 @@
       src: "{{ item.src }}"
       dest: "{{ this_source_dir }}/{{ item.dest }}"
     loop: "{{ files_copy }}"
-    when: files_copy is not None
+    when: files_copy
 
   - name: Check if we already built the source.
     ansible.builtin.find:

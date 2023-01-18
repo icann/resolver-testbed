@@ -6,6 +6,7 @@
       - wget
       - vim
       - tmux
+      - htop
       - lsb-release
       - ca-certificates
       - python3-pip

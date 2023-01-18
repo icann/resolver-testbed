@@ -74,15 +74,29 @@ build_config:
     knot-resolver-5.0.0:
       url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.0.0.tar.xz"
       make_str: "knotmake"
-    pdns-recursor-4.0.9:
-      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
-      make_str: "pdns4make"
+    # XXX Can't build atm
+    # pdns-recursor-4.0.9:
+    #   url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
+    #   make_str: "pdns4make"
+    # XXX this still complains
     pdns-recursor-4.1.15:
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.1.15.tar.bz2"
       make_str: "pdns4make"
+      files_copy:
+        - src: "files/pdns_patches/4_1_15/webserver.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_1_15/ws-recursor.cc"
+          dest: "."
     pdns-recursor-4.2.1:
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.2.1.tar.bz2"
       make_str: "pdns4make"
+      files_copy:
+        - src: "files/pdns_patches/4_2_1/webserver.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_2_1/ws-recursor.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_2_1/reqresp.cpp"
+          dest: "./ext/yahttp/yahttp/"
     unbound-1.5.10:
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.5.10.tar.gz"
       make_str: "unboundmake"

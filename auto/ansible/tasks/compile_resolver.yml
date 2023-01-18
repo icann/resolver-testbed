@@ -35,6 +35,12 @@
       state: touch
     when: software_received.files == []
 
+  - name: Copy over files.
+    ansible.builtin.copy:
+      src: "{{ item.src }}"
+      dest: "{{ this_source_dir }}/{{ item.dest }}"
+    loop: "{{ files_copy }}"
+
   - name: Check if we already built the source.
     ansible.builtin.find:
       paths: "{{ this_target_dir }}"

@@ -39,13 +39,16 @@ provision:
 # (Vagrant) any extra configuration for the 'vm' object
 extra:
 
+# Resolvers to build
 build_config:
+  # Templates used in 'software' below
   templates:
     # {PREFIX} will be replaced by the actual prefix during the ansible run.
-    bind9make: "./configure --prefix={PREFIX} && make && make install"
+    bind9make: "./configure --prefix={PREFIX} && make -j 2 && make install"
     knotmake: "meson build_dir --prefix={PREFIX} --default-library=static && ninja -C build_dir/ install"
-    pdns4make: "./configure && SYSCONFDIR={PREFIX}/etc/powerdns make -e && DESTDIR={PREFIX} make -e install"
-    unboundmake: "./configure --prefix={PREFIX} && make && make install"
+    pdns4make: "./configure && SYSCONFDIR={PREFIX}/etc/powerdns make -e -j 2 && DESTDIR={PREFIX} make -e install"
+    unboundmake: "./configure --prefix={PREFIX} && make -j 2 && make install"
+  # Collection of software to build
   software:
     bind-9.9.11:
       url: "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz"

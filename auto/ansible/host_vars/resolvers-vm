@@ -68,9 +68,11 @@ build_config:
     bind-9.15.8:
       url: "https://ftp.isc.org/isc/bind9/9.15.8/bind-9.15.8.tar.xz"
       make_str: "bind9make"
+    # XXX This needs fixing
     knot-resolver-4.1.0:
       url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.1.0.tar.xz"
       make_str: "knotmake"
+    # XXX This needs fixing
     knot-resolver-5.0.0:
       url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.0.0.tar.xz"
       make_str: "knotmake"
@@ -78,7 +80,7 @@ build_config:
     # pdns-recursor-4.0.9:
     #   url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
     #   make_str: "pdns4make"
-    # XXX this still complains
+    # XXX This still complains
     pdns-recursor-4.1.15:
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.1.15.tar.bz2"
       make_str: "pdns4make"

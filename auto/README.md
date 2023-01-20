@@ -39,6 +39,9 @@ For now bullet point documentation follows.
   run `ansible-playbook ansible/network_provision_*` followed by `vagrant up`.
 - Further interaction with the Virtual Box VMs should only be done through the
   Vagrant cli to allow Vagrant specific actions to take effect.
+- Changing the box configuration (e.g., adding more CPU, memory, interfaces)
+  requires a simple `vagrant reload`. This will shutdown the box and bring it
+  up with updated resources.
 
 ### Regular provisioning
 

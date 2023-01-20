@@ -46,10 +46,10 @@ f.some-servers.p53. 60 IN A 172.21.106.1
 g.some-servers.p53. 60 IN A 172.21.107.1
 h.some-servers.p53. 60 IN A 172.21.108.1
 i.some-servers.p53. 60 IN A 172.21.109.1
-j.some-servers.p53. 60 IN A 172.21.109.10
-k.some-servers.p53. 60 IN A 172.21.109.11
-l.some-servers.p53. 60 IN A 172.21.109.12
-m.some-servers.p53. 60 IN A 172.21.109.13
+j.some-servers.p53. 60 IN A 172.21.110.1
+k.some-servers.p53. 60 IN A 172.21.111.1
+l.some-servers.p53. 60 IN A 172.21.112.1
+m.some-servers.p53. 60 IN A 172.21.113.1
 a.some-servers.p53. 60 IN AAAA fd00::21:101:1
 b.some-servers.p53. 60 IN AAAA fd00::21:102:1
 c.some-servers.p53. 60 IN AAAA fd00::21:103:1

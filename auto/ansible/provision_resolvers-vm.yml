@@ -73,7 +73,6 @@
         executable: pip3
 
 - hosts: build_group
-  strategy: free
   gather_facts: false
   become: true
   vars:

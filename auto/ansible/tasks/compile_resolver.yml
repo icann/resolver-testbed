@@ -41,6 +41,7 @@
       dest: "{{ this_source_dir }}/{{ item.dest }}"
     loop: "{{ files_copy }}"
     when: files_copy
+    register: copied_files
 
   - name: Check if we already built the source.
     ansible.builtin.find:
@@ -50,17 +51,17 @@
       hidden: yes
     register: software_compiled
 
-  - name: Build the resolver.
-    ansible.builtin.shell:
-      cmd: "{{ make_str.format(PREFIX=this_target_dir) }}"
-      chdir: "{{ this_source_dir }}"
-    when: software_compiled.files == []
-
-  - name: Mark as compiled.
+  - name: Clear the build status.
     ansible.builtin.file:
       path: "{{ this_target_dir }}/.compiled.this"
-      state: touch
-    when: software_compiled.files == []
+      state: absent
+    when: copied_files is changed
+
+  - name: Build the resolver.
+    ansible.builtin.shell:
+      cmd: "{{ make_str.format(PREFIX=this_target_dir) ~ ' && touch ' ~ this_target_dir ~ '/.compiled.this' }}"
+      chdir: "{{ this_source_dir }}"
+    when: software_compiled.files == [] or copied_files is changed
 
 
   delegate_to: "{{ on_host }}"

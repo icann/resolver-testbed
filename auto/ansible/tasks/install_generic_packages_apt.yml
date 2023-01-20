@@ -1,10 +1,12 @@
 ---
-- name: Install generic packages
+- name: Install generic packages.
   ansible.builtin.apt:
     pkg:
+      - tar
       - wget
       - vim
       - tmux
+      - htop
       - lsb-release
       - ca-certificates
       - python3-pip

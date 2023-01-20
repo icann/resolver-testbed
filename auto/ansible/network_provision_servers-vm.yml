@@ -42,6 +42,8 @@
           - wget
           - nano
           - vim
+          - tmux
+          - htop
           - ca_root_nss
         state: present
 

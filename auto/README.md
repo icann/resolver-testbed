@@ -60,7 +60,8 @@ the `ANSIBLE_CONFIG` environmnet variable.
 
 ## TODO
 
-- Compile the resolver software in parallel on the resolvers-vm with Ansible
+- [DONE] Compile the resolver software in parallel on the resolvers-vm with Ansible
+  - pdns 4.1.15 and knots are not compiling yet
 - Run the tests and properly clean up if the test is cancelled midway
 - vboxnetN is probably not needed anymore since we rely on Vagrant for
   connecting to the VMs.

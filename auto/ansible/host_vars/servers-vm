@@ -1,6 +1,7 @@
 ---
 # (Vagrant) box - change needs recreation
-box: "freebsd/FreeBSD-12.3-RELEASE"
+#box: "freebsd/FreeBSD-12.3-RELEASE"
+box: "generic/freebsd12"
 
 # (Vagrant) cpus
 cpus: 2
@@ -10,8 +11,8 @@ memory: 2048
 
 # (Vagrant) network configuration
 networks:
-  - vbox_arguments: ['--nic2', 'hostonly', '--hostonlyadapter2', 'HOSTONLY_NET']
-  - vbox_arguments: ['--nic3', 'intnet', '--intnet3', 'SERVER_INTNET']
+  - vbox_arguments: ['--nic', 'hostonly', '--hostonlyadapter', 'HOSTONLY_NET']
+  - vbox_arguments: ['--nic', 'intnet', '--intnet', 'SERVER_INTNET']
 
 # (Vagrant) provision
 provision:

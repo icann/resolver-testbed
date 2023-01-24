@@ -94,11 +94,14 @@ Vagrant.configure(2) do |config|
         v.cpus = vm_conf['cpus']
         v.memory = vm_conf['memory']
         v.linked_clone = use_linked_clones
-        (vm_conf['networks'] + extra_networks).each do |n|
+        (vm_conf['networks'] + extra_networks).each_with_index do |n, i|
           a = n['vbox_arguments']
           # Enable any bridge interfaces conditionally
           if a[3] != 'BRIDGE_NET' || (use_bridge and ! BRIDGE_NET.empty?) then
-            v.customize ["modifyvm", :id, a[0], a[1], a[2], eval(a[3])]
+            # Append the N on the VBoxManage commands based on the loop index
+            # Assumption is that vbox_arguments come in pairs of ('--option', 'value')
+            # Force the NIC type because some systems rely on it for naming e.g., FreeBSD
+            v.customize ["modifyvm", :id, a[0]+"#{i+2}", a[1], a[2]+"#{i+2}", eval(a[3]), "--nictype#{i+2}", "82540EM"]
           end
         end
       end

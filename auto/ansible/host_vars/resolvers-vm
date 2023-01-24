@@ -14,7 +14,7 @@ networks:
     v4:
       type: static
       addr: 192.168.57.30/24
-    vbox_arguments: ['--nic2', 'hostonly', '--hostonlyadapter2', 'HOSTONLY_NET']
+    vbox_arguments: ['--nic', 'hostonly', '--hostonlyadapter', 'HOSTONLY_NET']
   - name: enp0s9
     v4:
       type: static
@@ -28,7 +28,7 @@ networks:
       static_route:
         network: fd00::21:0:0/96
         gateway: fd00::20:1:1
-    vbox_arguments: ['--nic3', 'intnet', '--intnet3', 'RESOLVER_INTNET']
+    vbox_arguments: ['--nic', 'intnet', '--intnet', 'RESOLVER_INTNET']
 
 # (Vagrant) provision configuration
 provision:

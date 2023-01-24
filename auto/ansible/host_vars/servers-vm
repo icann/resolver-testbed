@@ -1,7 +1,7 @@
 ---
 # (Vagrant) box - change needs recreation
-#box: "freebsd/FreeBSD-12.3-RELEASE"
-box: "generic/freebsd12"
+box: "freebsd/FreeBSD-12.3-RELEASE"
+#box: "generic/freebsd12"  XXX Under consideration for faster initial boot
 
 # (Vagrant) cpus
 cpus: 2

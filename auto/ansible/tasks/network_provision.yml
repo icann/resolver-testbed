@@ -11,8 +11,24 @@
       content: "{{ inventory_hostname }}\n"
       dest: /etc/hostname
 
-  - ansible.builtin.import_tasks:
-      file: tasks/resolv.conf.yml
+  - name: Set resolv.conf for linux.
+    block:
+    - name: (linux) Try writing resolv.conf.
+      ansible.builtin.copy:
+        src: ../files/resolv-with-8844
+        dest: /etc/resolv.conf
+        attr: "+i"
+    rescue:
+      - name: (linux) Make sure the file is mutable.
+        ansible.builtin.file:
+          path: /etc/resolv.conf
+          attr: "-i"
+
+      - name: (linux) Try writing resolv.conf (again).
+        ansible.builtin.copy:
+          src: ../files/resolv-with-8844
+          dest: /etc/resolv.conf
+          attr: "+i"
   when: network_configuration.system == 'linux'
 
 - name: FreeBSD configuration
@@ -22,12 +38,15 @@
       src: templates/freebsd_rc.conf.j2
       dest: /etc/rc.conf
 
-  - ansible.builtin.import_tasks:
-      file: tasks/resolv.conf.yml
+  - name: Set resolv.conf for freebsd.
+    block:
+    - name: (FreeBSD) Write resolv.conf.
+      ansible.builtin.copy:
+          src: ../files/resolv-with-8844
+          dest: /etc/resolv.conf
 
   - name: (FreeBSD) Making boot faster; always autoboot.
     ansible.builtin.copy:
       content: 'autoboot_delay="-1"'
       dest: /boot/loader.conf
-
   when: network_configuration.system == 'freebsd'

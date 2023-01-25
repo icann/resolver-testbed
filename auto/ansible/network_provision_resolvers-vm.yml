@@ -4,18 +4,8 @@
   become: true
 
   tasks:
-    - name: Configure interfaces.
-      ansible.builtin.template:
-        src: templates/linux_interfaces.j2
-        dest: /etc/network/interfaces
-
-    - name: Set hostname.
-      ansible.builtin.copy:
-        content: "{{ inventory_hostname }}\n"
-        dest: /etc/hostname
-
     - ansible.builtin.import_tasks:
-        file: tasks/resolv.conf.yml
+        file: tasks/network_provision.yml
 
     - ansible.builtin.import_tasks:
         file: tasks/finish_provisioning.yml

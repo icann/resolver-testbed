@@ -1,0 +1,5 @@
+---
+- name: Test network reachability.
+  ansible.builtin.command:
+    cmd: "ping{{ version }} -c 1 -I {{ src }} {{ item }}"
+  loop: "{{ destinations }}"

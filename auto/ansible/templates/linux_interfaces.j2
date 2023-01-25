@@ -6,7 +6,7 @@ auto enp0s3
 iface enp0s3 inet dhcp
 metric 100  # Low preference on this default route (NAT)
 
-{% for n in networks %}
+{% for n in network_configuration.networks %}
 auto {{ n.name }}
 {% if 'v4' in n %}
 iface {{ n.name }} inet {{ n.v4.type }}

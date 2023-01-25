@@ -1,5 +1,5 @@
 ---
-- name: Set resolv.conf.
+- name: Set resolv.conf for linux.
   block:
   - name: Try writing resolv.conf.
     ansible.builtin.copy:
@@ -17,3 +17,12 @@
         src: ../files/resolv-with-8844
         dest: /etc/resolv.conf
         attr: "+i"
+  when: network_configuration.system == 'linux'
+
+- name: Set resolv.conf for freebsd.
+  block:
+  - name: Write resolv.conf.
+    ansible.builtin.copy:
+        src: ../files/resolv-with-8844
+        dest: /etc/resolv.conf
+  when: network_configuration.system == 'freebsd'

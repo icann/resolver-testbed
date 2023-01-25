@@ -57,7 +57,7 @@
       state: absent
     when: copied_files is changed
 
-  - name: Build the resolver.
+  - name: Build.
     ansible.builtin.shell:
       cmd: "{{ make_str.format(PREFIX=this_target_dir) ~ ' && touch ' ~ this_target_dir ~ '/.compiled.this' }}"
       chdir: "{{ this_source_dir }}"

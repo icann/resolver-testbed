@@ -4,23 +4,8 @@
   become: true
 
   tasks:
-    - name: Add the build software as hosts.
-      ansible.builtin.add_host:
-        name: "{{ item.key }}"
-        groups: build_group
-        url: "{{ item.value['url'] }}"
-        make_str: "{{ build_config['templates'][item.value['make_str']] }}"
-        host_name: "{{ item.key }}"
-        files_copy: "{{ ('files_copy' in item.value and item.value['files_copy']) or [] }}"
-      loop: "{{ build_config['software'] | dict2items }}"
-
-    - name: Make sure the needed directories are there.
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-      loop:
-        - "{{ BUILD_SOURCE_DIR }}"
-        - "{{ BUILD_TARGET_DIR }}"
+    - ansible.builtin.import_tasks:
+        file: tasks/read_build_configuration.yml
 
     - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages_apt.yml
@@ -79,4 +64,4 @@
     on_host: resolvers-vm
   tasks:
     - ansible.builtin.import_tasks:
-        file: tasks/compile_resolver.yml
+        file: tasks/compile_software.yml

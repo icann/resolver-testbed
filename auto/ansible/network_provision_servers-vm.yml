@@ -4,10 +4,8 @@
   become: true
 
   tasks:
-    - name: rc.conf for hostname/network/system configuration.
-      ansible.builtin.copy:
-        src: files/servers-rc.conf
-        dest: /etc/rc.conf
+    - ansible.builtin.import_tasks:
+        file: tasks/network_provision.yml
 
     - name: Set the resolver.
       ansible.builtin.copy:

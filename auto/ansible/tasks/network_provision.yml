@@ -1,0 +1,27 @@
+---
+- name: Linux configuration
+  block:
+  - name: Configure interfaces.
+    ansible.builtin.template:
+      src: templates/linux_interfaces.j2
+      dest: /etc/network/interfaces
+
+  - name: Set hostname.
+    ansible.builtin.copy:
+      content: "{{ inventory_hostname }}\n"
+      dest: /etc/hostname
+
+  - ansible.builtin.import_tasks:
+      file: tasks/resolv.conf.yml
+  when: network_configuration.system == 'linux'
+
+- name: FreeBSD configuration
+  block:
+  - name: Configure interfaces (in rc.conf)
+    ansible.builtin.template:
+      src: templates/freebsd_rc.conf.j2
+      dest: /etc/rc.conf
+
+  - ansible.builtin.import_tasks:
+      file: tasks/resolv.conf.yml
+  when: network_configuration.system == 'freebsd'

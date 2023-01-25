@@ -7,11 +7,6 @@
     - ansible.builtin.import_tasks:
         file: tasks/network_provision.yml
 
-    - name: Set the resolver.
-      ansible.builtin.copy:
-        src: files/resolv-with-8844
-        dest: /etc/resolv.conf
-
     - name: Making the bind-configs directory.
       ansible.builtin.file:
         path: /root/bind-configs
@@ -44,11 +39,6 @@
           - htop
           - ca_root_nss
         state: present
-
-    - name: Making boot faster; always autoboot.
-      ansible.builtin.copy:
-        content: 'autoboot_delay="-1"'
-        dest: /boot/loader.conf
 
     - ansible.builtin.import_tasks:
         file: tasks/finish_provisioning.yml

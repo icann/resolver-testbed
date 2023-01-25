@@ -1,18 +1,18 @@
 ---
 - name: Set resolv.conf for linux.
   block:
-  - name: Try writing resolv.conf.
+  - name: (linux) Try writing resolv.conf.
     ansible.builtin.copy:
       src: ../files/resolv-with-8844
       dest: /etc/resolv.conf
       attr: "+i"
   rescue:
-    - name: Make sure the file is mutable.
+    - name: (linux) Make sure the file is mutable.
       ansible.builtin.file:
         path: /etc/resolv.conf
         attr: "-i"
 
-    - name: Try writing resolv.conf (again).
+    - name: (linux) Try writing resolv.conf (again).
       ansible.builtin.copy:
         src: ../files/resolv-with-8844
         dest: /etc/resolv.conf
@@ -21,7 +21,7 @@
 
 - name: Set resolv.conf for freebsd.
   block:
-  - name: Write resolv.conf.
+  - name: (FreeBSD) Write resolv.conf.
     ansible.builtin.copy:
         src: ../files/resolv-with-8844
         dest: /etc/resolv.conf

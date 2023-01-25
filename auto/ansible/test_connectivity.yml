@@ -3,17 +3,6 @@
   gather_facts: false
 
   tasks:
-    - debug:
-        msg: "{% set output = [] %}\
-              {% for n in hostvars['servers-vm']['network_configuration']['networks'] %}\
-              {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
-              {{ output.append(n['v4']['addr'] | dirname) }}\
-              {{ output.extend(n['v4']['alias'] | map('dirname')) }}\
-              {% endif %}\
-              {% endfor %}\
-              {{ output }}"
-
-
     # V4
     - ansible.builtin.include_tasks:
         file: tasks/net_ping.yml

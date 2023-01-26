@@ -18,7 +18,7 @@
         dest: /root/bind-configs
 
     - name: Copying the configuration.
-      ansible.buitlin.template:
+      ansible.builtin.template:
         src: templates/named.conf.j2
         dest: /root/bind-configs/named.conf
       vars:

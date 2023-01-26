@@ -11,8 +11,8 @@ memory: 2048
 # (Vagrant) network configuration
 network_configuration:
   system: freebsd
-  default_router: 172.21.1.1
-  default_router6: fd00::21:1:1
+  default_router: 172.21.0.1
+  default_router6: fd00::21:0:1
   networks:
     - name: em1
       v4:
@@ -20,7 +20,7 @@ network_configuration:
       vbox_arguments: ['--nic', 'hostonly', '--hostonlyadapter', 'HOSTONLY_NET']
     - name: em2
       v4:
-        addr: 172.21.1.2/16
+        addr: 172.21.0.2/16
         alias:
           - 172.21.101.1/16
           - 172.21.102.1/16
@@ -36,7 +36,7 @@ network_configuration:
           - 172.21.112.1/16
           - 172.21.113.1/16
       v6:
-        addr: fd00::21:1:2/96
+        addr: fd00::21:0:2/96
         alias:
           - fd00::21:101:1/96
           - fd00::21:102:1/96
@@ -54,8 +54,8 @@ network_configuration:
       vbox_arguments: ['--nic', 'intnet', '--intnet', 'SERVER_INTNET']
   static_routes:
     - name: to_resolvers
-      v4: "-net 172.20.0.0/16 172.21.1.1"
-      v6: "fd00::20:0:0 -prefixlen 96 fd00::21:1:1"
+      v4: "-net 172.20.0.0/16 172.21.0.1"
+      v6: "fd00::20:0:0 -prefixlen 96 fd00::21:0:1"
 
 # (Vagrant) provision
 provision:

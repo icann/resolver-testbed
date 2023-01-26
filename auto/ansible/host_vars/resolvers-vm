@@ -20,16 +20,16 @@ network_configuration:
     - name: enp0s9
       v4:
         type: static
-        addr: 172.20.1.2/24
+        addr: 172.20.0.2/24
         static_route:
             network: 172.21.0.0/16
-            gateway: 172.20.1.1
+            gateway: 172.20.0.1
       v6:
         type: static
-        addr: fd00::20:1:2/96
+        addr: fd00::20:0:2/96
         static_route:
             network: fd00::21:0:0/96
-            gateway: fd00::20:1:1
+            gateway: fd00::20:0:1
       vbox_arguments: ['--nic', 'intnet', '--intnet', 'RESOLVER_INTNET']
 
 # (Vagrant) provision configuration

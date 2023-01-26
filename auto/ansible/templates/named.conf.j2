@@ -1,0 +1,11 @@
+options {
+recursion no;
+empty-zones-enable no;
+listen-on { {{ listen_addrs | join(';') }}; 127.0.0.1; };
+listen-on-v6 {{{ listen_addrs_6 | join(';') }}; ::1; };
+dnssec-enable yes;
+allow-transfer { any; };
+};
+zone "." { type master; file "root.zone"; };
+zone "p53." { type master; file "p53.zone"; };
+zone "some-servers.p53." { type master; file "some-servers.p53.zone"; };

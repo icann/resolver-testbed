@@ -17,6 +17,28 @@
         src: files/root-zone-basic/
         dest: /root/bind-configs
 
+    - name: Copying the configuration.
+      ansible.buitlin.template:
+        src: templates/named.conf.j2
+        dest: /root/bind-configs/named.conf
+      vars:
+        listen_addrs: "\
+          {% set output = [] %}\
+          {% for n in network_configuration['networks'] %}\
+          {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
+          {{ output.extend(n['v4']['alias'] | map('dirname')) }}\
+          {% endif %}\
+          {% endfor %}\
+          {{ output }}"
+        listen_addrs_6: "\
+          {% set output = [] %}\
+          {% for n in network_configuration['networks'] %}\
+          {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
+          {{ output.extend(n['v6']['alias'] | map('dirname')) }}\
+          {% endif %}\
+          {% endfor %}\
+          {{ output }}"
+
     - name: rc.local for named and ipfw init.
       ansible.builtin.copy:
         src: files/servers-rc.local

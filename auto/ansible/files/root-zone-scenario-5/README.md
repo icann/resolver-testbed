@@ -5,4 +5,3 @@ These zones are named 'a.' to 'm.', and the name of the server addresses is 'ns.
 Each zone is signed with a single key, which has a DS record in the root zone.
 
 The keys were manually created, but you can re-create and re-sign the zones with 'create_root_server_zones.sh'.
-

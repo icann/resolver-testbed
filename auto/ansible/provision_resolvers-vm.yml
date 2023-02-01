@@ -58,6 +58,7 @@
           - libknot-dev
           - liblmdb-dev
           - ninja-build
+          - libboost-test-dev
         state: present
         update_cache: yes
 

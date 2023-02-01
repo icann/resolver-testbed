@@ -48,6 +48,7 @@ build_config:
     # {PREFIX} will be replaced by the actual prefix during the ansible run.
     bind9make: "./configure --prefix={PREFIX} && make -j 2 && make install"
     knotmake: "meson build_dir --prefix={PREFIX} --default-library=static && ninja -C build_dir/ install"
+    pdns4make_st: "./configure && SYSCONFDIR={PREFIX}/etc/powerdns make -e && DESTDIR={PREFIX} make -e install"
     pdns4make: "./configure && SYSCONFDIR={PREFIX}/etc/powerdns make -e -j 2 && DESTDIR={PREFIX} make -e install"
     unboundmake: "./configure --prefix={PREFIX} && make -j 2 && make install"
   # Collection of software to build
@@ -81,11 +82,16 @@ build_config:
     knot-resolver-5.0.0:
       url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.0.0.tar.xz"
       make_str: "knotmake"
-    # XXX Can't build atm
-    # pdns-recursor-4.0.9:
-    #   url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
-    #   make_str: "pdns4make"
-    # XXX This still complains
+    pdns-recursor-4.0.9:
+       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
+       make_str: "pdns4make"
+       files_copy:
+         - src: "files/pdns_patches/4_0_9/webserver.cc"
+           dest: "."
+         - src: "files/pdns_patches/4_0_9/ws-recursor.cc"
+           dest: "."
+         - src: "files/pdns_patches/4_0_9/reqresp.cpp"
+           dest: "./ext/yahttp/yahttp/"
     pdns-recursor-4.1.15:
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.1.15.tar.bz2"
       make_str: "pdns4make"
@@ -94,6 +100,8 @@ build_config:
           dest: "."
         - src: "files/pdns_patches/4_1_15/ws-recursor.cc"
           dest: "."
+        - src: "files/pdns_patches/4_1_15/reqresp.cpp"
+          dest: "./ext/yahttp/yahttp/"
     pdns-recursor-4.2.1:
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.2.1.tar.bz2"
       make_str: "pdns4make"

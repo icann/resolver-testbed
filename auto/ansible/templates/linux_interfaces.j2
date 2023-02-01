@@ -2,8 +2,8 @@ auto lo
 iface lo inet loopback
 
 # Vagrant NAT
-auto enp0s3
-iface enp0s3 inet dhcp
+auto eth0
+iface eth0 inet dhcp
 metric 100  # Low preference on this default route (NAT)
 
 {% for n in network_configuration.networks %}

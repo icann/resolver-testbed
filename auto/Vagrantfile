@@ -54,6 +54,8 @@ Vagrant.configure(2) do |config|
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
   config.vm.box_check_update = false
+  # Disable the default synced folder; we don't use it.
+  config.vm.synced_folder ".", "/vagrant", disabled: true
 
   # Gather all vms
   vms = hosts_conf['all']['children']['vms']['hosts']

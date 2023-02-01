@@ -8,7 +8,17 @@
         file: tasks/read_build_configuration.yml
 
     - ansible.builtin.import_tasks:
-        file: tasks/install_generic_packages_apt.yml
+        file: tasks/install_generic_packages.yml
+
+    - name: Install VM specific packages (part I).
+      ansible.builtin.apt:
+        pkg:
+          - lsb-release
+          - ca-certificates
+          - python3-pip
+          - apt-transport-https
+        state: present
+        update_cache: yes
 
     - name: Add CZ.nic apt key.
       ansible.builtin.get_url:
@@ -22,14 +32,13 @@
         state: present
         update_cache: yes
 
-    - name: Install VM specific packages.
+    - name: Install VM specific packages (part II).
       ansible.builtin.apt:
         pkg:
           - build-essential
           - libssl-dev
           - libcap-dev
           - python3-ply
-          - dnsutils
           - pkg-config
           - libuv1-dev
           - libcmocka-dev

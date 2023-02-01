@@ -1,0 +1,52 @@
+---
+- name: (linux) Install generic packages.
+  ansible.builtin.apt:
+    pkg:
+      - tar
+      - wget
+      - vim
+      - tmux
+      - htop
+      - dnsutils
+    state: present
+    update_cache: yes
+  when: network_configuration.system in ['linux', 'ubuntu']
+
+- name: (FreeBSD) Install generic packages.
+  community.general.pkgng:
+    name:
+      - tar
+      - wget
+      - vim
+      - tmux
+      - htop
+    state: present
+  when: network_configuration.system == 'freebsd'
+
+- name: (NetBSD) Install generic packages.
+  community.general.pkgin:
+    name:
+      - tar
+      - wget
+      - vim
+      - tmux
+      - htop
+    state: present
+  when: network_configuration.system == 'netbsd'
+
+- name: (CentOS) Install generic packages.
+  ansible.builtin.yum:
+    name:
+      - tar
+      - wget
+      - vim
+      - tmux
+      - bind-utils
+      #- htop Requires EPEL; skip for now
+    state: present
+  when: network_configuration.system == 'centos'
+
+- name: Unknown system; fail the playbook.
+  ansible.builtin.fail:
+    msg: "Unknown system! Cannot install packages!"
+  when: "network_configuration.system not in ['linux', 'ubuntu', 'freebsd', 'netbsd', 'centos']"

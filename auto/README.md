@@ -61,6 +61,21 @@ If you specify extra inventory, you would need to also change the shipped
 `ansible.cfg` file to reflect those changes, or point to a different one with
 the `ANSIBLE_CONFIG` environmnet variable.
 
+### Destroying VMs
+
+- `vagrant destroy` destroys everything; you can specify specific VMs if needed
+  and the additional `-f` option gets rid of the confirmation.
+- If cloning is used (by default currently), the master VM needs to be manually
+  deleted from VirtualBox as well.
+- Vagrant keeps downloaded boxes around. To free disk space check which ones
+  are currently there with `vagrant box list` and remove with
+  `vagrant box remove ...`.
+- If cloning is used (by default currently), and the VM is not part of
+  VirtualBox but Vagrant still has the initial box around it keeps some
+  information around and older Vagrant versions may complain that the master VM
+  is not present. To solve this, manually remove
+  `~/.vagrant.d/boxes/<box>/<version>/virtualbox/master_id`
+
 ## TODO
 
 - [DONE] Compile the resolver software in parallel on the resolvers-vm with Ansible
@@ -68,7 +83,7 @@ the `ANSIBLE_CONFIG` environmnet variable.
 - Run the tests and properly clean up if the test is cancelled midway
 - vboxnetN is probably not needed anymore since we rely on Vagrant for
   connecting to the VMs.
-- We can have cloned Virtual Boxes by using `v.linked_clone = true` in the
+- [DONE] We can have cloned Virtual Boxes by using `v.linked_clone = true` in the
   virtualbox configuration. Not done at the moment because we are actively
   still testing and Vagrant does not destroy the master VM when the last cloned
   VM is destroyed. For cleaner environment now, useful when we need to spin up

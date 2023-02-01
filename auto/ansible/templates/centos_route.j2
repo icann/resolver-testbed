@@ -1,0 +1,3 @@
+{% if 'v4' in item and 'static_route' in item.v4 %}
+{{ item.v4.static_route.network }} via {{ item.v4.static_route.gateway }} dev {{ item.name }}
+{% endif %}

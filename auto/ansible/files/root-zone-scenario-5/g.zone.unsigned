@@ -1,0 +1,4 @@
+g. 60 IN SOA ns.g. admin.ns.g 123 1800 900 6054800 60
+g. 60 IN NS ns.g.
+ns.g. 60 IN A 172.21.107.1
+ns.g. 60 IN AAAA fd00::21:107:1

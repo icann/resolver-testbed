@@ -76,6 +76,26 @@ the `ANSIBLE_CONFIG` environmnet variable.
   is not present. To solve this, manually remove
   `~/.vagrant.d/boxes/<box>/<version>/virtualbox/master_id`
 
+### Testing connectivity
+
+There are currently 2 connectivity tests available:
+- ping from resolvers-vm to the servers-vm
+- ping from resolvers-vm to all the IPs defined for the group root_servers
+
+When all relevant VMs are up and network provisioned, you can run the following
+playbooks respectively:
+```
+ansible-playbook ansible/test_resolvers_servers_connectivity.yml
+ansible-playbook ansible/test_resolvers_root_connectivity.yml
+```
+
+These ensure that the separate nodes in the different networks can reach each
+other through the gateway-vm.
+
+NOTE: Testing of the NAT networking (first interface on each VM) is implicitly
+checked by Vagrant while powering up the VM.
+
+
 ## TODO
 
 - [DONE] Compile the resolver software in parallel on the resolvers-vm with Ansible

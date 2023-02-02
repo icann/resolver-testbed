@@ -34,6 +34,8 @@ during development take a performance hit.
 
 ```
 ansible-playbook ansible/vagrant_fast_up.yml
+# or if your machine will not take it because of low number of cores
+ansible-playbook -f <number lower than the default 5> ansible/vagrant_fast_up.yml
 ```
 solves that by:
 - figuring out which boxes are missing and instructing Vagrant to download them

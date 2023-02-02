@@ -5,7 +5,7 @@
 
   tasks:
     - ansible.builtin.import_tasks:
-        file: tasks/install_generic_packages_apt.yml
+        file: tasks/install_generic_packages.yml
 
     - name: Install VM specific packages.
       ansible.builtin.apt:

@@ -1,0 +1,24 @@
+DEVICE={{item.name}}
+TYPE=Ethernet
+BOOTPROTO=none
+ONBOOT=yes
+PEERDNS=no
+{% if 'v4' in item %}
+PREFIX={{ item.v4.addr | basename }}
+IPADDR0={{ item.v4.addr | dirname }}
+{% if 'alias' in item.v4 %}
+{% for a in item.v4.alias %}
+IPADDR{{loop.index}}={{ a | dirname }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if 'v6' in item %}
+IPV6INIT=yes
+IPV6_PEERROUTES=no
+IPV6_PEERDNS=no
+IPV6_AUTOCONF=no
+IPV6ADDR={{ item.v6.addr }}
+{% if 'alias' in item.v6 %}
+IPV6ADDR_SECONDARIES="{% for a in item.v6.alias %}{{ a }} {% endfor %}"
+{% endif %}
+{% endif %}

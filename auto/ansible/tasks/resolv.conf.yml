@@ -1,5 +1,5 @@
 ---
-- name: Set resolv.conf.
+- name: Set immutable resolv.conf in linux.
   block:
   - name: Try writing resolv.conf.
     ansible.builtin.copy:

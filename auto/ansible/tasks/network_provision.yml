@@ -1,0 +1,108 @@
+---
+- name: Linux configuration
+  block:
+  - name: (linux) Configure interfaces.
+    ansible.builtin.template:
+      src: templates/linux_interfaces.j2
+      dest: /etc/network/interfaces
+
+  - name: (linux) Set hostname.
+    ansible.builtin.copy:
+      content: "{{ inventory_hostname }}\n"
+      dest: /etc/hostname
+
+  - ansible.builtin.import_tasks:
+      file: tasks/resolv.conf.yml
+  when: network_configuration.system == 'linux'
+
+- name: Ubuntu configuration
+  block:
+  - name: (Ubuntu) Configure interfaces.
+    ansible.builtin.template:
+      src: templates/ubuntu_netplan.j2
+      dest: /etc/netplan/01-netcfg.yaml
+
+  - name: (Ubuntu) Set hostname.
+    ansible.builtin.copy:
+      content: "{{ inventory_hostname }}\n"
+      dest: /etc/hostname
+
+  - ansible.builtin.import_tasks:
+      file: tasks/resolv.conf.yml
+  when: network_configuration.system == 'ubuntu'
+
+- name: FreeBSD configuration
+  block:
+  - name: (FreeBSD) Configure interfaces (in rc.conf).
+    ansible.builtin.template:
+      src: templates/freebsd_rc.conf.j2
+      dest: /etc/rc.conf
+
+  - name: (FreeBSD) Write resolv.conf.
+    ansible.builtin.copy:
+        src: ../files/resolv-with-8844
+        dest: /etc/resolv.conf
+
+  - name: (FreeBSD) Making boot faster; always autoboot.
+    ansible.builtin.copy:
+      content: 'autoboot_delay="-1"'
+      dest: /boot/loader.conf
+  when: network_configuration.system == 'freebsd'
+
+- name: NetBSD configuration
+  block:
+  - name: (NetBSD) Configure interfaces (PART I; in rc.conf).
+    ansible.builtin.template:
+      src: templates/netbsd_rc.conf.j2
+      dest: /etc/rc.conf
+
+  - name: (NetBSD) Configure interfaces (PART II; in distinct files).
+    ansible.builtin.template:
+      src: templates/netbsd_ifconfig.j2
+      dest: "/etc/ifconfig.{{item.name}}"
+    loop: "{{ network_configuration.networks }}"
+
+  - name: (NetBSD) Configure routing.
+    ansible.builtin.template:
+      src: templates/netbsd_route.conf.j2
+      dest: "/etc/route.conf"
+
+  - name: (NetBSD) Write resolv.conf.
+    ansible.builtin.copy:
+        src: ../files/resolv-with-8844
+        dest: /etc/resolv.conf
+  when: network_configuration.system == 'netbsd'
+
+- name: CentOS configuration
+  block:
+  - name: (CentOS) Configure interfaces.
+    ansible.builtin.template:
+      src: templates/centos_ifcfg.j2
+      dest: "/etc/sysconfig/network-scripts/ifcfg-{{item.name}}"
+    loop: "{{ network_configuration.networks }}"
+
+  - name: (CentOS) Configure IPv4 routing.
+    ansible.builtin.template:
+      src: templates/centos_route.j2
+      dest: "/etc/sysconfig/network-scripts/route-{{item.name}}"
+    loop: "{{ network_configuration.networks }}"
+
+  - name: (CentOS) Configure IPv6 routing.
+    ansible.builtin.template:
+      src: templates/centos_route6.j2
+      dest: "/etc/sysconfig/network-scripts/route6-{{item.name}}"
+    loop: "{{ network_configuration.networks }}"
+
+      #- name: (CentOS) Disable NetworkManager.
+      #  ansible.builtin.systemd:
+      #    name: NetworkManager
+      #    enabled: false
+
+  - ansible.builtin.import_tasks:
+      file: tasks/resolv.conf.yml
+  when: network_configuration.system == 'centos'
+
+- name: Unknown system; fail the playbook.
+  ansible.builtin.fail:
+    msg: "Unknown system! Cannot configure network!"
+  when: "network_configuration.system not in ['linux', 'ubuntu', 'freebsd', 'netbsd', 'centos']"

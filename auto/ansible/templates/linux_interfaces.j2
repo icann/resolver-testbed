@@ -2,11 +2,11 @@ auto lo
 iface lo inet loopback
 
 # Vagrant NAT
-auto enp0s3
-iface enp0s3 inet dhcp
+auto eth0
+iface eth0 inet dhcp
 metric 100  # Low preference on this default route (NAT)
 
-{% for n in networks %}
+{% for n in network_configuration.networks %}
 auto {{ n.name }}
 {% if 'v4' in n %}
 iface {{ n.name }} inet {{ n.v4.type }}
@@ -20,6 +20,12 @@ metric {{ n.v4.metric }}
 up ip route add {{ n.v4.static_route.network }} via {{ n.v4.static_route.gateway }}
 down ip route del {{ n.v4.static_route.network }} via {{ n.v4.static_route.gateway }}
 {% endif %}
+{% if 'alias' in n.v4 %}
+{% for a in n.v4.alias %}
+iface {{ n.name }} inet {{ n.v4.type }}
+address {{ a }}
+{% endfor %}
+{% endif %}
 {% endif %}
 {% if 'v6' in n %}
 iface {{ n.name }} inet6 {{ n.v6.type }}
@@ -32,6 +38,12 @@ metric {{ n.v6.metric }}
 {% if 'static_route' in n.v6 %}
 up ip route add {{ n.v6.static_route.network }} via {{ n.v6.static_route.gateway }}
 down ip route del {{ n.v6.static_route.network }} via {{ n.v6.static_route.gateway }}
+{% endif %}
+{% if 'alias' in n.v6 %}
+{% for a in n.v6.alias %}
+iface {{ n.name }} inet6 {{ n.v6.type }}
+address {{ a }}
+{% endfor %}
 {% endif %}
 {% endif %}
 

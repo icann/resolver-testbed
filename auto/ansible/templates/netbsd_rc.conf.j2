@@ -1,0 +1,12 @@
+rc_configured=YES
+sshd=YES
+wscons=YES
+dhcpcd=YES
+ntpdate=YES
+ip6addrctl=YES
+ip6addrctl_policy="ipv4_prefer"
+
+hostname="{{ inventory_hostname }}"
+net_interfaces="{{ network_configuration.networks | map(attribute='name') | join(' ') }}"
+defaultroute="{{ network_configuration.default_router }}"
+defaultroute6="{{ network_configuration.default_router6 }}"

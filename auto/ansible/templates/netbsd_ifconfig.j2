@@ -1,0 +1,16 @@
+{% if 'v4' in item %}
+inet {{ item.v4.addr }}
+{% if 'alias' in item.v4 %}
+{% for a in item.v4.alias %}
+inet {{ a }} alias
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if 'v6' in item %}
+inet6 {{ item.v6.addr }} alias
+{% if 'alias' in item.v6 %}
+{% for a in item.v6.alias %}
+inet6 {{ a }} alias
+{% endfor %}
+{% endif %}
+{% endif %}

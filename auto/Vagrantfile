@@ -54,12 +54,21 @@ Vagrant.configure(2) do |config|
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
   config.vm.box_check_update = false
+  # Disable the default synced folder; we don't use it.
+  config.vm.synced_folder ".", "/vagrant", disabled: true
 
   # Gather all vms
   vms = hosts_conf['all']['children']['vms']['hosts']
   extra_vms = {}
   if !extra_hosts_conf.empty? then
-    extra_vms = extra_hosts_conf['all']['children']['vms']['hosts']
+    if ! (get_value extra_hosts_conf['all']['children'], 'vms').empty? then
+      hosts = extra_hosts_conf['all']['children']['vms']['hosts']
+      extra_vms = extra_vms.merge(hosts.nil? ? {} : hosts)
+    end
+    if ! (get_value extra_hosts_conf['all']['children'], 'root_servers').empty? then
+      hosts = extra_hosts_conf['all']['children']['root_servers']['hosts']
+      extra_vms = extra_vms.merge(hosts.nil? ? {} : hosts)
+    end
   end
   all_vms = vms.merge(extra_vms.nil? ? {} : extra_vms)
 
@@ -94,7 +103,7 @@ Vagrant.configure(2) do |config|
         v.cpus = vm_conf['cpus']
         v.memory = vm_conf['memory']
         v.linked_clone = use_linked_clones
-        (vm_conf['networks'] + extra_networks).each_with_index do |n, i|
+        (vm_conf['network_configuration']['networks'] + extra_networks).each_with_index do |n, i|
           a = n['vbox_arguments']
           # Enable any bridge interfaces conditionally
           if a[3] != 'BRIDGE_NET' || (use_bridge and ! BRIDGE_NET.empty?) then
@@ -102,6 +111,11 @@ Vagrant.configure(2) do |config|
             # Assumption is that vbox_arguments come in pairs of ('--option', 'value')
             # Force the NIC type because some systems rely on it for naming e.g., FreeBSD
             v.customize ["modifyvm", :id, a[0]+"#{i+2}", a[1], a[2]+"#{i+2}", eval(a[3]), "--nictype#{i+2}", "82540EM"]
+            # In some versions of VirtualBox the interface cable is not
+            # connected by default; explicitly set this
+            v.customize ["modifyvm", :id, "--cableconnected#{i+2}", "on"]
+            # Ubuntu boxes would write debugging logs locally; disable them
+            v.customize ["modifyvm", :id, "--uartmode1", "disconnected"]
           end
         end
       end
@@ -144,6 +158,7 @@ Vagrant.configure(2) do |config|
       # This is a dummy ping command to make Vagrant auto generate an Ansible
       # inventory. Run always so that the inventory is always updated.
       h.vm.provision "ansible", run: "always" do |ansible|
+        # XXX DISABLED: Ansible will read the environment variable if present
         #ansible.config_file = ansible_cfg
         ansible.playbook = 'ansible/dummy_vagrant_provision.yml'
       end

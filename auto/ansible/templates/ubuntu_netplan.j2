@@ -1,0 +1,31 @@
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+{% for n in network_configuration.networks %}
+    {{ n.name }}:
+      addresses:
+{% if 'v4' in n %}
+        - {{ n.v4.addr }}
+{% if 'alias' in n.v4 %}
+{% for a in n.v4.alias %}
+        - {{ a }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if 'v6' in n %}
+        - {{ n.v6.addr }}
+{% if 'alias' in n.v6 %}
+{% for a in n.v6.alias %}
+        - {{ a }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if 'static_routes' in n %}
+      routes:
+{% for r in n.static_routes %}
+        - to: "{{ r.network }}"
+          via: "{{ r.gateway }}"
+{% endfor %}
+{% endif %}
+{% endfor %}

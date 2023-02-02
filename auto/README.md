@@ -22,6 +22,41 @@ For now bullet point documentation follows.
 
 ### VM creation and network provisioning
 
+**UPDATE: _Fast_ environment setup**
+
+Vagrant only interacts with Virtual Box VMs in a serial way; one at a time.
+This significantly increases waiting times when bringing up the environment,
+especially for cold start.
+
+Although this is not a real problem as the environment needs to be setup once,
+future VM reloading due to reconfiguration, or rebuilding of the environment
+during development take a performance hit.
+
+```
+ansible-playbook ansible/vagrant_fast_up.yml
+```
+solves that by:
+- figuring out which boxes are missing and instructing Vagrant to download them
+  in parrallel;
+- bringing up unique boxes of not yet created VMs in parallel. This bypasses
+  any locking that may happen from Virtual Box for the master VMs, because of
+  VM cloning;
+- bringing up the rest of the VMs in parallel.
+
+Since this is an Ansible playbook it can be run again and again and it will do
+what needs to be done each run. Just bringing up an already created environment
+from a previous run is part of this.
+
+With this playbook, reloading is discouraged. Instead the following steps are
+a faster alternative:
+```
+vagrant halt
+ansible-playbook ansible/vagrant_fast_up.yml
+```
+
+The notes below are still valid but rely on Vagrant's default serial behavior
+when using Virtual Box as the provider.
+
 
 - `vagrant up`; this will fetch the images (boxes), configure them and bring
   them up.
@@ -61,6 +96,41 @@ If you specify extra inventory, you would need to also change the shipped
 `ansible.cfg` file to reflect those changes, or point to a different one with
 the `ANSIBLE_CONFIG` environmnet variable.
 
+### Destroying VMs
+
+- `vagrant destroy` destroys everything; you can specify specific VMs if needed
+  and the additional `-f` option gets rid of the confirmation.
+- If cloning is used (by default currently), the master VM needs to be manually
+  deleted from VirtualBox as well.
+- Vagrant keeps downloaded boxes around. To free disk space check which ones
+  are currently there with `vagrant box list` and remove with
+  `vagrant box remove ...`.
+- If cloning is used (by default currently), and the VM is not part of
+  VirtualBox but Vagrant still has the initial box around it keeps some
+  information around and older Vagrant versions may complain that the master VM
+  is not present. To solve this, manually remove
+  `~/.vagrant.d/boxes/<box>/<version>/virtualbox/master_id`
+
+### Testing connectivity
+
+There are currently 2 connectivity tests available:
+- ping from resolvers-vm to the servers-vm
+- ping from resolvers-vm to all the IPs defined for the group root_servers
+
+When all relevant VMs are up and network provisioned, you can run the following
+playbooks respectively:
+```
+ansible-playbook ansible/test_resolvers_servers_connectivity.yml
+ansible-playbook ansible/test_resolvers_root_connectivity.yml
+```
+
+These ensure that the separate nodes in the different networks can reach each
+other through the gateway-vm.
+
+NOTE: Testing of the NAT networking (first interface on each VM) is implicitly
+checked by Vagrant while powering up the VM.
+
+
 ## TODO
 
 - [DONE] Compile the resolver software in parallel on the resolvers-vm with Ansible
@@ -68,7 +138,7 @@ the `ANSIBLE_CONFIG` environmnet variable.
 - Run the tests and properly clean up if the test is cancelled midway
 - vboxnetN is probably not needed anymore since we rely on Vagrant for
   connecting to the VMs.
-- We can have cloned Virtual Boxes by using `v.linked_clone = true` in the
+- [DONE] We can have cloned Virtual Boxes by using `v.linked_clone = true` in the
   virtualbox configuration. Not done at the moment because we are actively
   still testing and Vagrant does not destroy the master VM when the last cloned
   VM is destroyed. For cleaner environment now, useful when we need to spin up

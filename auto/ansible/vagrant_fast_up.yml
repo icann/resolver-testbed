@@ -1,0 +1,111 @@
+---
+- hosts: localhost
+  gather_facts: false
+  become: false
+
+  tasks:
+    - name: Get relevant VMs.
+      ansible.builtin.set_fact:
+        relevant_vms: "{{ groups.all | reject('equalto', 'VBox-host') }}"
+
+    - name: Get needed boxes.
+      ansible.builtin.set_fact:
+        boxes_needed: "{{ relevant_vms | map('extract', hostvars, 'box') | unique }}"
+
+    - name: Get box list.
+      ansible.builtin.shell:
+        cmd: "vagrant box list --machine-readable"
+      register: box_list
+
+    - name: Get available boxes.
+      ansible.builtin.set_fact:
+        boxes_available: "{{ box_list.stdout_lines | select('search', ',box-name,') | join('\n') | regex_findall(',(?P<name>[^,]+)$', multiline=True) | unique }}"
+
+    - name: Get missing boxes.
+      ansible.builtin.set_fact:
+        boxes_missing: "{{ boxes_needed | difference(boxes_available) }}"
+
+    - name: Add the missing boxes as dummy hosts.
+      ansible.builtin.add_host:
+        name: "{{ item }}"
+        groups: boxes_missing
+        host_name: "{{ item }}"
+      loop: "{{ boxes_missing }}"
+
+- hosts: boxes_missing
+  gather_facts: false
+  become: false
+
+  tasks:
+    - name: Add the missing Vagrant boxes.
+      ansible.builtin.shell:
+        cmd: "vagrant box add --provider virtualbox {{ host_name }}"
+        # This is relative to the playbook.
+        chdir: ../
+      delegate_to: localhost
+
+- hosts: localhost
+  gather_facts: false
+  become: false
+
+  tasks:
+    - name: Get Vagrant status.
+      ansible.builtin.shell:
+        cmd: "vagrant status --machine-readable"
+        # This is relative to the playbook.
+        chdir: ../
+      register: vagrant_status
+
+    - name: Get not_created VMs.
+      ansible.builtin.set_fact:
+        not_created: "{{ vagrant_status.stdout_lines | select('search', ',state,not_created') | join('\n') | regex_findall(',(?P<name>[^,]+),state,not_created$', multiline=True) }}"
+
+    - name: Get not_created boxes.
+      ansible.builtin.set_fact:
+        relevant_boxes: "{{ not_created | map('extract', hostvars, 'box') }}"
+
+    - name: Get unique not_created VMs/boxes to start up.
+      ansible.builtin.set_fact:
+        unique_vms: "{{ dict(relevant_boxes | zip(not_created)).values() | list }}"
+    - name: Add the unique VMs as dummy hosts.
+      ansible.builtin.add_host:
+        name: "{{ item }}"
+        groups: unique_vms
+        host_name: "{{ item }}"
+      loop: "{{ unique_vms }}"
+
+- hosts: unique_vms
+  gather_facts: false
+  become: false
+
+  tasks:
+    - name: Bring up the unique boxes.
+      ansible.builtin.shell:
+        cmd: "vagrant up {{ host_name }}"
+        # This is relative to the playbook.
+        chdir: ../
+      delegate_to: localhost
+
+- hosts: localhost
+  gather_facts: false
+  become: false
+
+  tasks:
+    - name: Add the rest of the VMs as dummy hosts.
+      ansible.builtin.add_host:
+        name: "{{ item }}"
+        groups: rest_vms
+        host_name: "{{ item }}"
+      loop: "{{ relevant_vms | difference(unique_vms) }}"
+
+- hosts: rest_vms
+  gather_facts: false
+  become: false
+
+  tasks:
+    - name: Bring up the rest of the VMs.
+      ansible.builtin.shell:
+        cmd: "vagrant up {{ host_name }}"
+        # This is relative to the playbook.
+        chdir: ../
+      delegate_to: localhost

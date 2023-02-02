@@ -22,6 +22,41 @@ For now bullet point documentation follows.
 
 ### VM creation and network provisioning
 
+**UPDATE: _Fast_ environment setup**
+
+Vagrant only interacts with Virtual Box VMs in a serial way; one at a time.
+This significantly increases waiting times when bringing up the environment,
+especially for cold start.
+
+Although this is not a real problem as the environment needs to be setup once,
+future VM reloading due to reconfiguration, or rebuilding of the environment
+during development take a performance hit.
+
+```
+ansible-playbook ansible/vagrant_fast_up.yml
+```
+solves that by:
+- figuring out which boxes are missing and instructing Vagrant to download them
+  in parrallel;
+- bringing up unique boxes of not yet created VMs in parallel. This bypasses
+  any locking that may happen from Virtual Box for the master VMs, because of
+  VM cloning;
+- bringing up the rest of the VMs in parallel.
+
+Since this is an Ansible playbook it can be run again and again and it will do
+what needs to be done each run. Just bringing up an already created environment
+from a previous run is part of this.
+
+With this playbook, reloading is discouraged. Instead the following steps are
+a faster alternative:
+```
+vagrant halt
+ansible-playbook ansible/vagrant_fast_up.yml
+```
+
+The notes below are still valid but rely on Vagrant's default serial behavior
+when using Virtual Box as the provider.
+
 
 - `vagrant up`; this will fetch the images (boxes), configure them and bring
   them up.

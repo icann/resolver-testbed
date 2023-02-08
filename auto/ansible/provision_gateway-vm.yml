@@ -15,3 +15,9 @@
           - iptables
         state: present
         update_cache: yes
+
+    - name: Install tcpdump service file
+      ansible.builtin.copy:
+        src: files/gateway-vm/tcpdumpd.service
+        dest: /etc/systemd/system
+

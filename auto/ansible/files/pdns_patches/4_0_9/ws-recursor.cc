@@ -1,24 +1,24 @@
 /*
- * This file is part of PowerDNS or dnsdist.
- * Copyright -- PowerDNS.COM B.V. and its contributors
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of version 2 of the GNU General Public License as
- * published by the Free Software Foundation.
- *
- * In addition, for the avoidance of any doubt, permission is granted to
- * link this program with OpenSSL and to (re)distribute the binaries
- * produced as the result of such linking.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+    PowerDNS Versatile Database Driven Nameserver
+    Copyright (C) 2003 - 2016  PowerDNS.COM BV
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 2
+    as published by the Free Software Foundation
+
+    Additionally, the license of this program contains a special
+    exception which allows to distribute the program in binary form when
+    it is linked against OpenSSL.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -39,10 +39,8 @@
 #include "ws-api.hh"
 #include "logger.hh"
 #include "ext/incbin/incbin.h"
-#include "rec-lua-conf.hh"
-#include "rpzloader.hh"
 
-extern thread_local FDMultiplexer* t_fdm;
+extern __thread FDMultiplexer* t_fdm;
 
 using json11::Json;
 
@@ -117,8 +115,8 @@ static void apiServerConfigAllowFrom(HttpRequest* req, HttpResponse* resp)
 
 static void fillZone(const DNSName& zonename, HttpResponse* resp)
 {
-  auto iter = SyncRes::t_sstorage.domainmap->find(zonename);
-  if (iter == SyncRes::t_sstorage.domainmap->end())
+  auto iter = t_sstorage->domainmap->find(zonename);
+  if (iter == t_sstorage->domainmap->end())
     throw ApiException("Could not find domain '"+zonename.toString()+"'");
 
   const SyncRes::AuthDomain& zone = iter->second;
@@ -257,8 +255,8 @@ static void apiServerZones(HttpRequest* req, HttpResponse* resp)
 
     DNSName zonename = apiNameToDNSName(stringFromJson(document, "name"));
 
-    auto iter = SyncRes::t_sstorage.domainmap->find(zonename);
-    if (iter != SyncRes::t_sstorage.domainmap->end())
+    auto iter = t_sstorage->domainmap->find(zonename);
+    if (iter != t_sstorage->domainmap->end())
       throw ApiException("Zone already exists");
 
     doCreateZone(document);
@@ -272,7 +270,7 @@ static void apiServerZones(HttpRequest* req, HttpResponse* resp)
     throw HttpMethodNotAllowedException();
 
   Json::array doc;
-  for(const SyncRes::domainmap_t::value_type& val :  *SyncRes::t_sstorage.domainmap) {
+  for(const SyncRes::domainmap_t::value_type& val :  *t_sstorage->domainmap) {
     const SyncRes::AuthDomain& zone = val.second;
     Json::array servers;
     for(const ComboAddress& server : zone.d_servers) {
@@ -296,8 +294,8 @@ static void apiServerZoneDetail(HttpRequest* req, HttpResponse* resp)
 {
   DNSName zonename = apiZoneIdToName(req->parameters["id"]);
 
-  SyncRes::domainmap_t::const_iterator iter = SyncRes::t_sstorage.domainmap->find(zonename);
-  if (iter == SyncRes::t_sstorage.domainmap->end())
+  SyncRes::domainmap_t::const_iterator iter = t_sstorage->domainmap->find(zonename);
+  if (iter == t_sstorage->domainmap->end())
     throw ApiException("Could not find domain '"+zonename.toString()+"'");
 
   if(req->method == "PUT" && !::arg().mustDo("api-readonly")) {
@@ -334,7 +332,7 @@ static void apiServerSearchData(HttpRequest* req, HttpResponse* resp) {
     throw ApiException("Query q can't be blank");
 
   Json::array doc;
-  for(const SyncRes::domainmap_t::value_type& val : *SyncRes::t_sstorage.domainmap) {
+  for(const SyncRes::domainmap_t::value_type& val : *t_sstorage->domainmap) {
     string zoneId = apiZoneNameToId(val.first);
     string zoneName = val.first.toString();
     if (pdns_ci_find(zoneName, q) != string::npos) {
@@ -373,50 +371,19 @@ static void apiServerCacheFlush(HttpRequest* req, HttpResponse* resp) {
     throw HttpMethodNotAllowedException();
 
   DNSName canon = apiNameToDNSName(req->getvars["domain"]);
-  bool subtree = (req->getvars.count("subtree") > 0 && req->getvars["subtree"].compare("true") == 0);
 
-  int count = broadcastAccFunction<uint64_t>(boost::bind(pleaseWipeCache, canon, subtree));
-  count += broadcastAccFunction<uint64_t>(boost::bind(pleaseWipePacketCache, canon, subtree));
-  count += broadcastAccFunction<uint64_t>(boost::bind(pleaseWipeAndCountNegCache, canon, subtree));
+  int count = broadcastAccFunction<uint64_t>(boost::bind(pleaseWipeCache, canon, false));
+  count += broadcastAccFunction<uint64_t>(boost::bind(pleaseWipePacketCache, canon, false));
+  count += broadcastAccFunction<uint64_t>(boost::bind(pleaseWipeAndCountNegCache, canon, false));
   resp->setBody(Json::object {
     { "count", count },
     { "result", "Flushed cache." }
   });
 }
 
-static void apiServerRPZStats(HttpRequest* req, HttpResponse* resp) {
-  if(req->method != "GET")
-    throw HttpMethodNotAllowedException();
-
-  auto luaconf = g_luaconfs.getLocal();
-  auto numZones = luaconf->dfe.size();
-
-  Json::object ret;
-
-  for (size_t i=0; i < numZones; i++) {
-    auto zone = luaconf->dfe.getZone(i);
-    if (zone == nullptr)
-      continue;
-    auto name = zone->getName();
-    auto stats = getRPZZoneStats(*name);
-    if (stats == nullptr)
-      continue;
-    Json::object zoneInfo = {
-      {"transfers_failed", (double)stats->d_failedTransfers},
-      {"transfers_success", (double)stats->d_successfulTransfers},
-      {"transfers_full", (double)stats->d_fullTransfers},
-      {"records", (double)stats->d_numberOfRecords},
-      {"last_update", (double)stats->d_lastUpdate},
-      {"serial", (double)stats->d_serial},
-    };
-    ret[*name] = zoneInfo;
-  }
-  resp->setBody(ret);
-}
-
 #include "htmlfiles.h"
 
-static void serveStuff(HttpRequest* req, HttpResponse* resp)
+void serveStuff(HttpRequest* req, HttpResponse* resp) 
 {
   resp->headers["Cache-Control"] = "max-age=86400";
 
@@ -447,7 +414,7 @@ static void serveStuff(HttpRequest* req, HttpResponse* resp)
 
 RecursorWebServer::RecursorWebServer(FDMultiplexer* fdm)
 {
-  registerAllStats();
+  RecursorControlParser rcp; // inits
 
   d_ws = new AsyncWebServer(fdm, arg()["webserver-address"], arg().asNum("webserver-port"));
   d_ws->bind();
@@ -457,7 +424,6 @@ RecursorWebServer::RecursorWebServer(FDMultiplexer* fdm)
   d_ws->registerApiHandler("/api/v1/servers/localhost/cache/flush", &apiServerCacheFlush);
   d_ws->registerApiHandler("/api/v1/servers/localhost/config/allow-from", &apiServerConfigAllowFrom);
   d_ws->registerApiHandler("/api/v1/servers/localhost/config", &apiServerConfig);
-  d_ws->registerApiHandler("/api/v1/servers/localhost/rpzstatistics", &apiServerRPZStats);
   d_ws->registerApiHandler("/api/v1/servers/localhost/search-log", &apiServerSearchLog);
   d_ws->registerApiHandler("/api/v1/servers/localhost/search-data", &apiServerSearchData);
   d_ws->registerApiHandler("/api/v1/servers/localhost/statistics", &apiServerStatistics);
@@ -515,7 +481,7 @@ void RecursorWebServer::jsonstat(HttpRequest* req, HttpResponse *resp)
     for(const rcounts_t::value_type& q :  rcounts) {
       totIncluded-=q.first;
       entries.push_back(Json::array {
-        -q.first, q.second.first.toLogString(), DNSRecordContent::NumberToType(q.second.second)
+        -q.first, q.second.first.toString(), DNSRecordContent::NumberToType(q.second.second)
       });
       if(tot++>=100)
 	break;
@@ -577,23 +543,14 @@ void RecursorWebServer::jsonstat(HttpRequest* req, HttpResponse *resp)
 
 void AsyncServerNewConnectionMT(void *p) {
   AsyncServer *server = (AsyncServer*)p;
-  
   try {
-    auto socket = server->accept(); // this is actually a shared_ptr
-    if (socket) {
-      server->d_asyncNewConnectionCallback(socket);
-    }
+    Socket* socket = server->accept();
+    server->d_asyncNewConnectionCallback(socket);
+    delete socket;
   } catch (NetworkError &e) {
     // we're running in a shared process/thread, so can't just terminate/abort.
-    L<<Logger::Warning<<"Network error in web thread: "<<e.what()<<endl;
     return;
   }
-  catch (...) {
-    L<<Logger::Warning<<"Unknown error in web thread"<<endl;
-
-    return;
-  }
-
 }
 
 void AsyncServer::asyncWaitForConnections(FDMultiplexer* fdm, const newconnectioncb_t& callback)
@@ -604,12 +561,12 @@ void AsyncServer::asyncWaitForConnections(FDMultiplexer* fdm, const newconnectio
 
 void AsyncServer::newConnection()
 {
-  getMT()->makeThread(&AsyncServerNewConnectionMT, this);
+  MT->makeThread(&AsyncServerNewConnectionMT, this);
 }
 
-// This is an entry point from FDM, so it needs to catch everything.
-void AsyncWebServer::serveConnection(std::shared_ptr<Socket> client) const
-try {
+
+void AsyncWebServer::serveConnection(Socket *client)
+{
   HttpRequest req;
   YaHTTP::AsyncRequestLoader yarl;
   yarl.initialize(&req);
@@ -618,7 +575,8 @@ try {
   string data;
   try {
     while(!req.complete) {
-      int bytes = arecvtcp(data, 16384, client.get(), true);
+      data.clear();
+      int bytes = arecvtcp(data, 16384, client, true);
       if (bytes > 0) {
         req.complete = yarl.feed(data);
       } else {
@@ -638,26 +596,13 @@ try {
   data = ss.str();
 
   // now send the reply
-  if (asendtcp(data, client.get()) == -1 || data.empty()) {
+  if (asendtcp(data, client) == -1 || data.empty()) {
     L<<Logger::Error<<"Failed sending reply to HTTP client"<<endl;
   }
-}
-catch(PDNSException &e) {
-  L<<Logger::Error<<"HTTP Exception: "<<e.reason<<endl;
-}
-catch(std::exception &e) {
-  if(strstr(e.what(), "timeout")==0)
-    L<<Logger::Error<<"HTTP STL Exception: "<<e.what()<<endl;
-}
-catch(...) {
-  L<<Logger::Error<<"HTTP: Unknown exception"<<endl;
 }
 
 void AsyncWebServer::go() {
   if (!d_server)
     return;
-  auto server = std::dynamic_pointer_cast<AsyncServer>(d_server);
-  if (!server)
-    return;
-  server->asyncWaitForConnections(d_fdm, std::bind(&AsyncWebServer::serveConnection, this, std::placeholders::_1));
+  ((AsyncServer*)d_server)->asyncWaitForConnections(d_fdm, std::bind(&AsyncWebServer::serveConnection, this, std::placeholders::_1));
 }

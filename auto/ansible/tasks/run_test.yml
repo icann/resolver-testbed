@@ -1,0 +1,100 @@
+---
+- name: Per software configuration tasks.
+  delegate_to: "{{ on_host }}"
+  vars:
+    this_source_dir: "{{ BUILD_SOURCE_DIR }}/{{ host_name }}"
+    this_target_dir: "{{ BUILD_TARGET_DIR }}/{{ host_name }}"
+  block:
+
+  - name: Check if we already built the source.
+    ansible.builtin.find:
+      paths: "{{ this_target_dir }}"
+      patterns: ".compiled.this"
+      file_type: file
+      hidden: yes
+    register: software_compiled
+
+  - name: Configure compiled software
+    when: software_compiled.files != []
+    block:
+
+    - name: Run the Unbound tests
+      when: host_name.split('-')[0] == 'unbound'
+      block:
+      - name: Is unbound configured
+        stat:
+          path: "{{ this_target_dir }}/etc/unbound/unbound_control.key"
+        register: unbound_control_key
+
+      - name: Do test with Unbound
+        when: unbound_control_key.stat.exists
+        block:
+        - name: Is unbound started?
+          stat:
+            path: "{{ this_target_dir }}/etc/unbound/unbound.pid"
+          register: unbound_pid
+
+        - name: stop unbound (if it is running)
+          ansible.builtin.shell:
+            cmd: "PATH={{ this_target_dir }}/bin:{{ this_target_dir }}/sbin:$PATH unbound-control stop"
+            chdir: "{{ this_target_dir }}"
+          when: unbound_pid.stat.exists
+
+        - name: Install tcpdump service file on gateway-vm
+          delegate_to: gateway-vm
+          ansible.builtin.copy:
+            src: files/gateway-vm/tcpdumpd.service
+            dest: /etc/systemd/system
+
+        - name: Start tcpdump on gateway-vm
+          delegate_to: gateway-vm
+          ansible.builtin.systemd:
+            name: tcpdumpd
+            state: started
+            daemon_reload: yes
+     
+        - name: Start unbound
+          ansible.builtin.shell:
+            cmd: "PATH={{ this_target_dir }}/bin:{{ this_target_dir }}/sbin:$PATH unbound-control start"
+            chdir: "{{ this_target_dir }}"
+
+        - name: Do query
+          ansible.builtin.shell:
+              cmd: dig @127.0.0.1 example.com +timeout=10
+          register: dig_result
+
+        - debug:
+            var: dig_result.stdout_lines
+  
+        - name: Wait a second or two
+          command: sleep 30
+          delegate_to: localhost
+          become: no
+  
+        - name: stop unbound again
+          ansible.builtin.shell:
+            cmd: "PATH={{ this_target_dir }}/bin:{{ this_target_dir }}/sbin:$PATH unbound-control stop"
+            chdir: "{{ this_target_dir }}"
+
+        - name: Stop tcpdump on gateway-vm
+          ansible.builtin.systemd:
+            name: tcpdumpd
+            state: stopped
+          delegate_to: gateway-vm
+
+        - name: Get packet captures
+          ansible.builtin.find:
+            paths: /var/log/tcpdumpd
+            patterns: '*.pcap'
+          register: files
+          delegate_to: gateway-vm
+
+        - name: Fetch latest capture
+          ansible.builtin.fetch:
+            src: '{{ (files.files | sort(attribute="mtime", reverse=true) | first).path }}'
+            dest: 'captures/{{ (files.files | sort(attribute="mtime", reverse=true) | first).path | basename | splitext | first }}-{{ host_name }}.pcap'
+            flat: true
+          when: files.files|count > 0
+          delegate_to: gateway-vm
+
+

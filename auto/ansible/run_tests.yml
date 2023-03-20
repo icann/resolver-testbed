@@ -1,0 +1,18 @@
+---
+- hosts: resolvers-vm
+  gather_subset: "!all,!min,distribution_release"
+  become: true
+
+  tasks:
+    - ansible.builtin.import_tasks:
+        file: tasks/read_build_configuration.yml
+
+- hosts: build_group
+  gather_facts: false
+  become: true
+  serial: 1
+  vars:
+    on_host: resolvers-vm
+  tasks:
+    - ansible.builtin.import_tasks:
+        file: tasks/run_test.yml

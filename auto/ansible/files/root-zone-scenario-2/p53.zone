@@ -1,0 +1,64 @@
+p53.	60	IN	SOA	a.p53. foo.p53. 2019080499 1800 900 604800 60
+p53.	60	IN	RRSIG	SOA 8 1 60 20300101000000 20230119132352 32811 p53. iQeOlpTqBHKZZIfzMJbwunAHxwCwbAEOS+jxd9Qy+vAU2EDREVAwoZmD6OCo69FZEAE1PyhneUQ56AOvfriamg9wMAWNMg37rLMFxlJ8juUrbCY3FGZF4X8uMqz5/8HfLaYE79xCXZCbF2gnPjLH7cWlh53PFDbOR8sIeCmrW5EOUNguy0Ks45obmmcYqOVbaJs3+ESSCGvJA2Eng0pK5IR6mO4FI1cppmZ0ykP0jXxoCpwV2jyQJvKAf5xvih/lBRhnHyOtmE+9fcTclNDmjoOeXR+OI6PJy9pc5i4AgvQYoaYiJcC+hbEr+ps2ZOH2yHbn4CZhJVsctGAO2TfWsA==
+p53.	60	IN	NS	a.some-servers.p53.
+p53.	60	IN	NS	b.some-servers.p53.
+p53.	60	IN	NS	c.some-servers.p53.
+p53.	60	IN	NS	d.some-servers.p53.
+p53.	60	IN	NS	e.some-servers.p53.
+p53.	60	IN	NS	f.some-servers.p53.
+p53.	60	IN	NS	g.some-servers.p53.
+p53.	60	IN	NS	h.some-servers.p53.
+p53.	60	IN	NS	i.some-servers.p53.
+p53.	60	IN	NS	j.some-servers.p53.
+p53.	60	IN	NS	k.some-servers.p53.
+p53.	60	IN	NS	l.some-servers.p53.
+p53.	60	IN	NS	m.some-servers.p53.
+p53.	60	IN	RRSIG	NS 8 1 60 20300101000000 20230119132352 32811 p53. yxbYJJ3dQTxYfYFbDrBvezhLN0Jbp5+CHhUgsqjib6m0cDwWQWUd4yky+HOEdvRgDT9MfT1MySKf1kGpDwrkwMXHMD/EfZbkPOlEU25MKWCbWIY1Q5RyMuFpTjJNbSJ5biX175N/AmFbW1Zzb17utwLzZV/7FmtYSaQqlFbmzDsUl94ZI3ByLTD0RLogafaDFAny+3ugEWKMgpHmh/FrzHkD7HzmcY5ipqqMIC54QXCJlWnnayHxj8NTJ+5mGJPpDKMcB9WCYcSs9k1sMRoazhXOq2S+mwVsGRap0kMb0bVoo72exotVwvmxMJfvW8lqNKd6zz4EIW7DwKF6Jz6qlg==
+p53.	60	IN	DNSKEY	256 3 8 AwEAAdBp3p0GPYfa0aIey6uj+xRmOpiGD/KCtaiM/FC/ES9pp5n2CgiN4x49XS+W395KGH3u3X+vhbHOZ6FDL+60/dUVMVcVF3TWUhvrPS4XDwqTQlAJEPKLpTdpNi044dV2jJcL73SDCqYtjOBguBzNGj/8Z/G3eSLoS+tlUyTAunW8/Br99piYd5vNLzzPrnUdZ74QvX5qYrC6w2BrpOBG/2+EwdxVj9o1U+zjgv1iOzaV1fxbhV8nmeMe6EsJLdMiU8b/R3iDyye4tdkuJtrIivgMwhmnrTXtH3UFITVVXxTpQXwe2LvCTEsLNR/pMNefZeSPF4kFj+JfDqcU/TJd0Ck= ;{id = 32811 (zsk), size = 2048b}
+p53.	60	IN	DNSKEY	257 3 8 AwEAAc4V3hMIO721IK616AXGpBnIFKy8DBdzDqP9Efe6PSpPjG94yi9ZviT6iV6IXcTE7XnttN3pZmNEgJHjZB66pVy446/Fxrj00E9E8utw3RhY81IRjXHKCt33km7q7sYbqe6F6r7zgHzHESCjPLJieMU7A6J2g7l8xxXLvFokjM9bs7lOeaUJWqake7ayLH3Gq7mOYS4KknoS7rm2IVz8yBD5ryKLTL4Ek4TuMNaarByhCpgAJlDvRtahu2DwV+2NExKaR2zdfWG+W3evP8/WLxH+IuhNg1T9JDlM+dMGhFMJrL4VHLlgC5u64gjnZPVEEXbNrrsAWSVZmLX11CDQgS0= ;{id = 28021 (ksk), size = 2048b}
+p53.	60	IN	RRSIG	DNSKEY 8 1 60 20300101000000 20230119132352 28021 p53. Z70MHCbV4tlFoqvxEXzB3PhFONSf7qwb31Vp0RqSr2PVpC4FwwJHsLxFsANdo7la7qKu/Pw4iYYQd55uZIPznfKfu/mU6DSer+Zi8pLiyynj+nlQSN+GbBmkanxwxAKoqQfwKUuARBw38NUk0In9BTNDnO3c4m4F7woP8nba/azj2ig1ZR3KHN05F9AWNIrNiwy0djGxojQhKaL7AmGBchIYtxW0eYUdTuNLqZQiqVEOud2eokzK9DCN+qn9TSx1Fj5gvZ5gSDUL5ITQQhy10Sq5btIMqIogVtzLU6pF5nKYbn/LI6Lyo9lXtcxlShxW83kmb1MIVT+U69+EqvuxTQ==
+p53.	60	IN	NSEC	some-servers.p53. NS SOA RRSIG NSEC DNSKEY 
+p53.	60	IN	RRSIG	NSEC 8 1 60 20300101000000 20230119132352 32811 p53. e9RZvaRsey01hbWXhPKsLUXUukxuLx296zZllYHzMuHZyP4Em3qZ0s5Mz69xcN0w8mSwhJ4HB1/bz6EF0XSapq8r4SVrosvtAjXIIMbFXQilFSNrbHQEDD9U+LUKVzAbDAZoZeZD5BLEPiEiJxg5XPb5PGZyR/gfkL0L0p4CWp7aiRldWzyPr0Vni9f7uM5mg8B8PpDjkYpJyKcPKtwQ1mmdD+hYhEzMScQipE048Tlz/oxcMDXr4LjSW5yaclBtH8by9MtmzD/jhm+5WMAUUopftnB15TksQDK1dV3gHjtmhURdZGGUx5tiuWGVNHPaFirNq4NcwMMyHBKuLJo2Dg==
+some-servers.p53.	60	IN	NS	a.some-servers.p53.
+some-servers.p53.	60	IN	NS	b.some-servers.p53.
+some-servers.p53.	60	IN	NS	c.some-servers.p53.
+some-servers.p53.	60	IN	NS	d.some-servers.p53.
+some-servers.p53.	60	IN	NS	e.some-servers.p53.
+some-servers.p53.	60	IN	NS	f.some-servers.p53.
+some-servers.p53.	60	IN	NS	g.some-servers.p53.
+some-servers.p53.	60	IN	NS	h.some-servers.p53.
+some-servers.p53.	60	IN	NS	i.some-servers.p53.
+some-servers.p53.	60	IN	NS	j.some-servers.p53.
+some-servers.p53.	60	IN	NS	k.some-servers.p53.
+some-servers.p53.	60	IN	NS	l.some-servers.p53.
+some-servers.p53.	60	IN	NS	m.some-servers.p53.
+some-servers.p53.	3600	IN	DS	37795 8 2 12542782c9ab2c6a85484d04f1b76ead85152b94a7d3f596462fdbca7d385e62
+some-servers.p53.	3600	IN	RRSIG	DS 8 2 3600 20300101000000 20230119132352 32811 p53. yY/Hsr+WB1XGHRet4JHJ+bs/rDpRd+oFciyOZkE54xoF7xgF3Nz4lXeWwzyAKXYRsB16uVLIVvTYiDpJAeutqtdv+cDojaTKRNd70C/tu0wvuYEX3z+ESN1UDsZuS4ukjsgpYaNU4Qy6kRhThW34JxvTRjnNkFcx1rq9bNqDjC4oSkK5f7CqOs5TGJxXpBEOlpES0KYG3n7UxYJC+Prk1OsmOTvoSKmsFuLreAontHJ8vbbH/2aU/QYHQ0X3u35j5n+Zdqxt0mBO1vdseHByMhguvoX2mYG2W/CzZMDU5Id3itPctuxTo+vqh0BWwcL9bGUxZuBzoCIOJMXKHkjbhQ==
+some-servers.p53.	60	IN	NSEC	p53. NS DS RRSIG NSEC 
+some-servers.p53.	60	IN	RRSIG	NSEC 8 2 60 20300101000000 20230119132352 32811 p53. NWaBRqqln0zRvO6attioG+S4LSJpru5PTvnBdXoDlICptgEqW7PjKXGJYqzCcArxpjZBaT81w3uq/Ep2H1fCYIOdkMykfQ6aIZQiaoy7l+TaJ9qS8BM5u4u5qDQOLvlrzJl/LBvSfHByL318FaWROdT4YKMBK8NuCskKRqs6LxKF1VTY8rz8oIgioqQ66uehbOtz8b4nnWm8uGnUEV7N3hPLyPPbsdikem08ek0pj8bXsQMmCa/k9rKpzYzvqopUghUHKfOLTQ5OrJpJfWpiGtlZux332hvLIOoHPPZE24YH9OA7ji7kjnXmdU2/pwV20yMe/4/u+cTlGJRHNbpOuQ==
+a.some-servers.p53.	60	IN	A	172.21.101.1
+a.some-servers.p53.	60	IN	AAAA	fd00::21:101:1
+b.some-servers.p53.	60	IN	A	172.21.102.1
+b.some-servers.p53.	60	IN	AAAA	fd00::21:102:1
+c.some-servers.p53.	60	IN	A	172.21.103.1
+c.some-servers.p53.	60	IN	AAAA	fd00::21:103:1
+d.some-servers.p53.	60	IN	A	172.21.104.1
+d.some-servers.p53.	60	IN	AAAA	fd00::21:104:1
+e.some-servers.p53.	60	IN	A	172.21.105.1
+e.some-servers.p53.	60	IN	AAAA	fd00::21:105:1
+f.some-servers.p53.	60	IN	A	172.21.106.1
+f.some-servers.p53.	60	IN	AAAA	fd00::21:106:1
+g.some-servers.p53.	60	IN	A	172.21.107.1
+g.some-servers.p53.	60	IN	AAAA	fd00::21:107:1
+h.some-servers.p53.	60	IN	A	172.21.108.1
+h.some-servers.p53.	60	IN	AAAA	fd00::21:108:1
+i.some-servers.p53.	60	IN	A	172.21.109.1
+i.some-servers.p53.	60	IN	AAAA	fd00::21:109:1
+j.some-servers.p53.	60	IN	A	172.21.110.1
+j.some-servers.p53.	60	IN	AAAA	fd00::21:110:1
+k.some-servers.p53.	60	IN	A	172.21.111.1
+k.some-servers.p53.	60	IN	AAAA	fd00::21:111:1
+l.some-servers.p53.	60	IN	A	172.21.112.1
+l.some-servers.p53.	60	IN	AAAA	fd00::21:112:1
+m.some-servers.p53.	60	IN	A	172.21.113.1
+m.some-servers.p53.	60	IN	AAAA	fd00::21:113:1

@@ -1,0 +1,77 @@
+---
+- hosts: servers-vm
+  gather_facts: false
+  become: true
+  vars:
+    listen_addrs: "\
+      {% set output = [] %}\
+      {% for n in network_configuration['networks'] %}\
+      {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
+      {{ output.extend(n['v4']['alias'] | map('dirname')) }}\
+      {% endif %}\
+      {% endfor %}\
+      {{ output }}"
+    listen_addrs_6: "\
+      {% set output = [] %}\
+      {% for n in network_configuration['networks'] %}\
+      {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
+      {{ output.extend(n['v6']['alias'] | map('dirname')) }}\
+      {% endif %}\
+      {% endfor %}\
+      {{ output }}"
+    nameservers:
+      - service: 'named'
+        name: 'BIND'
+        config_file: '/usr/local/etc/namedb/named.conf'
+      - service: 'nsd'
+        name: 'NSD'
+        config_file: '/usr/local/etc/nsd/nsd.conf'
+      - service: 'knot'
+        name: 'Knot'
+        config_file: '/usr/local/etc/knot/knot.conf'
+    scenarios: [ 1, 2, 3, 4, 5, 6 ]
+    #scenarios: [ 1 ]
+
+  tasks:
+
+### TODO: This is a bit more complicated w.r.t. old versions of packages etc.
+###
+#  - name: Install packages.
+#    community.general.pkgng:
+#      name:
+#        - rsync
+#        - git
+#        - bind918
+#        - knot3
+#      state: present
+
+  - name: Copying root zones scenarios
+    ansible.posix.synchronize:
+      src: files/scenarios/
+      dest: /root/scenarios
+
+  - name: Is named running?
+    command: "pgrep -f /usr/local/sbin/named"
+    register: named_pid
+    failed_when: named_pid.rc > 1
+    changed_when: false
+
+  - name: Kill named if running
+    shell: "kill {{ named_pid.stdout_lines[0] }}"
+    when: named_pid.stdout_lines
+
+  - name: Stop any still running nameservers
+    ansible.builtin.service:
+      name: "{{ implementation.service }}"
+      state: 'stopped'
+    loop: "{{ nameservers }}"
+    loop_control:
+      loop_var: implementation
+
+  - ansible.builtin.include_tasks:
+      file: tasks/rssac028-appendix-a/do-scenarios.yml
+    loop: "{{ nameservers }}"
+    loop_control:
+      loop_var: implementation
+
+

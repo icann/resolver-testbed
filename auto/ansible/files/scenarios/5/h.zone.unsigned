@@ -1,0 +1,4 @@
+h. 60 IN SOA ns01.h. admin.ns01.h. 123 1800 900 6054800 60
+h. 60 IN NS ns01.h.
+ns01.h. 60 IN A 172.21.108.1
+ns01.h. 60 IN AAAA fd00::21:108:1

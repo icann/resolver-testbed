@@ -17,6 +17,7 @@
           - ca-certificates
           - python3-pip
           - apt-transport-https
+          - ldnsutils
         state: present
         update_cache: yes
 

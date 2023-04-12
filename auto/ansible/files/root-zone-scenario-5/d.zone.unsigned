@@ -1,4 +1,0 @@
-d. 60 IN SOA ns.d. admin.ns.d 123 1800 900 6054800 60
-d. 60 IN NS ns.d.
-ns.d. 60 IN A 172.21.104.1
-ns.d. 60 IN AAAA fd00::21:104:1

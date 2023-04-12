@@ -1,4 +1,0 @@
-b. 60 IN SOA ns.b. admin.ns.b 123 1800 900 6054800 60
-b. 60 IN NS ns.b.
-ns.b. 60 IN A 172.21.102.1
-ns.b. 60 IN AAAA fd00::21:102:1

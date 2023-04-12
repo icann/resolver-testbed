@@ -1,0 +1,40 @@
+# Knot config file for RSSAC028 Appendix A Scenario 5.{{ scenario }}
+#
+server:
+{% for address in listen_addrs +  listen_addrs_6 %}
+  listen: {{ address }}
+{% endfor %}
+
+zone:
+{% if scenario == 1 %}
+  - domain: "."
+    file: "/root/scenarios/2/root.zone"
+
+  - domain: "p53"
+    file: "/root/scenarios/2/p53.zone.current"
+
+  - domain: "some-servers.p53"
+    file: "/root/scenarios/2/some-servers.p53.zone.unsigned"
+
+{% else %}
+  - domain: "."
+    file: "/root/scenarios/{{ scenario }}/root.zone"
+{% endif %}
+
+{%if scenario == 2 %}
+  - domain: "p53"
+    file: "/root/scenarios/2/p53.zone"
+
+  - domain: "some-servers.p53"
+    file: "/root/scenarios/2/some-servers.p53.zone"
+
+{% elif scenario == 4 %}
+  - domain: "some-servers"
+    file: "/root/scenarios/4/some-servers.zone"
+
+{% elif scenario == 5 %}{% for letter in "abcdefghijklm" %}
+  - domain: "{{ letter }}.some-servers"
+    file: "/root/scenarios/5/a.some-servers.zone"
+
+{% endfor %}{% endif %}
+

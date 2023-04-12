@@ -66,3 +66,6 @@ provision:
 # (Vagrant) any extra configuration for the 'vm' object
 extra:
   boot_timeout: 900
+
+ansible_python_interpreter: "auto_silent"
+

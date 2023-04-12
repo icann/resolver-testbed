@@ -1,0 +1,10 @@
+---
+- ansible.builtin.include_tasks:
+    file: tasks/rssac028-appendix-a/do-query.yml
+  loop:
+    - { query: 'drill -o rd @172.21.113.1', descr: 'No EDNS' }
+    - { query: 'drill -o rd -b 16384 @172.21.113.1', descr: 'No DNSSEC' }
+    - { query: 'drill -o rd -Db 16384 @172.21.113.1', descr: 'IPv4 DNSSEC' }
+    - { query: 'drill -o rd -Db 16384 @fd00::21:113:1', descr: 'IPv6 DNSSEC' }
+  loop_control:
+    loop_var: msm

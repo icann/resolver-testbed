@@ -1,22 +1,7 @@
 ---
-- name: (linux) Install generic packages.
-  ansible.builtin.apt:
-    pkg:
-      - tar
-      - tree
-      - wget
-      - vim
-      - tmux
-      - htop
-      - dnsutils
-      - ansible
-    state: present
-    update_cache: yes
-  when: network_configuration.system in ['linux']
-
-- name: (Ubuntu) Install generic packages.
-  block:
-    - ansible.builtin.apt:
+- block:
+    - name: (Linux) Install generic packages.
+      ansible.builtin.apt:
         pkg:
           - tar
           - tree
@@ -28,10 +13,13 @@
           - python-pip
         state: present
         update_cache: yes
-    - ansible.builtin.pip:
+
+    - name: (Linux) Install newest Ansible with pip.
+      ansible.builtin.pip:
         name: ansible
         executable: pip
-  when: network_configuration.system in ['ubuntu']
+
+  when: network_configuration.system in ['linux', 'ubuntu']
 
 - name: (FreeBSD) Install generic packages.
   community.general.pkgng:

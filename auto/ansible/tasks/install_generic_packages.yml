@@ -12,7 +12,25 @@
       - ansible
     state: present
     update_cache: yes
-  when: network_configuration.system in ['linux', 'ubuntu']
+  when: network_configuration.system in ['linux']
+
+- name: (Ubuntu) Install generic packages.
+  block:
+    - ansible.builtin.apt:
+        pkg:
+          - tar
+          - tree
+          - wget
+          - vim
+          - tmux
+          - htop
+          - dnsutils
+          - python-pip
+        state: present
+        update_cache: yes
+    - ansible.builtin.pip:
+        name: ansible
+  when: network_configuration.system in ['ubuntu']
 
 - name: (FreeBSD) Install generic packages.
   community.general.pkgng:

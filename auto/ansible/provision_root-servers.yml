@@ -15,7 +15,7 @@
       vars:
         incept_title: "Incept parallel compilation."
         incept_playbook: files/inception_playbook.yml
-        incept_task: tasks/inception/compile_software_test.yml
+        incept_task: tasks/inception/compile_software.yml
         incept_variables:
           software_source_dir: "{{ BUILD_SOURCE_DIR }}"
           software_target_dir: "{{ BUILD_TARGET_DIR }}"

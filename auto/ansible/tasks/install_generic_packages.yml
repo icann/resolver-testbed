@@ -30,6 +30,7 @@
         update_cache: yes
     - ansible.builtin.pip:
         name: ansible
+        executable: pip
   when: network_configuration.system in ['ubuntu']
 
 - name: (FreeBSD) Install generic packages.

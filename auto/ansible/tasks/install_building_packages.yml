@@ -1,56 +1,45 @@
 ---
-- name: (linux) Install generic packages.
+- name: (linux) Install packages for building.
   ansible.builtin.apt:
     pkg:
-      - tar
-      - tree
-      - wget
-      - vim
-      - tmux
-      - htop
-      - dnsutils
-      - ansible
+      - build-essential
+      - autoconf
+      - libtool
+      - pkg-config
+      - libevent-dev
+      - libssl-dev
+      - python-ply
+      - python3-ply
+      - libmaxminddb-dev
+      - libjson-c-dev
+      - protobuf-c-compiler
+      - libprotobuf-c-dev
+      - libfstrm-dev
+      - libuv1-dev
+      - libcap-dev
+      - libgnutls28-dev
+      - liburcu-dev
+      - liblmdb-dev
+      - libedit-dev
     state: present
     update_cache: yes
   when: network_configuration.system in ['linux', 'ubuntu']
 
-- name: (FreeBSD) Install generic packages.
+- name: (FreeBSD) Install packages for building.
   community.general.pkgng:
-    name:
-      - tar
-      - tree
-      - wget
-      - vim
-      - tmux
-      - htop
-      - ansible
+    name: []
     state: present
   when: network_configuration.system == 'freebsd'
 
-- name: (NetBSD) Install generic packages.
+- name: (NetBSD) Install packages for building.
   community.general.pkgin:
-    name:
-      - tar
-      - tree
-      - wget
-      - vim
-      - tmux
-      - htop
-      - ansible
+    name: []
     state: present
   when: network_configuration.system == 'netbsd'
 
-- name: (CentOS) Install generic packages.
+- name: (CentOS) Install packages for building.
   ansible.builtin.yum:
-    name:
-      - tar
-      - tree
-      - wget
-      - vim
-      - tmux
-      - bind-utils
-      - ansible
-      #- htop Requires EPEL; skip for now
+    name: []
     state: present
   when: network_configuration.system == 'centos'
 

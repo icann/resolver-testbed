@@ -1,0 +1,47 @@
+---
+- name: Check required variables for this task.
+  ansible.builtin.assert:
+    that:
+      - incept_title is defined
+      - incept_playbook is defined
+      - incept_task is defined
+      - incept_variables is defined
+      - incept_copy_files is defined and incept_copy_files is iterable
+    fail_msg: "Not all required variables present!"
+    quiet: true
+
+- name: Create local ansible dir structure.
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /root/local_ansible/files
+    - /root/local_ansible/tasks/inception
+    - /root/local_ansible/templates
+
+- name: Copy over inception playbook.
+  ansible.builtin.copy:
+    src: "{{ incept_playbook }}"
+    dest: /root/local_ansible/inception_playbook.yml
+
+- name: Copy over inception task.
+  ansible.builtin.copy:
+    src: "{{ incept_task }}"
+    dest: /root/local_ansible/inception_task.yml
+
+- name: Write out variables.
+  ansible.builtin.template:
+    src: templates/inception_variables.yml.j2
+    dest: /root/local_ansible/inception_variables.yml
+
+- name: Copy over extra files.
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/root/local_ansible/{{ item }}"
+  loop: "{{ incept_copy_files }}"
+
+- name: "{{ incept_title }}"
+  ansible.builtin.shell:
+    cmd: "ansible-playbook -f {{ cpus }} /root/local_ansible/inception_playbook.yml"
+  environment:
+    ANSIBLE_STDOUT_CALLBACK: yaml

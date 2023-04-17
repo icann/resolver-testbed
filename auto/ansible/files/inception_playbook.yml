@@ -1,0 +1,25 @@
+---
+- hosts: localhost
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Read inception variables.
+      import_tasks:
+        file: tasks/inception/read_inception_variables.yml
+
+    - debug:
+        var: software_build_config
+
+    - import_tasks:
+        file: tasks/read_build_configuration.yml
+      vars:
+        this_host: localhost
+
+- hosts: localhost_build_group
+  gather_facts: false
+  become: true
+
+  tasks:
+  - import_tasks:
+      file: /root/local_ansible/inception_task.yml

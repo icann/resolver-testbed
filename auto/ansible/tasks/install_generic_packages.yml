@@ -10,14 +10,19 @@
           - tmux
           - htop
           - dnsutils
-          - python-pip
         state: present
         update_cache: yes
 
-    - name: (Linux) Install newest Ansible with pip.
+    - name: (Linux) Remove unwanted packages.
+      ansible.builtin.apt:
+        pkg:
+          - ansible
+        state: absent
+
+    - name: (Linux) Install Ansible with pip.
       ansible.builtin.pip:
-        name: ansible
-        executable: pip
+        name: ansible==4.2.0
+        executable: pip3
 
   when: network_configuration.system in ['linux', 'ubuntu']
 
@@ -30,7 +35,6 @@
       - vim
       - tmux
       - htop
-      - ansible
     state: present
   when: network_configuration.system == 'freebsd'
 
@@ -43,7 +47,6 @@
       - vim
       - tmux
       - htop
-      - ansible
     state: present
   when: network_configuration.system == 'netbsd'
 
@@ -56,7 +59,6 @@
       - vim
       - tmux
       - bind-utils
-      - ansible
       #- htop Requires EPEL; skip for now
     state: present
   when: network_configuration.system == 'centos'

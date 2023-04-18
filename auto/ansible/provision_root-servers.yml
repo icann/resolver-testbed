@@ -5,10 +5,12 @@
 
   tasks:
     - ansible.builtin.import_tasks:
-        file: tasks/install_generic_packages.yml
+        file: tasks/install_server_packages.yml
+      vars:
+        server_packages: "{{ build_config['packages'] }}"
 
     - ansible.builtin.import_tasks:
-        file: tasks/install_building_packages.yml
+        file: tasks/install_generic_packages.yml
 
     - ansible.builtin.import_tasks:
         file: tasks/inception/incept.yml

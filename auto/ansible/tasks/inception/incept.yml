@@ -10,6 +10,11 @@
     fail_msg: "Not all required variables present!"
     quiet: true
 
+- name: Remove possible leftover inception state.
+  ansible.builtin.file:
+    path: /root/local_ansible
+    state: absent
+
 - name: Create local ansible dir structure.
   ansible.builtin.file:
     path: "{{ item }}"

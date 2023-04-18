@@ -1,6 +1,6 @@
 ---
 - name: Check required variables for this task.
-  assert:
+  ansible.builtin.assert:
     that:
       - software_source_dir is defined
       - software_target_dir is defined
@@ -8,7 +8,7 @@
     fail_msg: "Not all required variables are defined!"
 
 - name: Add the build software as hosts.
-  add_host:
+  ansible.builtin.add_host:
     name: "{{ item.key }}"
     groups: "{{ inventory_hostname | replace('-', '_') }}_build_group"
     url: "{{ item.value['url'] }}"
@@ -20,7 +20,7 @@
   loop: "{{ software_build_config['software'] | dict2items }}"
 
 - name: Make sure the needed directories are there.
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
   loop:

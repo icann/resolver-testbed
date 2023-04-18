@@ -1,10 +1,10 @@
 ---
 - name: Read possible inception variables.
-  import_tasks:
+  ansible.builtin.import_tasks:
     file: tasks/inception/read_inception_variables.yml
 
 - name: Check required variables for this task.
-  assert:
+  ansible.builtin.assert:
     that:
       - software_source_dir is defined
       - software_target_dir is defined
@@ -17,7 +17,7 @@
     this_target_dir: "{{ software_target_dir }}/{{ software_name }}"
   block:
   - name: Make sure the needed directories are there.
-    file:
+    ansible.builtin.file:
       path: "{{ item }}"
       state: directory
     with_items:
@@ -25,12 +25,12 @@
       - "{{ this_target_dir }}"
 
   - name: Make sure the zone configuration directory is there.
-    file:
+    ansible.builtin.file:
       path: "{{ this_target_dir }}/zone_config.d"
       state: directory
 
   - name: Check if we already have the source.
-    find:
+    ansible.builtin.find:
       paths: "{{ this_source_dir }}"
       patterns: ".received.this"
       file_type: file
@@ -38,7 +38,7 @@
     register: software_received
 
   - name: Get the source and decompress.
-    unarchive:
+    ansible.builtin.unarchive:
       src: "{{ url }}"
       dest: "{{ software_source_dir }}/"
       remote_src: yes
@@ -47,13 +47,13 @@
     when: software_received.files == []
 
   - name: Mark as received.
-    file:
+    ansible.builtin.file:
       path: "{{ this_source_dir }}/.received.this"
       state: touch
     when: software_received.files == []
 
   - name: Copy over files.
-    copy:
+    ansible.builtin.copy:
       src: "{{ item.src }}"
       dest: "{{ this_source_dir }}/{{ item.dest }}"
     loop: "{{ files_copy }}"
@@ -61,7 +61,7 @@
     register: copied_files
 
   - name: Check if we already built the source.
-    find:
+    ansible.builtin.find:
       paths: "{{ this_target_dir }}"
       patterns: ".compiled.this"
       file_type: file
@@ -69,13 +69,13 @@
     register: software_compiled
 
   - name: Clear the build status.
-    file:
+    ansible.builtin.file:
       path: "{{ this_target_dir }}/.compiled.this"
       state: absent
     when: copied_files is changed
 
   - name: Build.
-    shell:
+    ansible.builtin.shell:
       cmd: "{{ make_str.format(PREFIX=this_target_dir) ~ ' && touch ' ~ this_target_dir ~ '/.compiled.this' }}"
       chdir: "{{ this_source_dir }}"
     when: software_compiled.files == [] or copied_files is changed

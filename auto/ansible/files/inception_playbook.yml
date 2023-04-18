@@ -5,13 +5,13 @@
 
   tasks:
     - name: Read inception variables.
-      import_tasks:
+      ansible.builtin.import_tasks:
         file: tasks/inception/read_inception_variables.yml
 
     - debug:
         var: software_build_config
 
-    - import_tasks:
+    - ansible.builtin.import_tasks:
         file: tasks/read_build_configuration.yml
       vars:
         this_host: localhost
@@ -21,5 +21,5 @@
   become: true
 
   tasks:
-  - import_tasks:
+  - ansible.builtin.import_tasks:
       file: /root/local_ansible/inception_task.yml

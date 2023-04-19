@@ -44,7 +44,7 @@ zone:
 {% elif scenario == 5 %}{% for letter in "abcdefghijklm" %}
 zone:
 	name: "{{ letter }}.some-servers"
-	zonefile: "/root/scenarios/5/a.some-servers.zone"
+	zonefile: "/root/scenarios/5/{{ letter }}.some-servers.zone"
 
 {% endfor %}{% endif %}
 

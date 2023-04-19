@@ -1,0 +1,18 @@
+---
+- name: Create ports directory
+  ansible.builtin.file:
+    path: /usr/ports
+    state: directory
+    mode: '0755'
+
+- name: Sparse checkout ports and install NSD from it
+  ansible.builtin.shell:
+    chdir: /usr/ports
+    cmd: |
+      git init
+      git remote add ports https://git.FreeBSD.org/ports.git
+      git sparse-checkout set "dns/nsd" "Mk" "Keywords" "Templates" "ports-mgmt/pkg" "devel/libevent"
+      git pull --depth=1 ports main
+      cd dns/nsd
+      env VALID_CATEGORIES=ipv6 OPTIONS_SET=ROOT_SERVER BATCH=on make install-missing-packages
+      env VALID_CATEGORIES=ipv6 OPTIONS_SET=ROOT_SERVER BATCH=on make reinstall

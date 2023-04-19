@@ -34,17 +34,15 @@
 
   tasks:
 
-### TODO: This is a bit more complicated w.r.t. old versions of packages etc.
-###
-#  - name: Install packages.
-#    community.general.pkgng:
-#      name:
-#        - rsync
-#        - git
-#        - wget
-#        - bind918
-#        - knot3
-#      state: present
+  - name: Install packages.
+    community.general.pkgng:
+      name:
+        - rsync
+        - git
+        - wget
+        - bind918
+        - knot3
+      state: present
 
   - name: Is NSD build from ports?
     ansible.builtin.stat:
@@ -91,33 +89,32 @@
       file: tasks/rssac028-appendix-a/ports-build-bind9103.yml
     when: not bind9103_is_build.stat.exists
 
-#  - name: Copying root zones scenarios
-#    ansible.posix.synchronize:
-#      src: files/scenarios/
-#      dest: /root/scenarios
-#
-#  - name: Is named running?
-#    command: "pgrep -f /usr/local/sbin/named"
-#    register: named_pid
-#    failed_when: named_pid.rc > 1
-#    changed_when: false
-#
-#  - name: Kill named if running
-#    shell: "kill {{ named_pid.stdout_lines[0] }}"
-#    when: named_pid.stdout_lines
-#
-#  - name: Stop any still running nameservers
-#    ansible.builtin.service:
-#      name: "{{ implementation.service }}"
-#      state: 'stopped'
-#    loop: "{{ nameservers }}"
-#    loop_control:
-#      loop_var: implementation
-#
-#  - ansible.builtin.include_tasks:
-#      file: tasks/rssac028-appendix-a/do-scenarios.yml
-#    loop: "{{ nameservers }}"
-#    loop_control:
-#      loop_var: implementation
+  - name: Copying root zones scenarios
+    ansible.posix.synchronize:
+      src: files/scenarios/
+      dest: /root/scenarios
 
+  - name: Is named running?
+    command: "pgrep -f /usr/local/sbin/named"
+    register: named_pid
+    failed_when: named_pid.rc > 1
+    changed_when: false
+
+  - name: Kill named if running
+    shell: "kill {{ named_pid.stdout_lines[0] }}"
+    when: named_pid.stdout_lines
+
+  - name: Stop any still running nameservers
+    ansible.builtin.service:
+      name: "{{ implementation.service }}"
+      state: 'stopped'
+    loop: "{{ nameservers }}"
+    loop_control:
+      loop_var: implementation
+
+  - ansible.builtin.include_tasks:
+      file: tasks/rssac028-appendix-a/do-scenarios.yml
+    loop: "{{ nameservers }}"
+    loop_control:
+      loop_var: implementation
 

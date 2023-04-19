@@ -1,0 +1,99 @@
+net.	900	IN	SOA	a.root-servers.net. nstld.verisign-grs.com. 1681936914 1800 900 604800 86400
+net.	900	IN	RRSIG	SOA 8 1 900 20330101000000 20230101000000 21490 net. C+a7EUOMpu9WLMGmvufojmcOP6PcTjGIGlWkhBCCG4V/dFu3/1VSLLNvDw5NIUU+q816F3jT6+gYdsbfYkBONTUzLhZpzweNd8LoFROUxyrERBsk+jBqjN9EG7ubb0LI192D2pj52Qx8mAU27oTgXdyHBTmJ2JCyatMTsGLws4Zmj1GkdVLMNgAswUIlGBDyA+yYzefFRnetXT04PEYXjA==
+net.	900	IN	RRSIG	SOA 8 1 900 20330101000000 20230101000000 45796 net. lAKNLy2fI6vsKO95mzS8SuQoz3dSY0SKBuHnHz7qn8Q2jsyv4tIVf84ZgfGg/+GENyImNxkaFb6eTZkpOipdMEmaE+fWov24G/OMhvjZ4BTslpz6Tenfi6OjqTqVBzC2PECg9aH4oZZcaVwhwpR7OyLprqVHwHz83t7Oo4cN59mIxoFCGuhYuUMXZuW5VZPao3QXL21YwrdRUHuaCfO3bg==
+net.	172800	IN	NS	a.root-servers.net.
+net.	172800	IN	NS	b.root-servers.net.
+net.	172800	IN	NS	c.root-servers.net.
+net.	172800	IN	NS	d.root-servers.net.
+net.	172800	IN	NS	e.root-servers.net.
+net.	172800	IN	NS	f.root-servers.net.
+net.	172800	IN	NS	g.root-servers.net.
+net.	172800	IN	NS	h.root-servers.net.
+net.	172800	IN	NS	i.root-servers.net.
+net.	172800	IN	NS	j.root-servers.net.
+net.	172800	IN	NS	k.root-servers.net.
+net.	172800	IN	NS	l.root-servers.net.
+net.	172800	IN	NS	m.root-servers.net.
+net.	172800	IN	RRSIG	NS 8 1 172800 20330101000000 20230101000000 21490 net. s56iaWo4j/5VBdvXGrZHoC9IDwJpjwMb0drlj54YO+7vkhLy0KeDNXAvQuC444uIbYukpYGuD/G+JYHlvspuHNH0GXx8yg8WUGEq3ot/6aa/1F/jtfzxpjWG7/ZnOuJvWfbSUVPCt1a1DQKXmAB5rrn+F1q/PE3/j0YCvPqvamTCHdNPzuPMKZVvk2FJ+KVa0/uQn/Z9T3Un8WRJ2XO0rA==
+net.	172800	IN	RRSIG	NS 8 1 172800 20330101000000 20230101000000 45796 net. nVlKhHW840ALCnVEURKbVWU4Rw/XsU7nO58pqDOXGY7Vq9ZQLCLHLbXCIGirhd8dh18XBgy7WesX1bmOOLnaTsJAbG0oZexTvHmMHQ/1fIm00J8LGDrCItjxYXIggx725jeVsM+EWqZjFCu1CWb5QuxdynvlVl4x9efBicHSXKWmM8O04Y0k1/a0/R6mSyqrMWA+VXYvopH+BT18B23Nsw==
+net.	900	IN	DNSKEY	256 3 8 AwEAAcNqTSyhOdTXLYn3xUhPLQmw+GZW11MS4A7hloUqfUvtz752/uMjtnAknmOf/x0H4lGe1f8Crqi3wzI2APjQzE90ueIL8GtLIvlNXUStaqmlQJmqAEUbHLaHPoxtt7GhK+vU67bTSWfob5SmRvpeTAr/4Gkm4f7RMiy5Kk5Ykk3qvrtzqWQTeojBybYqRDbRF/x7Mf4agQLiGZntmV8lOzk= ;{id = 21490 (zsk), size = 1280b}
+net.	900	IN	DNSKEY	256 3 8 AwEAAeYJZUV0NZzYeEMg8J2Fm251jVBkDB0BToSRcoG0NOkWN4KBAhyZZYX8PZt3w/iCj36jJ8ItvV+yRifnxdtit0HRyT66Ozs+IaFaeU0/nqdhanOfNd05gXoto4R5fa19NJP0bAhYM0/7I307yrl2HpSScCNwq3oLI9Ky5fGQAoEBy+UnySq4fQddU+kjNp/W4UMTjyATwEWKKKMOjbjlRs0= ;{id = 45796 (zsk), size = 1280b}
+net.	900	IN	DNSKEY	257 3 8 AwEAAa6qKeaFeKXpLJWWxu8o5NX2tdSRa4kJM6GqkZ2tPj2STNuLURdktj1Lup4m63m6mo8wzsOeirlpPy486HkBdBLKD65LZMDJyrmNTMh3VscLgXq02Uly1nJwJdcWCuUTiRzC8nBotiDVlDZOMZG+13NaVKIw1cVgXXa2JaM+Kad1Q70v7/csYAPTdjetXLOIjASqflx4bz69pBA43TDiWKeDPaVaA1RknvP8r6gREDXegCsiKQ0I0ilVQ/GdmheqP7KjQCCPibsSzwQ/log2hNz5/iZ3HLtWWhbEQt4XlZAaIUvTJ08TpvXTPSRkhjYtnCjxzaMNpm34cNG9hdn/GBs= ;{id = 36884 (ksk), size = 2048b}
+net.	900	IN	RRSIG	DNSKEY 8 1 900 20330101000000 20230101000000 36884 net. mDb/nI+2HMkqjqSIBBnmmKaJluxtWwxcgHI4V3fjDs9OT+x0VE1D+BOJkkeCjyoX3VmkYQDrEtWrVD8QYLe/TUjIW4bgL/QBb2yd4OnQFHV1djTLGLsfEwyb4QDUF1OMdc/hlSOvBdWS8DZEabY9PDvnqmDlt2yWIvrapT+eawgjWZLM1We7X8zO2uy4xw+2AweXye9OVj8v54vZc3IaC/WtOXYzS8+ysBUG/+hGMI1+RbVpZRrsZwqqL7dxPRuzKj5vcyruTeqXP2r6PwGxRGD4BPcTWgJN8MSVQJg6LXpcUzrvMiVyRZxQXAn04f5uMkUoHSGAVeWlax1nx3U5Dw==
+net.	900	IN	NSEC	example.net. NS SOA RRSIG NSEC DNSKEY 
+net.	900	IN	RRSIG	NSEC 8 1 900 20330101000000 20230101000000 21490 net. Iernw434xl58v9uUX6/V/XK6N6DCnscO/p4g0dR4MiTAu9cMhaPDPoMW/truYTGmN64XzuAma197VGWhUR4BDKxSk+l0T0gArOTQmtvvtKivsUOR+pxbXeRrviB98K83ffD78esHvYUIdMJL9Io5G1EYGfuobce9hzCRTbatdFzBCmXN0VP7tL1+O4iriN79CmcnqpC7H5sG4bTz0Nh6yQ==
+net.	900	IN	RRSIG	NSEC 8 1 900 20330101000000 20230101000000 45796 net. rcFxvK0/FS+ehI7zfMIslXje3+L4ncfy9Xo1YwaRKBc9agAK+S4b1jqaCvXlFDxurbJMsURoNOu1ObETBWqleokjrTC2jh84khUcMEd3xLlm7sslGY/pcUhhAf7uGHTPrWLqJtaojcbcs6qidxVIP4xdiJEWdJYsVg7viygA2IPFTloN2/RHJBUpD3dbMk6X2CD7f7xJwZTPzlsJ8iJjMQ==
+example.net.	172800	IN	NS	a.iana-servers.net.
+example.net.	172800	IN	NS	b.iana-servers.net.
+example.net.	86400	IN	DS	31589 8 1 628fca4806b2e475da9fd97a1fb57b7e26f8494c
+example.net.	86400	IN	DS	31589 8 2 5a9eaefc7cc7d6946e1d106418427d272d406b835ba9ea0219dfbd3974a54a81
+example.net.	86400	IN	DS	54761 8 1 2b45e49265b30032497e0d61d259f4acf821a5a0
+example.net.	86400	IN	DS	54761 8 2 9fde7678f418e724ace98537e0ead92bb96b3109072d076a117492db708ce238
+example.net.	86400	IN	DS	61250 8 1 ebf5191249b08adba60dc57de26f8d530fe5d17d
+example.net.	86400	IN	DS	61250 8 2 984e001501b50f8d7b73935e12a0b15e9dce5498f0885c3c6193b4dcb8ddad36
+example.net.	86400	IN	RRSIG	DS 8 2 86400 20330101000000 20230101000000 21490 net. hzwQHiKg4UVXXoYS6yq/h7IqUHtYbzVKfIv0aYNmjocSU2hC0h1gclceH3MDBAemJNw5xxA3jI+3oH3NL/6EMqsL2VutOGRBQ0sL9lFC0lqT0GuRcb6aOcCnueGwVAMLRi2Prklb5mh1+1iteFrl0gEI9yOknZWOoeHRPDj6q0/qVFt29SLzsTLuP6pCZiaa5tzIivGiRSu+btaDWalxBA==
+example.net.	86400	IN	RRSIG	DS 8 2 86400 20330101000000 20230101000000 45796 net. Q/NTfA31gCmGV0UUorE91JgGjdRrcirHYtbTdTGKSYJCrdGYWtZ0kMXtZ1PFbLRghtu7kXVJibVIdBhkJcQaSYo2CVxSCWkr/MFpemNcf9rfIcBSxHMrZfc6K5R7sPiCDZTFG3XqnaTEiyXrHyoYIPNHR/MrwBGFxF7oKhZMeSOtpn5vbC3WZ9YUe6JBNsQVo8ru9IWOfAD4fPgE0lhM9g==
+example.net.	900	IN	NSEC	iana-servers.net. NS DS RRSIG NSEC 
+example.net.	900	IN	RRSIG	NSEC 8 2 900 20330101000000 20230101000000 21490 net. SbCtGyK8T/GdDcWpi1HqEE6sLlHiNePGH7rNi15bvz+Ys/WFeJXwd0bFnbfAwH2j/FVX54W+B+KFEy0jGR4Occmj5cTjg/zV8bRNhZbjO8hV6/p+TuZQJMii5RrDjbHCkL1UFGsYRnpbuADSO70Xm2OPGx5kTqURiJOh7xrqDxOxe35Dz7G5ZbJy/k+u3avyGTS/TdxmvFN5/CluhGjQ7w==
+example.net.	900	IN	RRSIG	NSEC 8 2 900 20330101000000 20230101000000 45796 net. K44r9GF/GBpUZ9ILasaB/ivZ9onzt81wW+MGKXKoCQRmXjxD5AiUBjjd4++g0Qixf9w53czCu7AqdzaW+e4YMuBbnW4gtLe+4Rh4pFBVxNTlPsHrZ3xXnwDc3YsBJ/9qDUE21TG+JJdPsl5MLJSh/i6CcxYXpvsRPcAEQom3qKSadidagBaSf9aryPFY4tBm4zJXSkWtgF1hcklySnsadQ==
+iana-servers.net.	172800	IN	NS	a.iana-servers.net.
+iana-servers.net.	172800	IN	NS	b.iana-servers.net.
+iana-servers.net.	172800	IN	NS	c.iana-servers.net.
+iana-servers.net.	172800	IN	NS	ns.icann.org.
+iana-servers.net.	86400	IN	DS	7474 8 2 893cc96419ba2f255a8c9be913753ad2ca7265c67b9d1baf3cd18aec4cbfea9c
+iana-servers.net.	86400	IN	RRSIG	DS 8 2 86400 20330101000000 20230101000000 21490 net. nWikczbaPr0OEAaQv7MX9W0dsQcLoWeVupVT3qzFaVIXVOoFNzj2GCFfwBRkI50UA2n2yZG4sMm7xSRGQZZZEoN0NWeucDkyIj5TbMPkYz76jMQv2KP7Xktyrdaz/1Rw7qzlc4SuZ7tNzqSprg2wZmlrjPTSYGN9ATHs817D5M2k4o2g0Yw9xy0FHBK0C2yXHWuuchFq7RLlvmdMEoETOg==
+iana-servers.net.	86400	IN	RRSIG	DS 8 2 86400 20330101000000 20230101000000 45796 net. DovBqXF72tm8Ir0goyEm0yhQIAE5DeehC/Zwa9eeMQ+2lkG3zocYmoYF4GIyQGkiD2qu3V6JwPjUEaqy+4cXXVzv2x9dNJvX7PtSVvUGV9pHyH5e2aj5q9D/6C6ofLvL2lZ8lEi5uE90wo2p52QBxRgbT7zIIuyiERDpDnnHqxgjM2q/gFL6BD4REXrjybWVmA3t1zvFUnl1ilWzD2UiWQ==
+iana-servers.net.	900	IN	NSEC	root-servers.net. NS DS RRSIG NSEC 
+iana-servers.net.	900	IN	RRSIG	NSEC 8 2 900 20330101000000 20230101000000 21490 net. t8AokRddYEsgUFLkaCAjqv+UTSqupoQKmmlj5fONEiuPQ3rxJ8O2Zd/4Gsb75S5pUbEH+c6t4KxWzajnQpa8weeYhcg2o7BzRHBhlZBcRZX8unV62WbIKEWhoG3DvfHHs6/I1ZNMczdrdj4J/grTTTeQgPbrGemysnl2mNjjlKe07Nb93YZfthTAjKb3WqRKdhYprKxn+ff2ldDDdWAA+A==
+iana-servers.net.	900	IN	RRSIG	NSEC 8 2 900 20330101000000 20230101000000 45796 net. 2eorTJJzZWU0RpVYTpEWFckhYkrQjeOdeO28DiupftcjuTxZMMx8FbhlocA7ZNEqBluFNp+/73WwnmdQF4GR2reMw+qKPXzWWg0zCrlug8MIbvCByOWXbDUutQe29N4i5Q72QM85N0UUHyQysOQwFgEFGtVIWP4TVLSc9u+1t4sXYR8eF3gMgLxQlXcXGyPHZXyBkmcTqOs++ZuC3qmukg==
+a.iana-servers.net.	172800	IN	A	199.43.135.53
+a.iana-servers.net.	172800	IN	AAAA	2001:500:8f::53
+b.iana-servers.net.	172800	IN	A	199.43.133.53
+b.iana-servers.net.	172800	IN	AAAA	2001:500:8d::53
+c.iana-servers.net.	172800	IN	A	199.43.134.53
+c.iana-servers.net.	172800	IN	AAAA	2001:500:8e::53
+root-servers.net.	172800	IN	NS	a.root-servers.net.
+root-servers.net.	172800	IN	NS	b.root-servers.net.
+root-servers.net.	172800	IN	NS	c.root-servers.net.
+root-servers.net.	172800	IN	NS	d.root-servers.net.
+root-servers.net.	172800	IN	NS	e.root-servers.net.
+root-servers.net.	172800	IN	NS	f.root-servers.net.
+root-servers.net.	172800	IN	NS	g.root-servers.net.
+root-servers.net.	172800	IN	NS	h.root-servers.net.
+root-servers.net.	172800	IN	NS	i.root-servers.net.
+root-servers.net.	172800	IN	NS	j.root-servers.net.
+root-servers.net.	172800	IN	NS	k.root-servers.net.
+root-servers.net.	172800	IN	NS	l.root-servers.net.
+root-servers.net.	172800	IN	NS	m.root-servers.net.
+root-servers.net.	86400	IN	DS	2711 8 2 d7b83d0e7cfc0c4c95b7b1af9cd5e8b707695fcec2054286b64bdd3b5ee11ac7
+root-servers.net.	86400	IN	RRSIG	DS 8 2 86400 20330101000000 20230101000000 21490 net. rNe9kUUo8x+r1hY/wBHqtNaD3FY08tL8W+L236qGh562tXZynQngKRsIUVVHJbxjX2bdfEJyOvvlV3ZMvEq53IesPnCN6vTdTlwvRLrz7CBYAkw+VpKNN80gTqRk3XFjXfjm4UJ/vn4F1WazfuavbvgNOCQpSEWAKNEc9UguKV151+BZ9ESf2mMk9ml21ObiFlBKpqczin0qSmtZW/Ij4g==
+root-servers.net.	86400	IN	RRSIG	DS 8 2 86400 20330101000000 20230101000000 45796 net. reI8m8Elk90PEACT8jJFfWvD9DpJtwMlH6jTUxrN1qRCWQDWQFoxCl4MA1NXwDZx1+tof6qttXiPD8dExwyZWzeRUj2xxWPidqr87V2yjGzOzq+wk8Y7RUJCIxC4YelrgL7XrOVnksSIrRA6/NsjblFyJ2Qb6ar+ojsBBqzULNHotQcL1s2tfte4TZN8vL/5mlGFzMKkwOd1sA6qWpUbAg==
+root-servers.net.	900	IN	NSEC	net. NS DS RRSIG NSEC 
+root-servers.net.	900	IN	RRSIG	NSEC 8 2 900 20330101000000 20230101000000 21490 net. YXQqrgOA7RMrVtItdN6VyZ6LLt5nE3uadnOlYXFzuxs8axz3j6Z2Ihh33mLrj/9PfwMBpDv9YymrGr4GLmKxXDKPweTUxjCeGfxCqX9mbjEyYUMUPzNTFwWV1h2Pb1BvSqn2h+v8TtZTuEKlxXw65nL4CijvgZkeUyy1f6TE4dmNID5A8t91ck5tRlvjahy8w8AqlEz/tGnplZHvrSBK/Q==
+root-servers.net.	900	IN	RRSIG	NSEC 8 2 900 20330101000000 20230101000000 45796 net. KDo6kSKuBSuiVLoCH2xSxpvojqNmoeADv+cYtEcGhRqpdycneYfdwmrHYe3ZEjGxVRprrArF6N+0OIjnEety3EjJewPLA/7XMcdoWTYCgeI9D1kx+V//vraMjVuL1fUBVHB+2GC4muPGS6NXPOoJ3B6/RTAtBYNrNs3WRDUMstC8NyaIWhatRL96SpKRmMUYS4DeNwBw6FwAo+8ayvpMpg==
+a.root-servers.net.	172800	IN	A	198.41.0.4
+a.root-servers.net.	172800	IN	AAAA	2001:503:ba3e::2:30
+b.root-servers.net.	172800	IN	A	199.9.14.201
+b.root-servers.net.	172800	IN	AAAA	2001:500:200::b
+c.root-servers.net.	172800	IN	A	192.33.4.12
+c.root-servers.net.	172800	IN	AAAA	2001:500:2::c
+d.root-servers.net.	172800	IN	A	199.7.91.13
+d.root-servers.net.	172800	IN	AAAA	2001:500:2d::d
+e.root-servers.net.	172800	IN	A	192.203.230.10
+e.root-servers.net.	172800	IN	AAAA	2001:500:a8::e
+f.root-servers.net.	172800	IN	A	192.5.5.241
+f.root-servers.net.	172800	IN	AAAA	2001:500:2f::f
+g.root-servers.net.	172800	IN	A	192.112.36.4
+g.root-servers.net.	172800	IN	AAAA	2001:500:12::d0d
+h.root-servers.net.	172800	IN	A	198.97.190.53
+h.root-servers.net.	172800	IN	AAAA	2001:500:1::53
+i.root-servers.net.	172800	IN	A	192.36.148.17
+i.root-servers.net.	172800	IN	AAAA	2001:7fe::53
+j.root-servers.net.	172800	IN	A	192.58.128.30
+j.root-servers.net.	172800	IN	AAAA	2001:503:c27::2:30
+k.root-servers.net.	172800	IN	A	193.0.14.129
+k.root-servers.net.	172800	IN	AAAA	2001:7fd::1
+l.root-servers.net.	172800	IN	A	199.7.83.42
+l.root-servers.net.	172800	IN	AAAA	2001:500:9f::42
+m.root-servers.net.	172800	IN	A	202.12.27.33
+m.root-servers.net.	172800	IN	AAAA	2001:dc3::35

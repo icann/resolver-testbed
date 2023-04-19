@@ -1,28 +1,28 @@
 ---
 - block:
-    - name: (Linux) Install generic packages.
-      ansible.builtin.apt:
-        pkg:
-          - tar
-          - tree
-          - wget
-          - vim
-          - tmux
-          - htop
-          - dnsutils
-        state: present
-        update_cache: yes
+  - name: (Linux) Install generic packages.
+    ansible.builtin.apt:
+      pkg:
+        - tar
+        - tree
+        - wget
+        - vim
+        - tmux
+        - htop
+        - dnsutils
+      state: present
+      update_cache: yes
 
-    - name: (Linux) Remove unwanted packages.
-      ansible.builtin.apt:
-        pkg:
-          - ansible
-        state: absent
+  - name: (Linux) Remove unwanted packages.
+    ansible.builtin.apt:
+      pkg:
+        - ansible
+      state: absent
 
-    - name: (Linux) Install Ansible with pip.
-      ansible.builtin.pip:
-        name: ansible==4.2.0
-        executable: pip3
+  - name: (Linux) Install Ansible with pip.
+    ansible.builtin.pip:
+      name: ansible==4.2.0
+      executable: pip3
 
   when: network_configuration.system in ['linux', 'ubuntu']
 
@@ -50,17 +50,30 @@
     state: present
   when: network_configuration.system == 'netbsd'
 
-- name: (CentOS) Install generic packages.
-  ansible.builtin.yum:
-    name:
-      - tar
-      - tree
-      - wget
-      - vim
-      - tmux
-      - bind-utils
-      #- htop Requires EPEL; skip for now
-    state: present
+- block:
+  - name: (CentOS) Install generic packages.
+    ansible.builtin.yum:
+      name:
+        - tar
+        - tree
+        - wget
+        - vim
+        - tmux
+        - bind-utils
+        #- htop Requires EPEL; skip for now
+      state: present
+
+    - name: (CentOS) Remove unwanted packages.
+      ansible.builtin.yum:
+        pkg:
+          - ansible
+        state: absent
+
+    - name: (CentOS) Install Ansible with pip.
+      ansible.builtin.pip:
+        name: ansible==4.2.0
+        executable: pip3
+
   when: network_configuration.system == 'centos'
 
 - name: Unknown system; fail the playbook.

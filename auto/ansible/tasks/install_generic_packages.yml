@@ -57,6 +57,12 @@
   when: network_configuration.system == 'netbsd'
 
 - block:
+  - name: (CentOS) Install EPEL.
+    ansible.builtin.yum:
+      name:
+        - epel-release
+      state: present
+
   - name: (CentOS) Install generic packages.
     ansible.builtin.yum:
       name:
@@ -68,8 +74,6 @@
         - bind-utils
         - htop
       state: present
-      enablerepo:
-        - epel
 
   - name: (CentOS) Remove unwanted packages.
     ansible.builtin.yum:

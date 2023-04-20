@@ -1,17 +1,5 @@
-net.	900	IN	SOA	a.root-servers.net. nstld.verisign-grs.com. 1681936914 1800 900 604800 86400
-net.	172800	IN	NS	m.root-servers.net.
-net.	172800	IN	NS	l.root-servers.net.
-net.	172800	IN	NS	k.root-servers.net.
-net.	172800	IN	NS	j.root-servers.net.
-net.	172800	IN	NS	i.root-servers.net.
-net.	172800	IN	NS	h.root-servers.net.
-net.	172800	IN	NS	g.root-servers.net.
-net.	172800	IN	NS	f.root-servers.net.
-net.	172800	IN	NS	e.root-servers.net.
-net.	172800	IN	NS	d.root-servers.net.
-net.	172800	IN	NS	c.root-servers.net.
-net.	172800	IN	NS	b.root-servers.net.
-net.	172800	IN	NS	a.root-servers.net.
+net.	900	IN	SOA	a.some-servers.net. nstld.verisign-grs.com. 1682000985 1800 900 604800 86400
+net.	172800	IN	NS	a.some-servers.net.
 root-servers.net.	172800	IN	NS	m.root-servers.net.
 root-servers.net.	172800	IN	NS	l.root-servers.net.
 root-servers.net.	172800	IN	NS	k.root-servers.net.
@@ -26,6 +14,8 @@ root-servers.net.	172800	IN	NS	c.root-servers.net.
 root-servers.net.	172800	IN	NS	b.root-servers.net.
 root-servers.net.	172800	IN	NS	a.root-servers.net.
 root-servers.net.	86400	IN	DS	2711 8 2 d7b83d0e7cfc0c4c95b7b1af9cd5e8b707695fcec2054286b64bdd3b5ee11ac7
+a.some-servers.net.	172800	IN	A	185.49.142.30
+a.some-servers.net.	172800	IN	AAAA	2a04:b907::30
 m.root-servers.net.	172800	IN	AAAA	2001:dc3::35
 m.root-servers.net.	172800	IN	A	202.12.27.33
 l.root-servers.net.	172800	IN	AAAA	2001:500:9f::42

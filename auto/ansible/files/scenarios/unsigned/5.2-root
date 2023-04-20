@@ -20466,17 +20466,7 @@ aaa.	172800	IN	NS	a.nic.aaa.
 .	518400	IN	NS	c.root-servers.net.
 .	518400	IN	NS	b.root-servers.net.
 .	518400	IN	NS	a.root-servers.net.
-net.	IN	DS	36884 8 2 c3ee87c4a9a1d050fdcaabd8dce8b6a541ba29a86c7a811b38bb3b49a368923c
-net.	518400	IN	NS	m.root-servers.net.
-net.	518400	IN	NS	l.root-servers.net.
-net.	518400	IN	NS	k.root-servers.net.
-net.	518400	IN	NS	j.root-servers.net.
-net.	518400	IN	NS	i.root-servers.net.
-net.	518400	IN	NS	h.root-servers.net.
-net.	518400	IN	NS	g.root-servers.net.
-net.	518400	IN	NS	f.root-servers.net.
-net.	518400	IN	NS	e.root-servers.net.
-net.	518400	IN	NS	d.root-servers.net.
-net.	518400	IN	NS	c.root-servers.net.
-net.	518400	IN	NS	b.root-servers.net.
-net.	518400	IN	NS	a.root-servers.net.
+net.	86400	IN	DS	36884 8 2 c3ee87c4a9a1d050fdcaabd8dce8b6a541ba29a86c7a811b38bb3b49a368923c
+net.	172800	IN	NS	a.some-servers.net.
+a.some-servers.net.	172800	IN	A	185.49.142.30
+a.some-servers.net.	172800	IN	AAAA	2a04:b907::30

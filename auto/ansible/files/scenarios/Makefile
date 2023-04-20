@@ -21,6 +21,10 @@ ROOT_SERVERS_NS_TTL=3600000
 ROOT_SERVERS_DEL_NS_TTL=$(NET_DEL_NS_TTL)
 ROOT_SERVERS_DEL_DS_TTL=$(NET_DEL_DS_TTL)
 
+NET_NS_DNAME="a.some-servers.net."
+NET_NS_IPv4="185.49.142.30"
+NET_NS_IPv6="2a04:b907::30"
+
 DEV_RANDOM=/dev/urandom
 
 KEYS_DIR=keys
@@ -216,18 +220,20 @@ $(5_1_NET): $(5_1_NET_UNSIGNED) $(NET_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_1_NET_UNSIGNED) $(NET_KEYS)
 
 $(5_2_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(NET_DS)
-	egrep -vi '^net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+[DN]S[[:space:]]' $(ROOT_UNSIGNED) \
-	| cat - $(NET_DS) > $@
-	egrep '^\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]]' $(ROOT_UNSIGNED) \
-	| sed 's/^/net/g' >> $@
+	egrep -vi '^net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+[DN]S[[:space:]]' $(ROOT_UNSIGNED) > $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(NET_DS) >> $@
+	printf "net.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(NET_NS_DNAME)\n" >> $@
+	printf "$(NET_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(NET_NS_IPv4)\n" >> $@
+	printf "$(NET_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(NET_NS_IPv6)\n" >> $@
 
 $(5_2_NET_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVERS_NET_DS)
-	printf "net.\t$(NET_SOA_TTL)\tIN\tSOA\ta.root-servers.net. nstld.verisign-grs.com. %d 1800 900 604800 86400\n" `date +%s` > $@
-	egrep '^\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]]' $(ROOT_UNSIGNED) \
-	| awk '{printf("net.\t$(NET_NS_TTL)\tIN\tNS\t%s\n", $$5)}' >> $@
+	printf "net.\t$(NET_SOA_TTL)\tIN\tSOA\t$(NET_NS_DNAME) nstld.verisign-grs.com. %d 1800 900 604800 86400\n" `date +%s` > $@
+	printf "net.\t$(NET_NS_TTL)\tIN\tNS\t$(NET_NS_DNAME)\n" >> $@
 	egrep '^\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]]' $(ROOT_UNSIGNED) \
 	| awk '{printf("root-servers.net.\t$(NET_DEL_NS_TTL)\tIN\tNS\t%s\n", $$5)}' >> $@
 	awk '{printf("%s\t$(NET_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(ROOT_SERVERS_NET_DS) >> $@
+	printf "$(NET_NS_DNAME)\t$(NET_NS_TTL)\tIN\tA\t$(NET_NS_IPv4)\n" >> $@
+	printf "$(NET_NS_DNAME)\t$(NET_NS_TTL)\tIN\tAAAA\t$(NET_NS_IPv6)\n" >> $@
 	egrep -i '^[a-z]+\.root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]'  $(ROOT_UNSIGNED) \
 	| awk '{printf("%s\t$(NET_NS_TTL)\tIN\t%s\t%s\n", $$1, $$4, $$5)}' >> $@
 	dig @a.gtld-servers.net. example.net NS +norec +dnssec \

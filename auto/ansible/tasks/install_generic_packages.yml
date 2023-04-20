@@ -69,6 +69,12 @@
         - ansible
       state: absent
 
+  - name: (CentOS) Get latest pip.
+    ansible.builtin.pip:
+      name: pip
+      state: latest
+      executable: pip3
+
   - name: (CentOS) Install Ansible with pip.
     ansible.builtin.pip:
       name: ansible==4.2.0

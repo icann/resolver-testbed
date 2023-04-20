@@ -166,8 +166,9 @@ KEYS=$(ROOT_KEYS) $(ROOT_SERVERS_NET_KEYS)
 #5_6_MKDIR=$(5_6_DIR)/.mkdir
 5_6_DIR=.
 5_6_MKDIR=
-5_6_ROOT_UNSIGNED=unsigned/5.6-root
-5_6_ROOT=$(5_6_DIR)/5.6-root
+5_6_PREFIX=5.6-
+5_6_ROOT_UNSIGNED=unsigned/$(5_6_PREFIX)root
+5_6_ROOT=$(5_6_DIR)/$(5_6_PREFIX)root
 5_6=$(5_6_ROOT)
 5_6_FILES=$(5_6) $(5_6_ROOT_UNSIGNED)
 
@@ -175,12 +176,23 @@ KEYS=$(ROOT_KEYS) $(ROOT_SERVERS_NET_KEYS)
 #5_6_1_MKDIR=$(5_6_1_DIR)/.mkdir
 5_6_1_DIR=.
 5_6_1_MKDIR=
-5_6_1_ROOT_UNSIGNED=unsigned/5.6.1-root
-5_6_1_ROOT=$(5_6_1_DIR)/5.6.1-root
+5_6_1_PREFIX=5.6.1-
+5_6_1_ROOT_UNSIGNED=unsigned/$(5_6_1_PREFIX)root
+5_6_1_ROOT=$(5_6_1_DIR)/$(5_6_1_PREFIX)root
 5_6_1=$(5_6_1_ROOT)
 5_6_1_FILES=$(5_6_1) $(5_6_1_ROOT_UNSIGNED)
 
-all: 5.1 5.2 5.3 5.3.1 5.4 5.5 5.5.1 5.6 5.6.1
+#5_9_DIR=5.9
+#5_9_MKDIR=$(5_9_DIR)/.mkdir
+5_9_DIR=.
+5_9_MKDIR=
+5_9_PREFIX=5.9-
+5_9_NET_UNSIGNED=unsigned/$(5_9_PREFIX)net
+5_9_NET=$(5_9_DIR)/$(5_9_PREFIX)net
+5_9=$(5_9_NET)
+5_9_FILES=$(5_9) $(5_9_NET_UNSIGNED)
+
+all: 5.1 5.2 5.3 5.3.1 5.4 5.5 5.5.1 5.6 5.6.1 5.9
 5.1: $(5_1)
 5.2: $(5_2)
 5.3: $(5_3)
@@ -190,6 +202,7 @@ all: 5.1 5.2 5.3 5.3.1 5.4 5.5 5.5.1 5.6 5.6.1
 5.5.1: $(5_5_1)
 5.6: $(5_6)
 5.6.1: $(5_6_1)
+5.9: $(5_9)
 
 .PHONY: all 5.1 5.2 5.3 5.4 5.5 5.5.1 5.6 5.6.1
 
@@ -332,6 +345,13 @@ $(5_6_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 $(5_6_1_ROOT): $(5_6_1_MKDIR) $(5_6_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_6_1_ROOT_UNSIGNED) $(ROOT_KEYS)
 
+$(5_9_NET_UNSIGNED): $(5_2_NET_UNSIGNED)
+	egrep -iv '^([a-z]\.)?root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]' $< > $@
+
+$(5_9_NET): $(5_9_NET_UNSIGNED) $(NET_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_9_NET_UNSIGNED) $(NET_KEYS)
+
+
 $(ROOT_KSK_FILES): $(KEYS_MKDIR)
 	cd $(KEYS_DIR) \
 	&& ldns-keygen -a $(KSK_ALGO) -k -b $(KSK_SIZE) -r $(DEV_RANDOM) -sf . \
@@ -394,6 +414,10 @@ $(ROOT_SERVERS_NET_ZSK_FILES) $(ROOT_SERVERS_ZSK_FILES) $(ROOT_SERVER_ZSK_FILES)
 	&& mv .private \
 	K$(patsubst $(KEYS_DIR)/K%,%,$(patsubst %.zsk.private,%,$(patsubst %.zsk.key,%,$@))).zsk.private
 
+clean-5.9:
+	rm -f $(5_9_FILES)
+	[ "$(5_9_DIR)" = "." ] || rmdir $(5_9_DIR) || true
+
 clean-5.6.1:
 	rm -f $(5_6_1_FILES)
 	[ "$(5_6_1_DIR)" = "." ] || rmdir $(5_6_1_DIR) || true
@@ -430,7 +454,7 @@ clean-5.1:
 	rm -f $(5_1_FILES)
 	[ "$(5_1_DIR)" = "." ] || rmdir $(5_1_DIR) || true
 
-clean-scenarios: clean-5.1 clean-5.2 clean-5.3 clean-5.3.1 clean-5.4 clean-5.5 clean-5.5.1 clean-5.6 clean-5.6.1
+clean-scenarios: clean-5.1 clean-5.2 clean-5.3 clean-5.3.1 clean-5.4 clean-5.5 clean-5.5.1 clean-5.6 clean-5.6.1 clear-5.9
 
 clean-keys:
 	rm -fr keys

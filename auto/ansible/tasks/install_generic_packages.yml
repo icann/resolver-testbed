@@ -63,16 +63,16 @@
         #- htop Requires EPEL; skip for now
       state: present
 
-    - name: (CentOS) Remove unwanted packages.
-      ansible.builtin.yum:
-        pkg:
-          - ansible
-        state: absent
+  - name: (CentOS) Remove unwanted packages.
+    ansible.builtin.yum:
+      name:
+        - ansible
+      state: absent
 
-    - name: (CentOS) Install Ansible with pip.
-      ansible.builtin.pip:
-        name: ansible==4.2.0
-        executable: pip3
+  - name: (CentOS) Install Ansible with pip.
+    ansible.builtin.pip:
+      name: ansible==4.2.0
+      executable: pip3
 
   when: network_configuration.system == 'centos'
 

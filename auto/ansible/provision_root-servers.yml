@@ -8,9 +8,13 @@
         file: tasks/install_server_packages.yml
       vars:
         server_packages: "{{ build_config['packages'] }}"
+        enablerepo: "{{ build_config['enablerepo'] | default([]) }}"
 
     - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages.yml
+      vars:
+        pip_executable: "{{ whichpip | default('pip3') }}"
+        pip_version: "{{ pipversion | default(false) }}"
 
     - ansible.builtin.import_tasks:
         file: tasks/inception/incept.yml

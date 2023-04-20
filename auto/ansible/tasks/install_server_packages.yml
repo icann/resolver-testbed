@@ -22,6 +22,7 @@
   ansible.builtin.yum:
     name: "{{ server_packages }}"
     state: present
+    enablerepo: "{{ enablerepo }}"
   when: network_configuration.system == 'centos'
 
 - name: Unknown system; fail the playbook.

@@ -47,6 +47,6 @@
 
 - name: "{{ incept_title }}"
   ansible.builtin.shell:
-    cmd: "ansible-playbook -f {{ cpus }} /root/local_ansible/inception_playbook.yml"
+    cmd: "{{ ansible_playbook_path | default('ansible-playbook') }} -f {{ cpus }} /root/local_ansible/inception_playbook.yml"
   environment:
     ANSIBLE_STDOUT_CALLBACK: yaml

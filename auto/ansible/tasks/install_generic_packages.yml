@@ -19,10 +19,16 @@
         - ansible
       state: absent
 
+  - name: (Linux) Get latest pip.
+    ansible.builtin.pip:
+      name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+      state: "{{ 'present' if pip_version else 'latest' }}"
+      executable: "{{ pip_executable }}"
+
   - name: (Linux) Install Ansible with pip.
     ansible.builtin.pip:
       name: ansible==4.2.0
-      executable: pip3
+      executable: "{{ pip_executable }}"
 
   when: network_configuration.system in ['linux', 'ubuntu']
 
@@ -60,8 +66,10 @@
         - vim
         - tmux
         - bind-utils
-        #- htop Requires EPEL; skip for now
+        - htop
       state: present
+      enablerepo:
+        - epel
 
   - name: (CentOS) Remove unwanted packages.
     ansible.builtin.yum:
@@ -71,19 +79,14 @@
 
   - name: (CentOS) Get latest pip.
     ansible.builtin.pip:
-      name: pip
-      state: latest
-      executable: pip3
+      name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+      state: "{{ 'present' if pip_version else 'latest' }}"
+      executable: "{{ pip_executable }}"
 
   - name: (CentOS) Install Ansible with pip.
     ansible.builtin.pip:
       name: ansible==4.2.0
-      executable: pip3
-
-  - name: (CentOS) Add /usr/local/bin to root's PATH.
-    ansible.builtin.copy:
-      dest: /etc/profile.d/custom-path.sh
-      content: 'PATH=$PATH:/usr/local/bin'
+      executable: "{{ pip_executable }}"
 
   when: network_configuration.system == 'centos'
 

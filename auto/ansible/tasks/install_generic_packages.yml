@@ -80,6 +80,11 @@
       name: ansible==4.2.0
       executable: pip3
 
+  - name: (CentOS) Add /usr/local/bin to root's PATH.
+    ansible.builtin.copy:
+      dest: /etc/profile.d/custom-path.sh
+      content: 'PATH=$PATH:/usr/local/bin'
+
   when: network_configuration.system == 'centos'
 
 - name: Unknown system; fail the playbook.

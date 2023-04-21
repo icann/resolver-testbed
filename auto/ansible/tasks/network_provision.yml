@@ -1,12 +1,12 @@
 ---
 - name: Linux configuration
   block:
-  - name: (linux) Configure interfaces.
+  - name: (Linux) Configure interfaces.
     ansible.builtin.template:
       src: templates/linux_interfaces.j2
       dest: /etc/network/interfaces
 
-  - name: (linux) Set hostname.
+  - name: (Linux) Set hostname.
     ansible.builtin.copy:
       content: "{{ inventory_hostname }}\n"
       dest: /etc/hostname

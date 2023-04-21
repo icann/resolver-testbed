@@ -1,8 +1,20 @@
 ---
+- name: Read possible inception variables.
+  ansible.builtin.import_tasks:
+    file: tasks/inception/read_inception_variables.yml
+
+- name: Check required variables for this task.
+  ansible.builtin.assert:
+    that:
+      - software_source_dir is defined
+      - software_target_dir is defined
+    fail_msg: "Not all required variables are defined!"
+  delegate_to: localhost
+
 - name: Per software compilation tasks.
   vars:
-    this_source_dir: "{{ BUILD_SOURCE_DIR }}/{{ host_name }}"
-    this_target_dir: "{{ BUILD_TARGET_DIR }}/{{ host_name }}"
+    this_source_dir: "{{ software_source_dir }}/{{ software_name }}"
+    this_target_dir: "{{ software_target_dir }}/{{ software_name }}"
   block:
   - name: Make sure the needed directories are there.
     ansible.builtin.file:
@@ -11,6 +23,11 @@
     with_items:
       - "{{ this_source_dir }}"
       - "{{ this_target_dir }}"
+
+  - name: Make sure the zone configuration directory is there.
+    ansible.builtin.file:
+      path: "{{ this_target_dir }}/zone_config.d"
+      state: directory
 
   - name: Check if we already have the source.
     ansible.builtin.find:
@@ -23,7 +40,7 @@
   - name: Get the source and decompress.
     ansible.builtin.unarchive:
       src: "{{ url }}"
-      dest: "{{ BUILD_SOURCE_DIR }}/"
+      dest: "{{ software_source_dir }}/"
       remote_src: yes
       owner: "root"
       group: "root"
@@ -63,5 +80,4 @@
       chdir: "{{ this_source_dir }}"
     when: software_compiled.files == [] or copied_files is changed
 
-
-  delegate_to: "{{ on_host }}"
+  delegate_to: localhost

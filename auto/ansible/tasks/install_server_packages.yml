@@ -1,0 +1,31 @@
+---
+- name: (Linux) Install packages for building.
+  ansible.builtin.apt:
+    pkg: "{{ server_packages }}"
+    state: present
+    update_cache: yes
+  when: network_configuration.system in ['linux', 'ubuntu']
+
+- name: (FreeBSD) Install packages for building.
+  community.general.pkgng:
+    name: "{{ server_packages }}"
+    state: present
+  when: network_configuration.system == 'freebsd'
+
+- name: (NetBSD) Install packages for building.
+  community.general.pkgin:
+    name: "{{ server_packages }}"
+    state: present
+  when: network_configuration.system == 'netbsd'
+
+- name: (CentOS) Install packages for building.
+  ansible.builtin.yum:
+    name: "{{ server_packages }}"
+    state: present
+    enablerepo: "{{ enablerepo }}"
+  when: network_configuration.system == 'centos'
+
+- name: Unknown system; fail the playbook.
+  ansible.builtin.fail:
+    msg: "Unknown system! Cannot install packages!"
+  when: "network_configuration.system not in ['linux', 'ubuntu', 'freebsd', 'netbsd', 'centos']"

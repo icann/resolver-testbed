@@ -1,0 +1,31 @@
+---
+- hosts: root_servers
+  gather_facts: false
+  become: true
+
+  tasks:
+    - ansible.builtin.import_tasks:
+        file: tasks/install_server_packages.yml
+      vars:
+        server_packages: "{{ build_config['packages'] }}"
+        enablerepo: "{{ build_config['enablerepo'] | default([]) }}"
+
+    - ansible.builtin.import_tasks:
+        file: tasks/install_generic_packages.yml
+      vars:
+        pip_executable: "{{ whichpip | default('pip3') }}"
+        pip_version: "{{ pipversion | default(false) }}"
+
+    - ansible.builtin.import_tasks:
+        file: tasks/inception/incept.yml
+      vars:
+        incept_title: "Incept parallel compilation."
+        incept_playbook: files/inception_playbook.yml
+        incept_task: tasks/inception/compile_software.yml
+        incept_variables:
+          software_source_dir: "{{ BUILD_SOURCE_DIR }}"
+          software_target_dir: "{{ BUILD_TARGET_DIR }}"
+          software_build_config: "{{ build_config }}"
+        incept_copy_files:
+          - tasks/read_build_configuration.yml
+          - tasks/inception/read_inception_variables.yml

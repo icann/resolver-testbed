@@ -1,21 +1,42 @@
 ---
-- name: (linux) Install generic packages.
-  ansible.builtin.apt:
-    pkg:
-      - tar
-      - wget
-      - vim
-      - tmux
-      - htop
-      - dnsutils
-    state: present
-    update_cache: yes
+- block:
+  - name: (Linux) Install generic packages.
+    ansible.builtin.apt:
+      pkg:
+        - tar
+        - tree
+        - wget
+        - vim
+        - tmux
+        - htop
+        - dnsutils
+      state: present
+      update_cache: yes
+
+  - name: (Linux) Remove unwanted packages.
+    ansible.builtin.apt:
+      pkg:
+        - ansible
+      state: absent
+
+  - name: (Linux) Get latest pip.
+    ansible.builtin.pip:
+      name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+      state: "{{ 'present' if pip_version else 'latest' }}"
+      executable: "{{ pip_executable }}"
+
+  - name: (Linux) Install Ansible with pip.
+    ansible.builtin.pip:
+      name: ansible==4.2.0
+      executable: "{{ pip_executable }}"
+
   when: network_configuration.system in ['linux', 'ubuntu']
 
 - name: (FreeBSD) Install generic packages.
   community.general.pkgng:
     name:
       - tar
+      - tree
       - wget
       - vim
       - tmux
@@ -27,6 +48,7 @@
   community.general.pkgin:
     name:
       - tar
+      - tree
       - wget
       - vim
       - tmux
@@ -34,16 +56,42 @@
     state: present
   when: network_configuration.system == 'netbsd'
 
-- name: (CentOS) Install generic packages.
-  ansible.builtin.yum:
-    name:
-      - tar
-      - wget
-      - vim
-      - tmux
-      - bind-utils
-      #- htop Requires EPEL; skip for now
-    state: present
+- block:
+  - name: (CentOS) Install EPEL.
+    ansible.builtin.yum:
+      name:
+        - epel-release
+      state: present
+
+  - name: (CentOS) Install generic packages.
+    ansible.builtin.yum:
+      name:
+        - tar
+        - tree
+        - wget
+        - vim
+        - tmux
+        - bind-utils
+        - htop
+      state: present
+
+  - name: (CentOS) Remove unwanted packages.
+    ansible.builtin.yum:
+      name:
+        - ansible
+      state: absent
+
+  - name: (CentOS) Get latest pip.
+    ansible.builtin.pip:
+      name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+      state: "{{ 'present' if pip_version else 'latest' }}"
+      executable: "{{ pip_executable }}"
+
+  - name: (CentOS) Install Ansible with pip.
+    ansible.builtin.pip:
+      name: ansible==4.2.0
+      executable: "{{ pip_executable }}"
+
   when: network_configuration.system == 'centos'
 
 - name: Unknown system; fail the playbook.

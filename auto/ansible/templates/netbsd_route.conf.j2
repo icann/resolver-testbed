@@ -3,7 +3,7 @@
 net {{ n.v4.static_route.network }} {{ n.v4.static_route.gateway }}
 {% endif %}
 {% if 'v6' in n and 'static_route' in n.v6 %}
-net6 {{ n.v6.static_route.network }} {{ n.v6.static_route.gateway }}
+inet6 {{ n.v6.static_route.network }} {{ n.v6.static_route.gateway }}
 {% endif %}
 
 {% endfor %}

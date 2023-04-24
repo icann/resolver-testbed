@@ -43,7 +43,6 @@
       dest: "{{ software_source_dir }}/"
       remote_src: yes
       owner: "root"
-      group: "root"
     when: software_received.files == []
 
   - name: Mark as received.

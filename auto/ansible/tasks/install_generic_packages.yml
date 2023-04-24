@@ -13,47 +13,124 @@
       state: present
       update_cache: yes
 
-  - name: (Linux) Remove unwanted packages.
+  - name: (Linux) Install system ansible.
     ansible.builtin.apt:
       pkg:
         - ansible
-      state: absent
+      state: present
+    when: system_ansible is true
 
-  - name: (Linux) Get latest pip.
-    ansible.builtin.pip:
-      name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
-      state: "{{ 'present' if pip_version else 'latest' }}"
-      executable: "{{ pip_executable }}"
+  - block:
+    - name: (Linux) Remove unwanted packages.
+      ansible.builtin.apt:
+        pkg:
+          - ansible
+        state: absent
 
-  - name: (Linux) Install Ansible with pip.
-    ansible.builtin.pip:
-      name: ansible==4.2.0
-      executable: "{{ pip_executable }}"
+    - name: (Linux) Get latest pip.
+      ansible.builtin.pip:
+        name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+        state: "{{ 'present' if pip_version else 'latest' }}"
+        executable: "{{ pip_executable }}"
+
+    - name: (Linux) Install Ansible with pip.
+      ansible.builtin.pip:
+        name: ansible==4.2.0
+        executable: "{{ pip_executable }}"
+    when: system_ansible is false
 
   when: network_configuration.system in ['linux', 'ubuntu']
 
-- name: (FreeBSD) Install generic packages.
-  community.general.pkgng:
-    name:
-      - tar
-      - tree
-      - wget
-      - vim
-      - tmux
-      - htop
-    state: present
+- block:
+  - name: (FreeBSD) Install generic packages.
+    community.general.pkgng:
+      name:
+        - gtar
+        - tree
+        - wget
+        - vim
+        - tmux
+        - htop
+      state: present
+
+  - name: (FreeBSD) Install system ansible.
+    community.general.pkgng:
+      name:
+        - py39-ansible
+      state: present
+    when: system_ansible is true
+
+  - block:
+    - name: (FreeBSD) Remove unwanted packages.
+      community.general.pkgng:
+        name:
+          - py39-ansible
+        state: absent
+
+    - name: (FreeBSD) Get latest pip.
+      ansible.builtin.pip:
+        name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+        state: "{{ 'present' if pip_version else 'latest' }}"
+        executable: "{{ pip_executable }}"
+
+    - name: (FreeBSD) Install Ansible with pip.
+      ansible.builtin.pip:
+        name: ansible==4.2.0
+        executable: "{{ pip_executable }}"
+    when: system_ansible is false
+
   when: network_configuration.system == 'freebsd'
 
-- name: (NetBSD) Install generic packages.
-  community.general.pkgin:
-    name:
-      - tar
-      - tree
-      - wget
-      - vim
-      - tmux
-      - htop
-    state: present
+- block:
+  - name: (NetBSD) Get mozilla-rootcerts.
+    community.general.pkgin:
+      name:
+        - mozilla-rootcerts
+      state: present
+      update_cache: true
+      force: true
+
+  - name: (NetBSD) Install mozilla-rootcerts.
+    ansible.builtin.shell:
+      cmd: "/usr/pkg/sbin/mozilla-rootcerts install"
+
+  - name: (NetBSD) Install generic packages.
+    community.general.pkgin:
+      name:
+        - gtar
+        - tree
+        - wget
+        - vim
+        - tmux
+        - htop
+      state: present
+
+  - name: (NetBSD) Install system ansible.
+    community.general.pkgin:
+      name:
+        - ansible
+      state: present
+    when: system_ansible is true
+
+  - block:
+    - name: (NetBSD) Remove unwanted packages.
+      community.general.pkgin:
+        name:
+          - ansible
+        state: absent
+
+    - name: (NetBSD) Get latest pip.
+      ansible.builtin.pip:
+        name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+        state: "{{ 'present' if pip_version else 'latest' }}"
+        executable: "{{ pip_executable }}"
+
+    - name: (NetBSD) Install Ansible with pip.
+      ansible.builtin.pip:
+        name: ansible==4.2.0
+        executable: "{{ pip_executable }}"
+    when: system_ansible is false
+
   when: network_configuration.system == 'netbsd'
 
 - block:
@@ -75,22 +152,31 @@
         - htop
       state: present
 
-  - name: (CentOS) Remove unwanted packages.
+  - name: (CentOS) Install system ansible.
     ansible.builtin.yum:
       name:
         - ansible
-      state: absent
+      state: present
+    when: system_ansible is true
 
-  - name: (CentOS) Get latest pip.
-    ansible.builtin.pip:
-      name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
-      state: "{{ 'present' if pip_version else 'latest' }}"
-      executable: "{{ pip_executable }}"
+  - block:
+    - name: (CentOS) Remove unwanted packages.
+      ansible.builtin.yum:
+        name:
+          - ansible
+        state: absent
 
-  - name: (CentOS) Install Ansible with pip.
-    ansible.builtin.pip:
-      name: ansible==4.2.0
-      executable: "{{ pip_executable }}"
+    - name: (CentOS) Get latest pip.
+      ansible.builtin.pip:
+        name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+        state: "{{ 'present' if pip_version else 'latest' }}"
+        executable: "{{ pip_executable }}"
+
+    - name: (CentOS) Install Ansible with pip.
+      ansible.builtin.pip:
+        name: ansible==4.2.0
+        executable: "{{ pip_executable }}"
+    when: system_ansible is false
 
   when: network_configuration.system == 'centos'
 

@@ -15,6 +15,7 @@
       vars:
         pip_executable: "{{ whichpip | default('pip3') }}"
         pip_version: "{{ pipversion | default(false) }}"
+        system_ansible: "{{ use_system_ansible | default(true) }}"
 
     - ansible.builtin.import_tasks:
         file: tasks/inception/incept.yml

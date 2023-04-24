@@ -18,11 +18,19 @@
     state: present
   when: network_configuration.system == 'netbsd'
 
-- name: (CentOS) Install packages for building.
-  ansible.builtin.yum:
-    name: "{{ server_packages }}"
-    state: present
-    enablerepo: "{{ enablerepo }}"
+- block:
+  - name: (CentOS) Install EPEL.
+    ansible.builtin.yum:
+      name:
+        - epel-release
+      state: present
+
+  - name: (CentOS) Install packages for building.
+    ansible.builtin.yum:
+      name: "{{ server_packages }}"
+      state: present
+      enablerepo: "{{ enablerepo }}"
+
   when: network_configuration.system == 'centos'
 
 - name: Unknown system; fail the playbook.

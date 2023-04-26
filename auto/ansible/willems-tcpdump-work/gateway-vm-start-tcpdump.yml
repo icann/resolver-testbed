@@ -1,0 +1,17 @@
+---
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Install tcpdump service file
+      ansible.builtin.copy:
+        src: files/gateway-vm/tcpdumpd.service
+        dest: /etc/systemd/system
+
+    - name: Start tcpdump service, if not started
+      ansible.builtin.systemd:
+        name: tcpdumpd
+        state: started
+        daemon_reload: yes
+

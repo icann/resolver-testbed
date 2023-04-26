@@ -31,5 +31,5 @@
       git pull --depth=1 ports 4668b601fbedadc86669df1351233d0358caaf8e
       cd dns/bind910
       git checkout 4668b601fbedadc86669df1351233d0358caaf8e
-      env VALID_CATEGORIES=ipv6 BATCH=on OPENSSLBASE=/usr/old/sslbase make install-missing-packages
-      env VALID_CATEGORIES=ipv6 BATCH=on OPENSSLBASE=/usr/old/sslbase make build
+      env VALID_CATEGORIES=ipv6 BATCH=on OPENSSLBASE=/usr/old/sslbase make install-missing-packages OPENSSLBASE=/usr/old/sslbase || true
+      env VALID_CATEGORIES=ipv6 BATCH=on OPENSSLBASE=/usr/old/sslbase make build OPENSSLBASE=/usr/old/sslbase

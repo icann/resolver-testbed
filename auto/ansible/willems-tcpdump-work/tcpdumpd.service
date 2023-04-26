@@ -7,7 +7,7 @@ Restart=always
 RestartSec=30
 Environment="TCPDUMP_FORMAT=%%Y-%%m-%%d__%%H-%%M-%%S"
 ExecStartPre=/bin/mkdir -p /var/log/tcpdumpd/
-ExecStart=/usr/bin/tcpdump -i enp0s10 -G 1800 -s 65535 -w '/var/log/tcpdumpd/${TCPDUMP_FORMAT}.pcap'
+ExecStart=/usr/bin/tcpdump -i any -G 1800 -s 65535 -w '/var/log/tcpdumpd/${TCPDUMP_FORMAT}.pcap'
 ExecStop=/bin/kill -s HUP $MAINPID
  
 [Install]

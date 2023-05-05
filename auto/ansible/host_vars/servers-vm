@@ -11,8 +11,6 @@ memory: 2048
 # (Vagrant) network configuration
 network_configuration:
   system: freebsd
-  default_router: 172.21.0.1
-  default_router6: fd00::21:0:1
   networks:
     - name: em1
       v4:

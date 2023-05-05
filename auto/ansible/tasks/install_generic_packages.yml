@@ -1,4 +1,10 @@
 ---
+- name: Use default task variables if not specified.
+  ansible.builtin.set_fact:
+    pip_executable: "{{ pip_executable | default('pip3') }}"
+    pip_version: "{{ pip_version | default(false) }}"
+    system_ansible: "{{ system_ansible | default(true) }}"
+
 - block:
   - name: (Linux) Install generic packages.
     ansible.builtin.apt:

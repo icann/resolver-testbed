@@ -4,8 +4,12 @@ vboxservice_enable="YES"
 ifconfig_DEFAULT="SYNCDHCP"
 
 hostname="{{ inventory_hostname }}"
+{% if 'default_router' in network_configuration %}
 defaultrouter="{{ network_configuration.default_router }}"
+{% endif %}
+{% if 'default_router6' in network_configuration %}
 ipv6_defaultrouter="{{ network_configuration.default_router6 }}"
+{% endif %}
 
 {% for n in network_configuration.networks %}
 {% if 'v4' in n %}

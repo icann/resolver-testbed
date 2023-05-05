@@ -1,0 +1,61 @@
+---
+- name: (Linux) Restart networking.
+  ansible.builtin.service:
+    name: networking
+    state: restarted
+  listen: restart_network
+  when: network_configuration.system in ['linux', 'ubuntu']
+
+- name: (CentOS) Restart networking.
+  ansible.builtin.service:
+    name: NetworkManager
+    state: restarted
+  listen: restart_network
+  when: network_configuration.system in ['centos']
+
+- name: (BSD) Restart networking.
+  ansible.builtin.shell:
+    cmd: /etc/rc.d/netif restart
+  listen: restart_network
+  when: network_configuration.system in ['freebsd', 'netbsd']
+
+- name: (BSD) Restart routing.
+  ansible.builtin.shell:
+    cmd: /etc/rc.d/routing restart
+  listen: restart_network
+  when: network_configuration.system in ['freebsd', 'netbsd']
+
+- name: (BSD) Restart dhcp.
+  ansible.builtin.shell:
+    cmd: /etc/rc.d/dhclient restart em0
+  listen: restart_network
+  when: network_configuration.system in ['freebsd', 'netbsd']
+
+# - name: (BSD) Restart sendmail.
+#   ansible.builtin.shell:
+#     cmd: /etc/rc.d/sendmail forcestop
+#   listen: restart_network
+#   when: network_configuration.system in ['freebsd', 'netbsd']
+#
+# - name: (BSD) Restart sendmail.
+#   ansible.builtin.shell:
+#     cmd: /etc/rc.d/sendmail forcestart
+#   listen: restart_network
+#   when: network_configuration.system in ['freebsd', 'netbsd']
+
+- name: (BSD) Reload sshd.
+  ansible.builtin.shell:
+    cmd: /etc/rc.d/sshd reload
+  listen: restart_network
+  when: network_configuration.system in ['freebsd', 'netbsd']
+
+- name: (BSD) Restart firewall.
+  ansible.builtin.shell:
+    cmd: /etc/rc.d/ipfw restart
+  listen: restart_network
+  when: network_configuration.system in ['freebsd', 'netbsd']
+
+- name: Unknown system; fail the playbook.
+  ansible.builtin.fail:
+    msg: "Unknown system! Cannot restart network!"
+  when: "network_configuration.system not in ['linux', 'ubuntu', 'freebsd', 'netbsd', 'centos']"

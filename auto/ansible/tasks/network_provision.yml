@@ -1,47 +1,61 @@
 ---
-- name: Linux configuration
+- name: Linux network configuration.
   block:
   - name: (Linux) Configure interfaces.
     ansible.builtin.template:
       src: templates/linux_interfaces.j2
       dest: /etc/network/interfaces
+    notify: restart_network
+
+  - name: (Linux) Check hostname.
+    ansible.builtin.shell:
+      cmd: "hostname"
+    register: hostname_out
 
   - name: (Linux) Set hostname.
-    ansible.builtin.copy:
-      content: "{{ inventory_hostname }}\n"
-      dest: /etc/hostname
+    ansible.builtin.shell:
+      cmd: "hostname {{ inventory_hostname }}"
+    when: hostname_out.stdout != inventory_hostname
 
   - ansible.builtin.import_tasks:
       file: tasks/resolv.conf.yml
   when: network_configuration.system == 'linux'
 
-- name: Ubuntu configuration
+- name: Ubuntu network configuration.
   block:
   - name: (Ubuntu) Configure interfaces.
     ansible.builtin.template:
       src: templates/ubuntu_netplan.j2
       dest: /etc/netplan/01-netcfg.yaml
+    notify: restart_network
+
+  - name: (Ubuntu) Check hostname.
+    ansible.builtin.shell:
+      cmd: "hostname"
+    register: hostname_out
 
   - name: (Ubuntu) Set hostname.
-    ansible.builtin.copy:
-      content: "{{ inventory_hostname }}\n"
-      dest: /etc/hostname
+    ansible.builtin.shell:
+      cmd: "hostname {{ inventory_hostname }}"
+    when: hostname_out.stdout != inventory_hostname
 
   - ansible.builtin.import_tasks:
       file: tasks/resolv.conf.yml
   when: network_configuration.system == 'ubuntu'
 
-- name: FreeBSD configuration
+- name: FreeBSD network configuration.
   block:
   - name: (FreeBSD) Configure interfaces (in rc.conf).
     ansible.builtin.template:
       src: templates/freebsd_rc.conf.j2
       dest: /etc/rc.conf
+    notify: restart_network
 
   - name: (FreeBSD) Write resolv.conf.
     ansible.builtin.copy:
         src: ../files/resolv-with-8844
         dest: /etc/resolv.conf
+    notify: restart_network
 
   - name: (FreeBSD) Making boot faster; always autoboot.
     ansible.builtin.copy:
@@ -49,49 +63,56 @@
       dest: /boot/loader.conf
   when: network_configuration.system == 'freebsd'
 
-- name: NetBSD configuration
+- name: NetBSD network configuration.
   block:
   - name: (NetBSD) Configure interfaces (PART I; in rc.conf).
     ansible.builtin.template:
       src: templates/netbsd_rc.conf.j2
       dest: /etc/rc.conf
+    notify: restart_network
 
   - name: (NetBSD) Configure interfaces (PART II; in distinct files).
     ansible.builtin.template:
       src: templates/netbsd_ifconfig.j2
       dest: "/etc/ifconfig.{{item.name}}"
     loop: "{{ network_configuration.networks }}"
+    notify: restart_network
 
   - name: (NetBSD) Configure routing.
     ansible.builtin.template:
       src: templates/netbsd_route.conf.j2
       dest: "/etc/route.conf"
+    notify: restart_network
 
   - name: (NetBSD) Write resolv.conf.
     ansible.builtin.copy:
         src: ../files/resolv-with-8844
         dest: /etc/resolv.conf
+    notify: restart_network
   when: network_configuration.system == 'netbsd'
 
-- name: CentOS configuration
+- name: CentOS network configuration.
   block:
   - name: (CentOS) Configure interfaces.
     ansible.builtin.template:
       src: templates/centos_ifcfg.j2
       dest: "/etc/sysconfig/network-scripts/ifcfg-{{item.name}}"
     loop: "{{ network_configuration.networks }}"
+    notify: restart_network
 
   - name: (CentOS) Configure IPv4 routing.
     ansible.builtin.template:
       src: templates/centos_route.j2
       dest: "/etc/sysconfig/network-scripts/route-{{item.name}}"
     loop: "{{ network_configuration.networks }}"
+    notify: restart_network
 
   - name: (CentOS) Configure IPv6 routing.
     ansible.builtin.template:
       src: templates/centos_route6.j2
       dest: "/etc/sysconfig/network-scripts/route6-{{item.name}}"
     loop: "{{ network_configuration.networks }}"
+    notify: restart_network
 
       #- name: (CentOS) Disable NetworkManager.
       #  ansible.builtin.systemd:

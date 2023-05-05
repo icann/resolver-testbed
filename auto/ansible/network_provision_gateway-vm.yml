@@ -4,14 +4,47 @@
   become: true
 
   tasks:
+    - name: Uninstall iptables.
+      ansible.builtin.apt:
+        pkg:
+          - iptables
+        state: absent
+        update_cache: yes
+
+    - name: Install nftables.
+      ansible.builtin.apt:
+        pkg:
+          - nftables
+          - nftlb
+        state: present
+
     - ansible.builtin.import_tasks:
         file: tasks/network_provision.yml
 
-    - name: Configure for NAT
+    - ansible.builtin.meta: flush_handlers
+
+    - name: Copy over IP forwarding configuration.
       ansible.builtin.copy:
-        src: files/rc-local-on-gateway-vm
+        src: files/gateway/rc.local
         dest: /etc/rc.local
         mode: "u+x"
 
+    - name: Apply IP forwarding configuration.
+      ansible.builtin.shell:
+        cmd: /etc/rc.local
+
+    - name: Copy over nftables configuration.
+      ansible.builtin.copy:
+        src: files/gateway/nftables.conf
+        dest: /etc/nftables.conf
+
+    - name: Restart nftables.
+      ansible.builtin.systemd:
+        name: nftables
+        state: restarted
+        enabled: true
+        daemon_reload: true
+
+  handlers:
     - ansible.builtin.import_tasks:
-        file: tasks/finish_provisioning.yml
+        file: handlers/network_restart.yml

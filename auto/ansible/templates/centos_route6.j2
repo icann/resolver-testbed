@@ -1,3 +1,4 @@
 {% if 'v6' in item and 'static_route' in item.v6 %}
-{{ item.v6.static_route.network }} via {{ item.v6.static_route.gateway }} dev {{ item.name }} metric 1
+{% for r in item.v6.static_routes %}
+{{ r.network }} via {{ r.gateway }} dev {{ item.name }} metric 1
 {% endif %}

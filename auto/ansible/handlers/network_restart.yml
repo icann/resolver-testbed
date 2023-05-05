@@ -13,6 +13,12 @@
   listen: restart_network
   when: network_configuration.system == 'ubuntu'
 
+- name: (Ubuntu) Apply netplan.
+  ansible.builtin.shell:
+    cmd: netplan apply
+  listen: restart_network
+  when: network_configuration.system == 'ubuntu'
+
 - name: (CentOS) Restart networking.
   ansible.builtin.service:
     name: NetworkManager

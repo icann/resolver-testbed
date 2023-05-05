@@ -1,9 +1,13 @@
 {% for n in network_configuration.networks %}
-{% if 'v4' in n and 'static_route' in n.v4 %}
-net {{ n.v4.static_route.network }} {{ n.v4.static_route.gateway }}
+{% if 'v4' in n and 'static_routes' in n.v4 %}
+{% for r in n.v4.static_routes %}
+net {{ r.network }} {{ r.gateway }}
+{% endfor %}
 {% endif %}
-{% if 'v6' in n and 'static_route' in n.v6 %}
-inet6 {{ n.v6.static_route.network }} {{ n.v6.static_route.gateway }}
+{% if 'v6' in n and 'static_routes' in n.v6 %}
+{% for r in n.v6.static_routes %}
+inet6 {{ r.network }} {{ r.gateway }}
+{% endfor %}
 {% endif %}
 
 {% endfor %}

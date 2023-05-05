@@ -4,56 +4,57 @@
     name: networking
     state: restarted
   listen: restart_network
-  when: network_configuration.system in ['linux', 'ubuntu']
+  when: network_configuration.system == 'linux'
+
+- name: (Ubuntu) Restart networking.
+  ansible.builtin.service:
+    name: systemd-networkd
+    state: restarted
+  listen: restart_network
+  when: network_configuration.system == 'ubuntu'
 
 - name: (CentOS) Restart networking.
   ansible.builtin.service:
     name: NetworkManager
     state: restarted
   listen: restart_network
-  when: network_configuration.system in ['centos']
+  when: network_configuration.system == 'centos'
 
-- name: (BSD) Restart networking.
+- name: (NetBSD) Restart networking.
+  ansible.builtin.shell:
+    cmd: /etc/rc.d/network restart
+  listen: restart_network
+  when: network_configuration.system == 'netbsd'
+
+- name: (FreeBSD) Restart networking.
   ansible.builtin.shell:
     cmd: /etc/rc.d/netif restart
   listen: restart_network
-  when: network_configuration.system in ['freebsd', 'netbsd']
+  when: network_configuration.system == 'freebsd'
 
-- name: (BSD) Restart routing.
+- name: (FreeBSD) Restart routing.
   ansible.builtin.shell:
     cmd: /etc/rc.d/routing restart
   listen: restart_network
-  when: network_configuration.system in ['freebsd', 'netbsd']
+  when: network_configuration.system == 'freebsd'
 
-- name: (BSD) Restart dhcp.
+- name: (FreeBSD) Restart dhcp.
   ansible.builtin.shell:
     cmd: /etc/rc.d/dhclient restart em0
   listen: restart_network
-  when: network_configuration.system in ['freebsd', 'netbsd']
+  when: network_configuration.system == 'freebsd'
 
-# - name: (BSD) Restart sendmail.
-#   ansible.builtin.shell:
-#     cmd: /etc/rc.d/sendmail forcestop
-#   listen: restart_network
-#   when: network_configuration.system in ['freebsd', 'netbsd']
-#
-# - name: (BSD) Restart sendmail.
-#   ansible.builtin.shell:
-#     cmd: /etc/rc.d/sendmail forcestart
-#   listen: restart_network
-#   when: network_configuration.system in ['freebsd', 'netbsd']
-
-- name: (BSD) Reload sshd.
+- name: (FreeBSD) Reload sshd.
   ansible.builtin.shell:
     cmd: /etc/rc.d/sshd reload
   listen: restart_network
-  when: network_configuration.system in ['freebsd', 'netbsd']
+  when: network_configuration.system == 'freebsd'
 
-- name: (BSD) Restart firewall.
+- name: (FreeBSD) Restart firewall.
   ansible.builtin.shell:
     cmd: /etc/rc.d/ipfw restart
   listen: restart_network
-  when: network_configuration.system in ['freebsd', 'netbsd']
+  when: network_configuration.system == 'freebsd'
 
 - name: Unknown system; fail the playbook.
   ansible.builtin.fail:

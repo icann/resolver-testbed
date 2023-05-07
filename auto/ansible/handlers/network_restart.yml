@@ -28,13 +28,15 @@
 
 - name: (NetBSD) Restart network.
   ansible.builtin.shell:
-    cmd: /etc/rc.d/network restart
+    # source the profile to get the correct $PATH
+    cmd: ". /root/.profile && /etc/rc.d/network restart"
   listen: restart_network
   when: network_configuration.system == 'netbsd'
 
 - name: (NetBSD) Restart staticroute.
   ansible.builtin.shell:
-    cmd: /etc/rc.d/staticroute restart
+    # source the profile to get the correct $PATH
+    cmd: ". /root/.profile && /etc/rc.d/staticroute restart"
   listen: restart_network
   when: network_configuration.system == 'netbsd'
 

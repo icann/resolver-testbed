@@ -51,11 +51,8 @@
       dest: /etc/rc.conf
     notify: restart_network
 
-  - name: (FreeBSD) Write resolv.conf.
-    ansible.builtin.copy:
-        src: ../files/resolv-with-8844
-        dest: /etc/resolv.conf
-    notify: restart_network
+  - ansible.builtin.import_tasks:
+      file: tasks/resolv.conf.yml
 
   - name: (FreeBSD) Making boot faster; always autoboot.
     ansible.builtin.copy:
@@ -84,11 +81,8 @@
       dest: "/etc/route.conf"
     notify: restart_network
 
-  - name: (NetBSD) Write resolv.conf.
-    ansible.builtin.copy:
-        src: ../files/resolv-with-8844
-        dest: /etc/resolv.conf
-    notify: restart_network
+  - ansible.builtin.import_tasks:
+      file: tasks/resolv.conf.yml
   when: network_configuration.system == 'netbsd'
 
 - name: CentOS network configuration.

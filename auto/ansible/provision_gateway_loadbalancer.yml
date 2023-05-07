@@ -2,6 +2,7 @@
 # This playbook configures the gateway-vm to do loadbalancing;
 # All queries for the a root (a.some-servers.p53, 172.21.101.1), will
 # be round-robin load-balanced over the 12 other roots
+# XXX: not currently used; still developing.
 - hosts: gateway-vm
   gather_facts: false
   become: true
@@ -11,7 +12,7 @@
       ansible.builtin.template:
         src: templates/full_loadbalance_file.json.j2
         dest: /etc/nftlb.json
-    
+
     - name: Install nftlb package
       ansible.builtin.apt:
         pkg:
@@ -19,7 +20,7 @@
           - curl
         state: present
         update_cache: true
-    
+
     - name: Override startup service to use configuration
       ansible.builtin.copy:
         src: files/loadbalancer/systemd.nftlb.service

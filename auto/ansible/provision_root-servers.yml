@@ -12,10 +12,6 @@
 
     - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages.yml
-      vars:
-        pip_executable: "{{ whichpip }}"
-        pip_version: "{{ pipversion }}"
-        system_ansible: "{{ use_system_ansible }}"
 
     - ansible.builtin.import_tasks:
         file: tasks/inception/incept.yml

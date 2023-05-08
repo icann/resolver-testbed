@@ -67,6 +67,7 @@
     - name: Get unique not_created VMs/boxes to start up.
       ansible.builtin.set_fact:
         unique_vms: "{{ dict(relevant_boxes | zip(not_created)).values() | list }}"
+
     - name: Add the unique VMs as dummy hosts.
       ansible.builtin.add_host:
         name: "{{ item }}"
@@ -81,7 +82,8 @@
   tasks:
     - name: Bring up the unique boxes.
       ansible.builtin.shell:
-        cmd: "vagrant up {{ host_name }}"
+        # Provision later to avoid possible locking.
+        cmd: "vagrant up --no-provision {{ host_name }}"
         # This is relative to the playbook.
         chdir: ../
       delegate_to: localhost
@@ -105,7 +107,25 @@
   tasks:
     - name: Bring up the rest of the VMs.
       ansible.builtin.shell:
-        cmd: "vagrant up {{ host_name }}"
+        # Provision later to avoid possible locking.
+        cmd: "vagrant up --no-provision {{ host_name }}"
         # This is relative to the playbook.
         chdir: ../
+      delegate_to: localhost
+
+- hosts: unique_vms:rest_vms
+  gather_facts: false
+  become: false
+
+  tasks:
+    - name: Make sure that all VMs are up and Ansible ready.
+      ansible.builtin.shell:
+        # Provision now; possible locking errors can be retried.
+        cmd: "vagrant provision {{ host_name }}"
+        # This is relative to the playbook.
+        chdir: ../
+      register: result
+      until: result is succeeded
+      retries: 5
+      delay: 1
       delegate_to: localhost

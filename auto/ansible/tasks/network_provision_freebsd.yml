@@ -1,0 +1,16 @@
+---
+- name: FreeBSD network configuration.
+  block:
+  - name: (FreeBSD) Configure interfaces (in rc.conf).
+    ansible.builtin.template:
+      src: templates/freebsd_rc.conf.j2
+      dest: /etc/rc.conf
+    notify: restart_network
+
+  - ansible.builtin.include_tasks:
+      file: tasks/resolv.conf.yml
+
+  - name: (FreeBSD) Making boot faster; always autoboot.
+    ansible.builtin.copy:
+      content: 'autoboot_delay="-1"'
+      dest: /boot/loader.conf

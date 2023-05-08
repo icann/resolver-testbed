@@ -99,6 +99,10 @@
   - name: (NetBSD) Install mozilla-rootcerts.
     ansible.builtin.shell:
       cmd: "/usr/pkg/sbin/mozilla-rootcerts install"
+    register: result
+    failed_when:
+      - result.rc != 0
+      - '"already contains certificates" not in result.stderr'
 
   - name: (NetBSD) Install generic packages.
     community.general.pkgin:

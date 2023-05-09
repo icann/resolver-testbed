@@ -21,8 +21,6 @@
     - ansible.builtin.import_tasks:
         file: tasks/network_provision.yml
 
-    - ansible.builtin.meta: flush_handlers
-
     - name: Copy over IP forwarding configuration.
       ansible.builtin.copy:
         src: files/gateway/rc.local
@@ -44,7 +42,3 @@
         state: restarted
         enabled: true
         daemon_reload: true
-
-  handlers:
-    - ansible.builtin.import_tasks:
-        file: handlers/network_restart.yml

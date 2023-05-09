@@ -1,0 +1,11 @@
+---
+- name: Ubuntu network restart.
+  block:
+  - name: (Ubuntu) Restart networking.
+    ansible.builtin.service:
+      name: systemd-networkd
+      state: restarted
+
+  - name: (Ubuntu) Apply netplan.
+    ansible.builtin.shell:
+      cmd: netplan apply

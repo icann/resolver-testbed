@@ -63,13 +63,10 @@
         dest: /root/servers-ipfw-long-to-short.sh
         mode: "a+x"
 
-    - name: Restart network if needed.
-      ansible.builtin.meta: flush_handlers
+    - name: Restart network.
+      ansible.builtin.import_tasks:
+        file: tasks/network_restart.yml
 
     - name: Activate ipfw configuration.
       ansible.builtin.shell:
         cmd: /root/servers-ipfw-long-to-short.sh
-
-  handlers:
-    - ansible.builtin.import_tasks:
-        file: handlers/network_restart.yml

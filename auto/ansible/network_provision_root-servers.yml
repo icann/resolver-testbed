@@ -6,7 +6,3 @@
   tasks:
     - ansible.builtin.import_tasks:
         file: tasks/network_provision.yml
-
-  handlers:
-    - ansible.builtin.import_tasks:
-        file: handlers/network_restart.yml

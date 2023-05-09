@@ -1,0 +1,22 @@
+---
+- name: FreeBSD network restart.
+  block:
+  - name: (FreeBSD) Restart networking.
+    ansible.builtin.shell:
+      cmd: /etc/rc.d/netif restart
+
+  - name: (FreeBSD) Restart routing.
+    ansible.builtin.shell:
+      cmd: /etc/rc.d/routing restart
+
+  - name: (FreeBSD) Restart dhcp.
+    ansible.builtin.shell:
+      cmd: /etc/rc.d/dhclient restart em0
+
+  - name: (FreeBSD) Reload sshd.
+    ansible.builtin.shell:
+      cmd: /etc/rc.d/sshd reload
+
+  - name: (FreeBSD) Restart firewall.
+    ansible.builtin.shell:
+      cmd: /etc/rc.d/ipfw restart

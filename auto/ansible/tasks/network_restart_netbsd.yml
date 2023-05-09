@@ -1,0 +1,12 @@
+---
+- name: NetBSD network restart.
+  block:
+  - name: (NetBSD) Restart network.
+    ansible.builtin.shell:
+      # source the profile to get the correct $PATH
+      cmd: ". /root/.profile && /etc/rc.d/network restart"
+
+  - name: (NetBSD) Restart staticroute.
+    ansible.builtin.shell:
+      # source the profile to get the correct $PATH
+      cmd: ". /root/.profile && /etc/rc.d/staticroute restart"

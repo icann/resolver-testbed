@@ -4,6 +4,19 @@
   become: true
 
   tasks:
+    - name: Install packages.
+      community.general.pkgng:
+        name:
+          - bind916
+          - wget
+          - nano
+          - vim
+          - tmux
+          - htop
+          - rsync
+          - ca_root_nss
+        state: present
+
     - ansible.builtin.import_tasks:
         file: tasks/network_provision.yml
 
@@ -56,18 +69,6 @@
     - name: Activate ipfw configuration.
       ansible.builtin.shell:
         cmd: /root/servers-ipfw-long-to-short.sh
-
-    - name: Install packages.
-      community.general.pkgng:
-        name:
-          - bind916
-          - wget
-          - nano
-          - vim
-          - tmux
-          - htop
-          - ca_root_nss
-        state: present
 
   handlers:
     - ansible.builtin.import_tasks:

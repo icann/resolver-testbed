@@ -2,9 +2,15 @@
 - ansible.builtin.include_tasks:
     file: tasks/rssac028-appendix-a/do-query.yml
   loop:
-    - { query: 'drill -o rd @172.21.113.1', descr: 'No EDNS' }
-    - { query: 'drill -o rd -b 16384 @172.21.113.1', descr: 'No DNSSEC' }
-    - { query: 'drill -o rd -Db 16384 @172.21.113.1', descr: 'IPv4 DNSSEC' }
-    - { query: 'drill -o rd -Db 16384 @fd00::21:113:1', descr: 'IPv6 DNSSEC' }
+    - { query: 'dig-9.18.14 @172.21.113.1 -q . -t NS +noedns +ignore +norec', descr: 'IPv4 No EDNS' }
+    - { query: 'dig-9.18.14 @fd00::21:113:1 -q . -t NS +noedns +ignore +norec', descr: 'IPv6 No EDNS' }
+    - { query: 'dig-9.18.14 @172.21.113.1 -q . -t NS +bufsize=16384 +ignore +norec +noednsopt +nocookie +nodnssec', descr: 'IPv4 No DNSSEC' }
+    - { query: 'dig-9.18.14 @fd00::21:113:1 -q . -t NS +bufsize=16384 +ignore +norec +noednsopt +nocookie +nodnssec', descr: 'IPv6 No DNSSEC' }
+    - { query: 'dig-9.18.14 @172.21.113.1 -q . -t NS +bufsize=16384 +ignore +norec +noednsopt +nocookie +dnssec', descr: 'IPv4 DNSSEC' }
+    - { query: 'dig-9.18.14 @fd00::21:113:1 -q . -t NS +bufsize=16384 +ignore +norec +noednsopt +nocookie +dnssec', descr: 'IPv6 DNSSEC' }
+    - { query: 'dig-9.18.14 @172.21.113.1 -q . -t NS +bufsize=16384 +ignore +norec +noednsopt +cookie +nodnssec', descr: 'IPv4 Cookie No DNSSEC' }
+    - { query: 'dig-9.18.14 @fd00::21:113:1 -q . -t NS +bufsize=16384 +ignore +norec +noednsopt +cookie +nodnssec', descr: 'IPv6 Cookie No DNSSEC' }
+    - { query: 'dig-9.18.14 @172.21.113.1 -q . -t NS +bufsize=16384 +ignore +norec +noednsopt +cookie +dnssec', descr: 'IPv4 Cookie DNSSEC' }
+    - { query: 'dig-9.18.14 @fd00::21:113:1 -q . -t NS +bufsize=16384 +ignore +norec +noednsopt +cookie +dnssec', descr: 'IPv6 Cookie DNSSEC' }
   loop_control:
     loop_var: msm

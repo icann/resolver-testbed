@@ -13,7 +13,7 @@
         state: directory
 
     - name: Copying the root files.
-      ansible.builtin.copy:
+      ansible.posix.synchronize:
         src: files/root-zone-basic/
         dest: /root/bind-configs
 

@@ -6,7 +6,6 @@
       src: ../files/resolv-with-8844
       dest: /etc/resolv.conf
       attr: "+i"
-    notify: restart_network
   rescue:
     - name: Make sure the file is mutable.
       ansible.builtin.file:
@@ -18,7 +17,6 @@
         src: ../files/resolv-with-8844
         dest: /etc/resolv.conf
         attr: "+i"
-      notify: restart_network
   when: network_configuration.system in ['linux', 'ubuntu', 'centos']
 
 - name: Set resolv.conf in FreeBSD/NetBSD.
@@ -32,5 +30,4 @@
     ansible.builtin.copy:
       src: ../files/resolv-with-8844
       dest: /etc/resolv.conf
-    notify: restart_network
   when: network_configuration.system in ['freebsd', 'netbsd']

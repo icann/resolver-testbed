@@ -1,3 +1,4 @@
 ---
 BUILD_SOURCE_DIR: /root/source
 BUILD_TARGET_DIR: /root/target
+ZONE_DIR: /root/zones

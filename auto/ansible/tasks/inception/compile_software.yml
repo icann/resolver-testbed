@@ -24,11 +24,6 @@
       - "{{ this_source_dir }}"
       - "{{ this_target_dir }}"
 
-  - name: Make sure the zone configuration directory is there.
-    ansible.builtin.file:
-      path: "{{ this_target_dir }}/zone_config.d"
-      state: directory
-
   - name: Check if we already have the source.
     ansible.builtin.find:
       paths: "{{ this_source_dir }}"

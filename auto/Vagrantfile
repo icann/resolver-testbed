@@ -30,12 +30,12 @@ use_bridge = get_value local_conf, 'use_bridge', otherwise: false
 use_linked_clones = get_value local_conf, 'use_linked_clones', otherwise: false
 
 # Read the hosts file ...
-hosts_conf = YAML.load_file('ansible/hosts')
+hosts_conf = YAML.load_file('ansible/inventory/hosts')
 # ... and any extra local host file
 extra_hosts_conf = yaml_contents extra_hosts_path, as_long_as: ! extra_hosts_path.empty?
 
 # Read the VirtualBox host configuration ...
-vbox_conf = YAML.load_file('ansible/host_vars/VBox-host')
+vbox_conf = YAML.load_file('ansible/inventory/host_vars/VBox-host')
 # ... and any extra local configuration
 extra_vbox_conf = yaml_contents extra_host_vars_path + '/VBox-host', as_long_as: ! extra_host_vars_path.empty?
 vbox_conf.merge!(extra_vbox_conf)
@@ -76,7 +76,7 @@ Vagrant.configure(2) do |config|
   all_vms.each do |vhost, _|
     config.vm.define vhost do |h|
       # Load host_vars of the host ...
-      vm_conf = yaml_contents 'ansible/host_vars/' + vhost
+      vm_conf = yaml_contents 'ansible/inventory/host_vars/' + vhost
       # ... and any possible local host_vars
       extra_vm_conf = yaml_contents extra_host_vars_path + '/' + vhost, as_long_as: ! extra_host_vars_path.empty?
       vm_conf.merge!(extra_vm_conf)
@@ -88,7 +88,7 @@ Vagrant.configure(2) do |config|
       if vm_conf.empty? then
         warn "VM '" + vhost + "' does not have a configuration!"
         warn "Looked at:"
-        warn "  - ansible/host_vars/" + vhost
+        warn "  - ansible/inventory/host_vars/" + vhost
         if ! extra_host_vars_path.empty? then
           warn "  - " + extra_host_vars_path + '/' + vhost
         end

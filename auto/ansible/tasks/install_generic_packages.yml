@@ -16,6 +16,7 @@
         - tmux
         - htop
         - dnsutils
+        - rsync
       state: present
       update_cache: yes
 
@@ -57,6 +58,7 @@
         - vim
         - tmux
         - htop
+        - rsync
       state: present
 
   - name: (FreeBSD) Install system ansible.
@@ -113,6 +115,7 @@
         - vim
         - tmux
         - htop
+        - rsync
       state: present
 
   - name: (NetBSD) Install system ansible.
@@ -160,6 +163,7 @@
         - tmux
         - bind-utils
         - htop
+        - rsync
       state: present
 
   - name: (CentOS) Install system ansible.

@@ -4,6 +4,19 @@
   become: true
 
   tasks:
+    - name: Install packages.
+      community.general.pkgng:
+        name:
+          - bind916
+          - wget
+          - nano
+          - vim
+          - tmux
+          - htop
+          - rsync
+          - ca_root_nss
+        state: present
+
     - ansible.builtin.import_tasks:
         file: tasks/network_provision.yml
 
@@ -13,7 +26,7 @@
         state: directory
 
     - name: Copying the root files.
-      ansible.builtin.copy:
+      ansible.posix.synchronize:
         src: files/root-zone-basic/
         dest: /root/bind-configs
 
@@ -50,25 +63,10 @@
         dest: /root/servers-ipfw-long-to-short.sh
         mode: "a+x"
 
-    - name: Restart network if needed.
-      ansible.builtin.meta: flush_handlers
+    - name: Restart network.
+      ansible.builtin.import_tasks:
+        file: tasks/network_restart.yml
 
     - name: Activate ipfw configuration.
       ansible.builtin.shell:
         cmd: /root/servers-ipfw-long-to-short.sh
-
-    - name: Install packages.
-      community.general.pkgng:
-        name:
-          - bind916
-          - wget
-          - nano
-          - vim
-          - tmux
-          - htop
-          - ca_root_nss
-        state: present
-
-  handlers:
-    - ansible.builtin.import_tasks:
-        file: handlers/network_restart.yml

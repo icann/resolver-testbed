@@ -45,8 +45,9 @@
     dest: "/root/local_ansible/{{ item }}"
   loop: "{{ incept_copy_files }}"
 
-- name: "{{ incept_title }}"
+- name: "{{ incept_title }} (Output per incepted host when done)"
   ansible.builtin.shell:
     cmd: "{{ ansible_playbook_path | default('ansible-playbook') }} -f {{ cpus }} /root/local_ansible/inception_playbook.yml"
   environment:
+    # Easier to read the output when something goes wrong.
     ANSIBLE_STDOUT_CALLBACK: yaml

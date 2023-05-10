@@ -1,0 +1,7 @@
+---
+- name: CentOS network restart.
+  block:
+  - name: (CentOS) Restart networking.
+    ansible.builtin.service:
+      name: NetworkManager
+      state: restarted

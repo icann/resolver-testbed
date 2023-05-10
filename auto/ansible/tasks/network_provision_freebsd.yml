@@ -5,7 +5,6 @@
     ansible.builtin.template:
       src: templates/freebsd_rc.conf.j2
       dest: /etc/rc.conf
-    notify: restart_network
 
   - ansible.builtin.include_tasks:
       file: tasks/resolv.conf.yml
@@ -14,3 +13,6 @@
     ansible.builtin.copy:
       content: 'autoboot_delay="-1"'
       dest: /boot/loader.conf
+
+  - ansible.builtin.include_tasks:
+      file: tasks/network_restart_freebsd.yml

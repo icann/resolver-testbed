@@ -13,6 +13,16 @@
     - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages.yml
 
+    - name: Make sure the zone configuration directory is there.
+      ansible.builtin.file:
+        path:  "{{ ZONE_DIR }}"
+        state: directory
+
+    - name: Copy over zone configuration
+      ansible.posix.synchronize:
+        src: files/scenarios/
+        dest: "{{ ZONE_DIR }}"
+
     - ansible.builtin.import_tasks:
         file: tasks/inception/incept.yml
       vars:

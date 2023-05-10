@@ -1,224 +1,187 @@
-{# Loop over the configured vm names and store them in a dict. #}
-{# This gives us am easier way to check which vms are configured later #}
-{# By doing {% if active_vms['NAME'] is defined %} #}
-{% set active_vms = dict() %}
-{% for vm in groups['all'] %}
-{% set _d = active_vms.update({vm: true}) %}
+{# This will create a nftbl.json for all configured root-servers
+ #
+ #   - If only one root-server is configured, all root-server ip addresses
+ #     will be directed to that root-server.
+ #
+ #   - If no root-server is configured, all root-server ip addresses will be
+ #     directed to servers-vm ip addresses.
+ #
+ #   - One specific root-server can be explicitly selected by specifying the
+ #     name in the test_host variable.
+ #
+ #   - If the test_host variable is set to an empty string, all root-server
+ #     ip addresses will be directed to servers-vm ip addresses.
+ #
+ #  Note that variables can be set with the --extra-vars parameter to
+ #  ansible-playbook. For example:
+ #
+ #      ansible-playbook --extra-vars="test_host=b-linux"
+ #
+ #}
+{% set ns = namespace(v4s = dict(), v6s = dict()) %}
+{% if test_host is defined %}
+{%   set ips = namespace(v4s = [], v6s = []) %}
+{%   if test_host|length > 0 %}
+{%     for network in hostvars[test_host]['network_configuration']['networks'] %}
+{%       if network['v4'] is defined %}
+{%         set _dummy = ips.v4s.extend(network['v4']['alias']) %}
+{%       endif %}
+{%       if network['v6'] is defined %}
+{%         set _dummy = ips.v6s.extend(network['v6']['alias']) %}
+{%       endif %}
+{%     endfor %}
+{%     if ips.v4s|count > 0 %}
+{%       set _dummy = ns.v4s.update({ test_host[0]: ips.v4s }) %}
+{%     endif %}
+{%     if ips.v6s|count > 0 %}
+{%       set _dummy = ns.v6s.update({ test_host[0]: ips.v6s }) %}
+{%     endif %}
+{%   endif %}
+{% else %}
+{%   for letter, l in root_letters.items() %}
+{%     set ips = namespace(v4s = [], v6s = []) %}
+{%     if groups['root_servers'] is defined %}
+{%       for host in groups['root_servers'] %}
+{%         if letter in host.split('-')[0] and hostvars[host] is defined %}
+{%           for network in hostvars[host]['network_configuration']['networks'] %}
+{%             if network['v4'] is defined %}
+{%               set _dummy = ips.v4s.extend(network['v4']['alias']) %}
+{%             endif %}
+{%             if network['v6'] is defined %}
+{%               set _dummy = ips.v6s.extend(network['v6']['alias']) %}
+{%             endif %}
+{%           endfor %}
+{%         endif %}
+{%       endfor %}
+{%     endif %}
+{%     if ips.v4s|count > 0 %}
+{%       set _dummy = ns.v4s.update({ letter: ips.v4s }) %}
+{%     endif %}
+{%     if ips.v6s|count > 0 %}
+{%       set _dummy = ns.v6s.update({ letter: ips.v6s }) %}
+{%     endif %}
+{%   endfor %}
+{% endif %}
+{ "farms":
+  [ { "name": "net-v4"
+    , "family": "ipv4"
+    , "virtual-addr": "185.49.142.30"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ { "name": "net1", "ip-addr": "172.21.0.2", "state": "up" } ]
+    }
+  , { "name": "net-v6"
+    , "family": "ipv6"
+    , "virtual-addr": "2a04:b907::30"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ { "name": "net1", "ip-addr": "fd00::21:0:2", "state": "up" } ]
+    }
+{% for letter, l in root_letters.items() %}
+{%   set number = '1%02d' % loop.index %}
+{%   if letter in ns.v4s %}
+  , { "name": "{{ letter }}-v4"
+    , "family": "ipv4"
+    , "virtual-addr": "{{ l['ipv4'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ {% for alias in ns.v4s[letter] %}
+{%             if loop.first %}{% else %}
+
+      , {%             endif %}
+{ "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
+{%           endfor %} ]
+    }
+{%   elif ns.v4s|count == 1  %}
+  , { "name": "{{ letter }}-v4"
+    , "family": "ipv4"
+    , "virtual-addr": "{{ l['ipv4'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ {%   for alias in ns.v4s.values()|first %}
+{%             if loop.first %}{% else %}
+
+      , {%             endif %}
+{ "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
+{%           endfor %} ]
+    }
+{%   elif ns.v4s|count == 0 %}
+  , { "name": "{{ letter }}-v4"
+    , "family": "ipv4"
+    , "virtual-addr": "{{ l['ipv4'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ { "name": "{{ letter }}1", "ip-addr": "172.21.{{ number }}.1", "state": "up" } ]
+    }
+{%   endif %}
+{%   if letter in ns.v6s %}
+  , { "name": "{{ letter }}-v6"
+    , "family": "ipv6"
+    , "virtual-addr": "{{ l['ipv6'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ {% for alias in ns.v6s[letter] %}
+{%             if loop.first %}{% else %}
+
+      , {%             endif %}
+{ "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
+{%           endfor %} ]
+    }
+{%   elif ns.v6s|count == 1  %}
+  , { "name": "{{ letter }}-v6"
+    , "family": "ipv6"
+    , "virtual-addr": "{{ l['ipv6'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ {%   for alias in ns.v6s.values()|first %}
+{%             if loop.first %}{% else %}
+
+      , {%             endif %}
+{ "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
+{%           endfor %} ]
+    }
+{%   elif ns.v6s|count == 0 %}
+  , { "name": "{{ letter }}-v6"
+    , "family": "ipv6"
+    , "virtual-addr": "{{ l['ipv6'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ { "name": "{{ letter }}1", "ip-addr": "fd00::21:{{ number }}:2", "state": "up" } ]
+    }
+{%   endif %}
 {% endfor %}
-{
-        "farms" : [
-                {
-                        "name" : "root-a",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.1.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['aj-linux'] is defined %}
-                                { "name": "root-a-1", "ip-addr": "172.21.1.11", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-b",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.2.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['b-linux'] is defined %}
-                                { "name": "root-b-1", "ip-addr": "172.21.2.11", "state": "up" },
-                                { "name": "root-b-2", "ip-addr": "172.21.2.12", "state": "up" },
-                                { "name": "root-b-3", "ip-addr": "172.21.2.13", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-c",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.3.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['c-centos'] is defined %}
-                                { "name": "root-c-1", "ip-addr": "172.21.3.11", "state": "up" },
-{% endif %}
-{% if active_vms['c-alma'] is defined %}
-                                { "name": "root-c-2", "ip-addr": "172.21.3.21", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-d",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.4.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['d-linux'] is defined %}
-                                { "name": "root-d-1", "ip-addr": "172.21.4.11", "state": "up" },
-                                { "name": "root-d-2", "ip-addr": "172.21.4.12", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-e",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.5.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['e-freebsd'] is defined %}
-                                { "name": "root-e-1", "ip-addr": "172.21.5.11", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-f",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.6.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['f-freebsd12'] is defined %}
-                                { "name": "root-f-1", "ip-addr": "172.21.6.11.", "state": "up" },
-{% endif %}
-{% if active_vms['f-freebsd13'] is defined %}
-                                { "name": "root-f-2", "ip-addr": "172.21.6.21", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-g",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.7.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['g-linux'] is defined %}
-                                { "name": "root-g-1", "ip-addr": "172.21.7.11", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-h",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.8.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['h-linux'] is defined %}
-                                { "name": "root-h-1", "ip-addr": "172.21.8.11", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-i",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.9.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['i-buster'] is defined %}
-                                { "name": "root-i-1", "ip-addr": "172.21.9.11", "state": "up" },
-{% endif %}
-{% if active_vms['i-bullseye'] is defined %}
-                                { "name": "root-i-2", "ip-addr": "172.21.9.21", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-j",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.10.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['aj-linux'] is defined %}
-                                { "name": "root-j-1", "ip-addr": "172.21.10.11", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-k",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.11.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['k-centos'] is defined %}
-                                { "name": "root-k-1", "ip-addr": "172.21.11.11", "state": "up" },
-                                { "name": "root-k-2", "ip-addr": "172.21.11.12", "state": "up" },
-                                { "name": "root-k-3", "ip-addr": "172.21.11.13", "state": "up" },
-                                { "name": "root-k-4", "ip-addr": "172.21.11.14", "state": "up" },
-                                { "name": "root-k-5", "ip-addr": "172.21.11.15", "state": "up" },
-                                { "name": "root-k-6", "ip-addr": "172.21.11.16", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-l",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.12.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['l-ubuntu18'] is defined %}
-                                { "name": "root-l-1", "ip-addr": "172.21.12.11", "state": "up" },
-                                { "name": "root-l-2", "ip-addr": "172.21.12.12", "state": "up" }
-{% endif %}
-                        ]
-                },
-                {
-                        "name" : "root-m",
-                        "family" : "ipv4",
-                        "virtual-addr" : "172.21.13.1",
-                        "virtual-ports": "53",
-                        "mode": "snat",
-                        "protocol": "all",
-                        "scheduler" : "rr",
-                        "state" : "up",
-                        "backends" : [
-{% if active_vms['m-netbsd'] is defined %}
-                                { "name": "root-m-1", "ip-addr" : "172.21.13.11", "state": "up" }
-{% endif %}
-                        ]
-                }
-        ]
+  ]
 }
+

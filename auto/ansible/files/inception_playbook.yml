@@ -8,9 +8,6 @@
       ansible.builtin.import_tasks:
         file: tasks/inception/read_inception_variables.yml
 
-    - debug:
-        var: software_build_config
-
     - ansible.builtin.import_tasks:
         file: tasks/read_build_configuration.yml
       vars:

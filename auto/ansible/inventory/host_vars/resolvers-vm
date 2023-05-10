@@ -57,46 +57,46 @@ build_config:
     unboundmake: "./configure --prefix={PREFIX} && make -j 2 && make install"
   # Collection of software to build
   software:
-    bind-9.9.11:
+    - name: bind-9.9.11
       url: "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz"
       make_str: "bind9make"
-    bind-9.10.8:
+    - name: bind-9.10.8
       url: "https://ftp.isc.org/isc/bind9/9.10.8/bind-9.10.8.tar.gz"
       make_str: "bind9make"
-    bind-9.11.6:
+    - name: bind-9.11.6
       url: "https://ftp.isc.org/isc/bind9/9.11.6/bind-9.11.6.tar.gz"
       make_str: "bind9make"
-    bind-9.12.4:
+    - name: bind-9.12.4
       url: "https://ftp.isc.org/isc/bind9/9.12.4/bind-9.12.4.tar.gz"
       make_str: "bind9make"
-    bind-9.13.7:
+    - name: bind-9.13.7
       url: "https://ftp.isc.org/isc/bind9/9.13.7/bind-9.13.7.tar.gz"
       make_str: "bind9make"
-    bind-9.14.10:
+    - name: bind-9.14.10
       url: "https://ftp.isc.org/isc/bind9/9.14.10/bind-9.14.10.tar.gz"
       make_str: "bind9make"
-    bind-9.15.8:
+    - name: bind-9.15.8
       url: "https://ftp.isc.org/isc/bind9/9.15.8/bind-9.15.8.tar.xz"
       make_str: "bind9make"
     # XXX This needs fixing
-    knot-resolver-4.1.0:
+    - name: knot-resolver-4.1.0
       url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.1.0.tar.xz"
       make_str: "knotmake"
     # XXX This needs fixing
-    knot-resolver-5.0.0:
+    - name: knot-resolver-5.0.0
       url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.0.0.tar.xz"
       make_str: "knotmake"
-    pdns-recursor-4.0.9:
-       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
-       make_str: "pdns4make"
-       files_copy:
-         - src: "files/pdns_patches/4_0_9/webserver.cc"
-           dest: "."
-         - src: "files/pdns_patches/4_0_9/ws-recursor.cc"
-           dest: "."
-         - src: "files/pdns_patches/4_0_9/reqresp.cpp"
-           dest: "./ext/yahttp/yahttp/"
-    pdns-recursor-4.1.15:
+    - name: pdns-recursor-4.0.9
+      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
+      make_str: "pdns4make"
+      files_copy:
+        - src: "files/pdns_patches/4_0_9/webserver.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_0_9/ws-recursor.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_0_9/reqresp.cpp"
+          dest: "./ext/yahttp/yahttp/"
+    - name: pdns-recursor-4.1.15
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.1.15.tar.bz2"
       make_str: "pdns4make"
       files_copy:
@@ -106,7 +106,7 @@ build_config:
           dest: "."
         - src: "files/pdns_patches/4_1_15/reqresp.cpp"
           dest: "./ext/yahttp/yahttp/"
-    pdns-recursor-4.2.1:
+    - name: pdns-recursor-4.2.1
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.2.1.tar.bz2"
       make_str: "pdns4make"
       files_copy:
@@ -116,18 +116,18 @@ build_config:
           dest: "."
         - src: "files/pdns_patches/4_2_1/reqresp.cpp"
           dest: "./ext/yahttp/yahttp/"
-    unbound-1.5.10:
+    - name: unbound-1.5.10
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.5.10.tar.gz"
       make_str: "unboundmake"
-    unbound-1.6.8:
+    - name: unbound-1.6.8
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.6.8.tar.gz"
       make_str: "unboundmake"
-    unbound-1.7.3:
+    - name: unbound-1.7.3
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.7.3.tar.gz"
       make_str: "unboundmake"
-    unbound-1.8.3:
+    - name: unbound-1.8.3
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.8.3.tar.gz"
       make_str: "unboundmake"
-    unbound-1.9.6:
+    - name: unbound-1.9.6
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.9.6.tar.gz"
       make_str: "unboundmake"

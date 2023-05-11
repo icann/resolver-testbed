@@ -86,6 +86,8 @@
         cmd: "vagrant up --no-provision {{ host_name }}"
         # This is relative to the playbook.
         chdir: ../
+      retries: 2
+      delay: 1
       delegate_to: localhost
 
 - hosts: localhost
@@ -111,6 +113,8 @@
         cmd: "vagrant up --no-provision {{ host_name }}"
         # This is relative to the playbook.
         chdir: ../
+      retries: 2
+      delay: 1
       delegate_to: localhost
 
 - hosts: unique_vms:rest_vms

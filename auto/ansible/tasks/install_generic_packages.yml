@@ -46,7 +46,7 @@
         executable: "{{ pip_executable }}"
     when: system_ansible is false
 
-  when: network_configuration.system in ['linux', 'ubuntu']
+  when: system.package in ['linux', 'ubuntu']
 
 - block:
   - name: (FreeBSD) Install generic packages.
@@ -87,7 +87,7 @@
         executable: "{{ pip_executable }}"
     when: system_ansible is false
 
-  when: network_configuration.system == 'freebsd'
+  when: system.package == 'freebsd'
 
 - block:
   - name: (NetBSD) Get mozilla-rootcerts.
@@ -144,7 +144,7 @@
         executable: "{{ pip_executable }}"
     when: system_ansible is false
 
-  when: network_configuration.system == 'netbsd'
+  when: system.package == 'netbsd'
 
 - block:
   - name: (CentOS) Install EPEL.
@@ -192,9 +192,9 @@
         executable: "{{ pip_executable }}"
     when: system_ansible is false
 
-  when: network_configuration.system == 'centos'
+  when: system.package == 'centos'
 
 - name: Unknown system; fail the playbook.
   ansible.builtin.fail:
     msg: "Unknown system! Cannot install packages!"
-  when: "network_configuration.system not in ['linux', 'ubuntu', 'freebsd', 'netbsd', 'centos']"
+  when: "system.package not in ['linux', 'ubuntu', 'freebsd', 'netbsd', 'centos']"

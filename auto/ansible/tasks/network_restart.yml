@@ -1,9 +1,4 @@
 ---
 - ansible.builtin.include_tasks:
-    file: "tasks/network_restart_{{ network_configuration.system }}.yml"
-  when: network_configuration.system in ['linux', 'ubuntu', 'freebsd', 'netbsd', 'centos']
-
-- name: Unknown system; fail the playbook.
-  ansible.builtin.fail:
-    msg: "Unknown system! Cannot configure network!"
-  when: "network_configuration.system not in ['linux', 'ubuntu', 'freebsd', 'netbsd', 'centos']"
+    file: "tasks/network_restart_{{ system.network }}.yml"
+  when: system.network in ['linux', 'ubuntu', 'freebsd', 'netbsd', 'centos']

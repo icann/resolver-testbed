@@ -8,9 +8,14 @@ cpus: 2
 # (Vagrant) memory in MB
 memory: 1024
 
+# Information to help with system specific tasks
+system:
+  network: linux
+  package: linux
+  service: systemd
+
 # (Vagrant) network configuration
 network_configuration:
-  system: linux
   networks:
     - name: enp0s8
       v4:

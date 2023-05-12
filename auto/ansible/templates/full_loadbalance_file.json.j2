@@ -1,0 +1,187 @@
+{# This will create a nftbl.json for all configured root-servers
+ #
+ #   - If only one root-server is configured, all root-server ip addresses
+ #     will be directed to that root-server.
+ #
+ #   - If no root-server is configured, all root-server ip addresses will be
+ #     directed to servers-vm ip addresses.
+ #
+ #   - One specific root-server can be explicitly selected by specifying the
+ #     name in the test_host variable.
+ #
+ #   - If the test_host variable is set to an empty string, all root-server
+ #     ip addresses will be directed to servers-vm ip addresses.
+ #
+ #  Note that variables can be set with the --extra-vars parameter to
+ #  ansible-playbook. For example:
+ #
+ #      ansible-playbook --extra-vars="test_host=b-linux"
+ #
+ #}
+{% set ns = namespace(v4s = dict(), v6s = dict()) %}
+{% if test_host is defined %}
+{%   set ips = namespace(v4s = [], v6s = []) %}
+{%   if test_host|length > 0 %}
+{%     for network in hostvars[test_host]['network_configuration']['networks'] %}
+{%       if network['v4'] is defined %}
+{%         set _dummy = ips.v4s.extend(network['v4']['alias']) %}
+{%       endif %}
+{%       if network['v6'] is defined %}
+{%         set _dummy = ips.v6s.extend(network['v6']['alias']) %}
+{%       endif %}
+{%     endfor %}
+{%     if ips.v4s|count > 0 %}
+{%       set _dummy = ns.v4s.update({ test_host[0]: ips.v4s }) %}
+{%     endif %}
+{%     if ips.v6s|count > 0 %}
+{%       set _dummy = ns.v6s.update({ test_host[0]: ips.v6s }) %}
+{%     endif %}
+{%   endif %}
+{% else %}
+{%   for letter, l in root_letters.items() %}
+{%     set ips = namespace(v4s = [], v6s = []) %}
+{%     if groups['root_servers'] is defined %}
+{%       for host in groups['root_servers'] %}
+{%         if letter in host.split('-')[0] and hostvars[host] is defined %}
+{%           for network in hostvars[host]['network_configuration']['networks'] %}
+{%             if network['v4'] is defined %}
+{%               set _dummy = ips.v4s.extend(network['v4']['alias']) %}
+{%             endif %}
+{%             if network['v6'] is defined %}
+{%               set _dummy = ips.v6s.extend(network['v6']['alias']) %}
+{%             endif %}
+{%           endfor %}
+{%         endif %}
+{%       endfor %}
+{%     endif %}
+{%     if ips.v4s|count > 0 %}
+{%       set _dummy = ns.v4s.update({ letter: ips.v4s }) %}
+{%     endif %}
+{%     if ips.v6s|count > 0 %}
+{%       set _dummy = ns.v6s.update({ letter: ips.v6s }) %}
+{%     endif %}
+{%   endfor %}
+{% endif %}
+{ "farms":
+  [ { "name": "net-v4"
+    , "family": "ipv4"
+    , "virtual-addr": "185.49.142.30"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ { "name": "net1", "ip-addr": "172.21.0.2", "state": "up" } ]
+    }
+  , { "name": "net-v6"
+    , "family": "ipv6"
+    , "virtual-addr": "2a04:b907::30"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ { "name": "net1", "ip-addr": "fd00::21:0:2", "state": "up" } ]
+    }
+{% for letter, l in root_letters.items() %}
+{%   set number = '1%02d' % loop.index %}
+{%   if letter in ns.v4s %}
+  , { "name": "{{ letter }}-v4"
+    , "family": "ipv4"
+    , "virtual-addr": "{{ l['ipv4'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ {% for alias in ns.v4s[letter] %}
+{%             if loop.first %}{% else %}
+
+      , {%             endif %}
+{ "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
+{%           endfor %} ]
+    }
+{%   elif ns.v4s|count == 1  %}
+  , { "name": "{{ letter }}-v4"
+    , "family": "ipv4"
+    , "virtual-addr": "{{ l['ipv4'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ {%   for alias in ns.v4s.values()|first %}
+{%             if loop.first %}{% else %}
+
+      , {%             endif %}
+{ "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
+{%           endfor %} ]
+    }
+{%   elif ns.v4s|count == 0 %}
+  , { "name": "{{ letter }}-v4"
+    , "family": "ipv4"
+    , "virtual-addr": "{{ l['ipv4'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ { "name": "{{ letter }}1", "ip-addr": "172.21.{{ number }}.1", "state": "up" } ]
+    }
+{%   endif %}
+{%   if letter in ns.v6s %}
+  , { "name": "{{ letter }}-v6"
+    , "family": "ipv6"
+    , "virtual-addr": "{{ l['ipv6'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ {% for alias in ns.v6s[letter] %}
+{%             if loop.first %}{% else %}
+
+      , {%             endif %}
+{ "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
+{%           endfor %} ]
+    }
+{%   elif ns.v6s|count == 1  %}
+  , { "name": "{{ letter }}-v6"
+    , "family": "ipv6"
+    , "virtual-addr": "{{ l['ipv6'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ {%   for alias in ns.v6s.values()|first %}
+{%             if loop.first %}{% else %}
+
+      , {%             endif %}
+{ "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
+{%           endfor %} ]
+    }
+{%   elif ns.v6s|count == 0 %}
+  , { "name": "{{ letter }}-v6"
+    , "family": "ipv6"
+    , "virtual-addr": "{{ l['ipv6'] }}"
+    , "virtual-ports": "53"
+    , "mode": "dnat"
+    , "protocol": "all"
+    , "scheduler": "rr"
+    , "state": "up"
+    , "backends":
+      [ { "name": "{{ letter }}1", "ip-addr": "fd00::21:{{ number }}:2", "state": "up" } ]
+    }
+{%   endif %}
+{% endfor %}
+  ]
+}
+

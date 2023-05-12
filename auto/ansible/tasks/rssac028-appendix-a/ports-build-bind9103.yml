@@ -1,0 +1,35 @@
+---
+- name: Create src directory for building OpenSSL 1.0.2g
+  ansible.builtin.file:
+    path: /usr/src
+    state: directory
+    mode: '0755'
+
+- name: Build and install OpenSSL 1.0.2g
+  ansible.builtin.shell:
+    chdir: /usr/src
+    cmd: |
+      wget https://www.openssl.org/source/old/1.0.2/openssl-1.0.2g.tar.gz
+      tar xzf openssl-1.0.2g.tar.gz
+      cd openssl-1.0.2g
+      ./config --prefix=/usr/old/sslbase --openssldir=/usr/old/sslbase/openssl
+      make install
+
+- name: Create ports directory for BIND 9.10.3
+  ansible.builtin.file:
+    path: /usr/old/bind9103
+    state: directory
+    mode: '0755'
+
+- name: Sparse checkout ports and build BIND 9.10.3 from it
+  ansible.builtin.shell:
+    chdir: /usr/old/bind9103
+    cmd: |
+      git init
+      git remote add ports https://git.FreeBSD.org/ports.git
+      git sparse-checkout set "dns/bind910" "Mk" "Keywords" "Templates" "ports-mgmt/pkg" "devel/libevent"
+      git pull --depth=1 ports 4668b601fbedadc86669df1351233d0358caaf8e
+      cd dns/bind910
+      git checkout 4668b601fbedadc86669df1351233d0358caaf8e
+      env VALID_CATEGORIES=ipv6 BATCH=on OPENSSLBASE=/usr/old/sslbase make install-missing-packages OPENSSLBASE=/usr/old/sslbase || true
+      env VALID_CATEGORIES=ipv6 BATCH=on OPENSSLBASE=/usr/old/sslbase make build OPENSSLBASE=/usr/old/sslbase

@@ -5,9 +5,6 @@
 
   tasks:
     - ansible.builtin.import_tasks:
-        file: tasks/read_build_configuration.yml
-
-    - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages.yml
 
     - name: Install VM specific packages (part I).
@@ -17,6 +14,7 @@
           - ca-certificates
           - python3-pip
           - apt-transport-https
+          - ldnsutils
         state: present
         update_cache: yes
 
@@ -58,6 +56,7 @@
           - libknot-dev
           - liblmdb-dev
           - ninja-build
+          - libboost-test-dev
         state: present
         update_cache: yes
 
@@ -82,11 +81,17 @@
         group: root
         mode: 0644
 
-- hosts: build_group
-  gather_facts: false
-  become: true
-  vars:
-    on_host: resolvers-vm
-  tasks:
     - ansible.builtin.import_tasks:
-        file: tasks/compile_software.yml
+        file: tasks/inception/incept.yml
+      vars:
+        incept_title: "Incept parallel compilation."
+        incept_playbook: files/inception_playbook.yml
+        incept_task: tasks/inception/compile_software.yml
+        incept_variables:
+          software_source_dir: "{{ BUILD_SOURCE_DIR }}"
+          software_target_dir: "{{ BUILD_TARGET_DIR }}"
+          software_build_config: "{{ build_config }}"
+        incept_copy_files:
+          - tasks/read_build_configuration.yml
+          - tasks/inception/read_inception_variables.yml
+          - files/pdns_patches/

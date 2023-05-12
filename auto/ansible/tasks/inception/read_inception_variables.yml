@@ -1,0 +1,16 @@
+---
+- block:
+  - name: Check for inception file.
+    ansible.builtin.find:
+      paths: /root/local_ansible
+      patterns: inception_variables.yml
+      file_type: file
+      recurse: false
+    register: inception_file
+
+  - name: Read inception variables.
+    ansible.builtin.include_vars:
+      file: /root/local_ansible/inception_variables.yml
+    when: inception_file.files != []
+
+  delegate_to: localhost

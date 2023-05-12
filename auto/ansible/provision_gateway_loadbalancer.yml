@@ -1,0 +1,30 @@
+---
+# This playbook configures the gateway-vm to do loadbalancing;
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Copy loadbalance configuration.
+      ansible.builtin.template:
+        src: templates/full_loadbalance_file.json.j2
+        dest: /etc/nftlb.conf
+
+    - name: Install nftlb package
+      ansible.builtin.apt:
+        pkg:
+          - nftlb
+          - curl
+        state: present
+        update_cache: true
+
+    - name: Override startup service to use configuration
+      ansible.builtin.copy:
+        src: files/gateway/systemd.nftlb.service
+        dest: /lib/systemd/system/nftlb.service
+
+    - name: Restart the service
+      ansible.builtin.systemd:
+        state: restarted
+        daemon_reload: true
+        name: nftlb

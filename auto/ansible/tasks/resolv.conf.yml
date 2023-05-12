@@ -17,3 +17,17 @@
         src: ../files/resolv-with-8844
         dest: /etc/resolv.conf
         attr: "+i"
+  when: network_configuration.system in ['linux', 'ubuntu', 'centos']
+
+- name: Set resolv.conf in FreeBSD/NetBSD.
+  block:
+  - name: Disable resolvconf.
+    ansible.builtin.copy:
+      content: 'resolvconf=NO\n'
+      dest: /etc/resolvconf.conf
+
+  - name: Write resolv.conf.
+    ansible.builtin.copy:
+      src: ../files/resolv-with-8844
+      dest: /etc/resolv.conf
+  when: network_configuration.system in ['freebsd', 'netbsd']

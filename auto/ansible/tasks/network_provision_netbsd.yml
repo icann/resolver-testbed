@@ -1,0 +1,24 @@
+---
+- name: NetBSD network configuration.
+  block:
+  - name: (NetBSD) Configure interfaces (PART I; in rc.conf).
+    ansible.builtin.template:
+      src: templates/netbsd_rc.conf.j2
+      dest: /etc/rc.conf
+
+  - name: (NetBSD) Configure interfaces (PART II; in distinct files).
+    ansible.builtin.template:
+      src: templates/netbsd_ifconfig.j2
+      dest: "/etc/ifconfig.{{item.name}}"
+    loop: "{{ network_configuration.networks }}"
+
+  - name: (NetBSD) Configure routing.
+    ansible.builtin.template:
+      src: templates/netbsd_route.conf.j2
+      dest: "/etc/route.conf"
+
+  - ansible.builtin.include_tasks:
+      file: tasks/resolv.conf.yml
+
+  - ansible.builtin.include_tasks:
+      file: tasks/network_restart_netbsd.yml

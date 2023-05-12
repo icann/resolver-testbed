@@ -375,9 +375,9 @@ static void apiServerCacheFlush(HttpRequest* req, HttpResponse* resp) {
   DNSName canon = apiNameToDNSName(req->getvars["domain"]);
   bool subtree = (req->getvars.count("subtree") > 0 && req->getvars["subtree"].compare("true") == 0);
 
-  int count = broadcastAccFunction<uint64_t>(std::bind(pleaseWipeCache, canon, subtree));
-  count += broadcastAccFunction<uint64_t>(std::bind(pleaseWipePacketCache, canon, subtree));
-  count += broadcastAccFunction<uint64_t>(std::bind(pleaseWipeAndCountNegCache, canon, subtree));
+  int count = broadcastAccFunction<uint64_t>(boost::bind(pleaseWipeCache, canon, subtree));
+  count += broadcastAccFunction<uint64_t>(boost::bind(pleaseWipePacketCache, canon, subtree));
+  count += broadcastAccFunction<uint64_t>(boost::bind(pleaseWipeAndCountNegCache, canon, subtree));
   resp->setBody(Json::object {
     { "count", count },
     { "result", "Flushed cache." }
@@ -599,7 +599,7 @@ void AsyncServerNewConnectionMT(void *p) {
 void AsyncServer::asyncWaitForConnections(FDMultiplexer* fdm, const newconnectioncb_t& callback)
 {
   d_asyncNewConnectionCallback = callback;
-  fdm->addReadFD(d_server_socket.getHandle(), std::bind(&AsyncServer::newConnection, this));
+  fdm->addReadFD(d_server_socket.getHandle(), boost::bind(&AsyncServer::newConnection, this));
 }
 
 void AsyncServer::newConnection()

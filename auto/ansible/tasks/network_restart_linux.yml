@@ -1,0 +1,7 @@
+---
+- name: Linux network restart.
+  block:
+  - name: (Linux) Restart networking.
+    ansible.builtin.service:
+      name: networking
+      state: restarted

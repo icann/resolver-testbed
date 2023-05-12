@@ -1,0 +1,24 @@
+---
+- name: Determine software version
+  ansible.builtin.command: "drill @172.21.113.1 version.bind CH TXT"
+  register: version_query
+
+- name: Do query {{ msm.query }}
+  ansible.builtin.command: "{{ msm.query }}"
+  register: drill_result
+
+- name: Copy query result
+  delegate_to: localhost
+  become: false
+  ansible.builtin.copy:
+    content: "{{ '\n'.join(drill_result.stdout_lines) }}"
+    dest: "results/rssac028-appendix-a/{{ version_query.stdout_lines[6].split('\t')[-1].strip('\x22') }}-{{ scenario }}-{{ msm.descr }}.txt"
+
+- name: Log result for {{ msm.descr }}
+  delegate_to: localhost
+  become: false
+  ansible.builtin.lineinfile:
+    path: results/rssac028-appendix-a.txt
+    insertafter: EOF
+    line: "{{ implementation.name }}\t5.{{ scenario }}\t{{ drill_result.stdout_lines[-1].split()[-1] }}\t{{ msm.descr }}\t{{ ' '.join(drill_result.stdout_lines[-2].split()[2:]) }}\t{{ version_query.stdout_lines[6].split('\t')[-1].strip('\x22') }}"
+    create: true

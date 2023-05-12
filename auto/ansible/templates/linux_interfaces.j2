@@ -16,9 +16,11 @@ address {{ n.v4.addr }}
 {% if 'metric' in n.v4 %}
 metric {{ n.v4.metric }}
 {% endif %}
-{% if 'static_route' in n.v4 %}
-up ip route add {{ n.v4.static_route.network }} via {{ n.v4.static_route.gateway }}
-down ip route del {{ n.v4.static_route.network }} via {{ n.v4.static_route.gateway }}
+{% if 'static_routes' in n.v4 %}
+{% for r in n.v4.static_routes %}
+up ip route add {{ r.network }} via {{ r.gateway }}
+down ip route del {{ r.network }} via {{ r.gateway }}
+{% endfor %}
 {% endif %}
 {% if 'alias' in n.v4 %}
 {% for a in n.v4.alias %}
@@ -35,9 +37,11 @@ address {{ n.v6.addr }}
 {% if 'metric' in n.v6 %}
 metric {{ n.v6.metric }}
 {% endif %}
-{% if 'static_route' in n.v6 %}
-up ip route add {{ n.v6.static_route.network }} via {{ n.v6.static_route.gateway }}
-down ip route del {{ n.v6.static_route.network }} via {{ n.v6.static_route.gateway }}
+{% if 'static_routes' in n.v6 %}
+{% for r in n.v6.static_routes %}
+up ip route add {{ r.network }} via {{ r.gateway }}
+down ip route del {{ r.network }} via {{ r.gateway }}
+{% endfor %}
 {% endif %}
 {% if 'alias' in n.v6 %}
 {% for a in n.v6.alias %}

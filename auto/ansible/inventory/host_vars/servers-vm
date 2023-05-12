@@ -1,0 +1,69 @@
+---
+# (Vagrant) box - change needs recreation
+box: "generic/freebsd12"
+
+# (Vagrant) cpus
+cpus: 2
+
+# (Vagrant) memory in MB
+memory: 2048
+
+# (Vagrant) network configuration
+network_configuration:
+  system: freebsd
+  networks:
+    - name: em1
+      v4:
+        addr: 192.168.57.40/24
+      vbox_arguments: ['--nic', 'hostonly', '--hostonlyadapter', 'HOSTONLY_NET']
+    - name: em2
+      v4:
+        addr: 172.21.0.2/16
+        alias:
+          - 172.21.101.1/16
+          - 172.21.102.1/16
+          - 172.21.103.1/16
+          - 172.21.104.1/16
+          - 172.21.105.1/16
+          - 172.21.106.1/16
+          - 172.21.107.1/16
+          - 172.21.108.1/16
+          - 172.21.109.1/16
+          - 172.21.110.1/16
+          - 172.21.111.1/16
+          - 172.21.112.1/16
+          - 172.21.113.1/16
+      v6:
+        addr: fd00::21:0:2/96
+        alias:
+          - fd00::21:101:1/96
+          - fd00::21:102:1/96
+          - fd00::21:103:1/96
+          - fd00::21:104:1/96
+          - fd00::21:105:1/96
+          - fd00::21:106:1/96
+          - fd00::21:107:1/96
+          - fd00::21:108:1/96
+          - fd00::21:109:1/96
+          - fd00::21:110:1/96
+          - fd00::21:111:1/96
+          - fd00::21:112:1/96
+          - fd00::21:113:1/96
+      vbox_arguments: ['--nic', 'intnet', '--intnet', 'SERVER_INTNET']
+  static_routes:
+    - name: to_resolvers
+      v4: "-net 172.20.0.0/16 172.21.0.1"
+      v6: "fd00::20:0:0 -prefixlen 96 fd00::21:0:1"
+
+# (Vagrant) provision
+provision:
+  net_inline: "pkg install -y python"
+  #net_playbook: "ansible/network_provision_servers-vm.yml"
+  shutdown_command: "shutdown -p now"
+
+# (Vagrant) any extra configuration for the 'vm' object
+extra:
+  boot_timeout: 900
+
+ansible_python_interpreter: "auto_silent"
+

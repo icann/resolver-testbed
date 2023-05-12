@@ -1,0 +1,34 @@
+# BIND config file for RSSAC028 Appendix A Scenario 5.{{ scenario }}
+#
+options {
+  recursion no;
+  empty-zones-enable no;
+  # minimal-responses no;
+  pid-file "/var/run/named/named.pid";
+  directory "/usr/local/etc/namedb/working";
+  listen-on { {{ listen_addrs | join(';') }}; 127.0.0.1; };
+  listen-on-v6 { {{ listen_addrs_6 | join(';') }}; ::1; }; 
+};
+
+{% if scenario == 1 %}
+zone "." { type master; file "/root/scenarios/2/root.zone"; };
+zone "p53." { type master; file "/root/scenarios/2/p53.zone.current"; };
+zone "some-servers.p53." { type master; file "/root/scenarios/2/some-servers.p53.zone.unsigned"; };
+
+{% else %}
+zone "." { type master; file "/root/scenarios/{{ scenario }}/root.zone"; };
+
+{% endif %}
+
+{%if scenario == 2 %}
+zone "p53." { type master; file "/root/scenarios/2/p53.zone"; };
+zone "some-servers.p53." { type master; file "/root/scenarios/2/some-servers.p53.zone"; };
+
+{% elif scenario == 4 %}
+zone "some-servers." { type master; file "/root/scenarios/4/some-servers.zone"; };
+
+{% elif scenario == 5 %}{% for letter in "abcdefghijklm" %}
+zone "{{ letter }}.some-servers." { type master; file "/root/scenarios/5/{{ letter }}.some-servers.zone"; };
+
+{% endfor %}{% endif %}
+

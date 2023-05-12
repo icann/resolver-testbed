@@ -6,6 +6,3 @@
   tasks:
     - ansible.builtin.import_tasks:
         file: tasks/network_provision.yml
-
-    - ansible.builtin.import_tasks:
-        file: tasks/finish_provisioning.yml

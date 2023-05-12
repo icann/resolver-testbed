@@ -1,0 +1,67 @@
+net.	900	IN	SOA	a.some-servers.net. nstld.verisign-grs.com. 1682000985 1800 900 604800 86400
+net.	172800	IN	NS	a.some-servers.net.
+root-servers.net.	172800	IN	NS	m.root-servers.net.
+root-servers.net.	172800	IN	NS	l.root-servers.net.
+root-servers.net.	172800	IN	NS	k.root-servers.net.
+root-servers.net.	172800	IN	NS	j.root-servers.net.
+root-servers.net.	172800	IN	NS	i.root-servers.net.
+root-servers.net.	172800	IN	NS	h.root-servers.net.
+root-servers.net.	172800	IN	NS	g.root-servers.net.
+root-servers.net.	172800	IN	NS	f.root-servers.net.
+root-servers.net.	172800	IN	NS	e.root-servers.net.
+root-servers.net.	172800	IN	NS	d.root-servers.net.
+root-servers.net.	172800	IN	NS	c.root-servers.net.
+root-servers.net.	172800	IN	NS	b.root-servers.net.
+root-servers.net.	172800	IN	NS	a.root-servers.net.
+root-servers.net.	86400	IN	DS	2711 8 2 d7b83d0e7cfc0c4c95b7b1af9cd5e8b707695fcec2054286b64bdd3b5ee11ac7
+a.some-servers.net.	172800	IN	A	185.49.142.30
+a.some-servers.net.	172800	IN	AAAA	2a04:b907::30
+m.root-servers.net.	172800	IN	AAAA	2001:dc3::35
+m.root-servers.net.	172800	IN	A	202.12.27.33
+l.root-servers.net.	172800	IN	AAAA	2001:500:9f::42
+l.root-servers.net.	172800	IN	A	199.7.83.42
+k.root-servers.net.	172800	IN	AAAA	2001:7fd::1
+k.root-servers.net.	172800	IN	A	193.0.14.129
+j.root-servers.net.	172800	IN	AAAA	2001:503:c27::2:30
+j.root-servers.net.	172800	IN	A	192.58.128.30
+i.root-servers.net.	172800	IN	AAAA	2001:7fe::53
+i.root-servers.net.	172800	IN	A	192.36.148.17
+h.root-servers.net.	172800	IN	AAAA	2001:500:1::53
+h.root-servers.net.	172800	IN	A	198.97.190.53
+g.root-servers.net.	172800	IN	AAAA	2001:500:12::d0d
+g.root-servers.net.	172800	IN	A	192.112.36.4
+f.root-servers.net.	172800	IN	AAAA	2001:500:2f::f
+f.root-servers.net.	172800	IN	A	192.5.5.241
+e.root-servers.net.	172800	IN	AAAA	2001:500:a8::e
+e.root-servers.net.	172800	IN	A	192.203.230.10
+d.root-servers.net.	172800	IN	AAAA	2001:500:2d::d
+d.root-servers.net.	172800	IN	A	199.7.91.13
+c.root-servers.net.	172800	IN	AAAA	2001:500:2::c
+c.root-servers.net.	172800	IN	A	192.33.4.12
+b.root-servers.net.	172800	IN	AAAA	2001:500:200::b
+b.root-servers.net.	172800	IN	A	199.9.14.201
+a.root-servers.net.	172800	IN	AAAA	2001:503:ba3e::2:30
+a.root-servers.net.	172800	IN	A	198.41.0.4
+example.net.		172800	IN	NS	a.iana-servers.net.
+example.net.		172800	IN	NS	b.iana-servers.net.
+example.net.		86400	IN	DS	31589 8 2 5A9EAEFC7CC7D6946E1D106418427D272D406B835BA9EA0219DFBD39 74A54A81
+example.net.		86400	IN	DS	31589 8 1 628FCA4806B2E475DA9FD97A1FB57B7E26F8494C
+example.net.		86400	IN	DS	54761 8 2 9FDE7678F418E724ACE98537E0EAD92BB96B3109072D076A117492DB 708CE238
+example.net.		86400	IN	DS	54761 8 1 2B45E49265B30032497E0D61D259F4ACF821A5A0
+example.net.		86400	IN	DS	61250 8 2 984E001501B50F8D7B73935E12A0B15E9DCE5498F0885C3C6193B4DC B8DDAD36
+example.net.		86400	IN	DS	61250 8 1 EBF5191249B08ADBA60DC57DE26F8D530FE5D17D
+a.iana-servers.net.	172800	IN	A	199.43.135.53
+a.iana-servers.net.	172800	IN	AAAA	2001:500:8f::53
+b.iana-servers.net.	172800	IN	A	199.43.133.53
+b.iana-servers.net.	172800	IN	AAAA	2001:500:8d::53
+iana-servers.net.	172800	IN	NS	ns.icann.org.
+iana-servers.net.	172800	IN	NS	a.iana-servers.net.
+iana-servers.net.	172800	IN	NS	b.iana-servers.net.
+iana-servers.net.	172800	IN	NS	c.iana-servers.net.
+iana-servers.net.	86400	IN	DS	7474 8 2 893CC96419BA2F255A8C9BE913753AD2CA7265C67B9D1BAF3CD18AEC 4CBFEA9C
+a.iana-servers.net.	172800	IN	A	199.43.135.53
+a.iana-servers.net.	172800	IN	AAAA	2001:500:8f::53
+b.iana-servers.net.	172800	IN	A	199.43.133.53
+b.iana-servers.net.	172800	IN	AAAA	2001:500:8d::53
+c.iana-servers.net.	172800	IN	A	199.43.134.53
+c.iana-servers.net.	172800	IN	AAAA	2001:500:8e::53

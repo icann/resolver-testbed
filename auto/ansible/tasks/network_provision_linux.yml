@@ -1,0 +1,23 @@
+---
+- name: Linux network configuration.
+  block:
+  - name: (Linux) Configure interfaces.
+    ansible.builtin.template:
+      src: templates/linux_interfaces.j2
+      dest: /etc/network/interfaces
+
+  - name: (Linux) Check hostname.
+    ansible.builtin.shell:
+      cmd: "hostname"
+    register: hostname_out
+
+  - name: (Linux) Set hostname.
+    ansible.builtin.shell:
+      cmd: "hostname {{ inventory_hostname }}"
+    when: hostname_out.stdout != inventory_hostname
+
+  - ansible.builtin.include_tasks:
+      file: tasks/resolv.conf.yml
+
+  - ansible.builtin.include_tasks:
+      file: tasks/network_restart_linux.yml

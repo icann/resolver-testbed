@@ -1,0 +1,50 @@
+# NSD config file for RSSAC028 Appendix A Scenario 5.{{ scenario }}
+#
+server:
+	# minimal-responses: no
+{% for address in listen_addrs +  listen_addrs_6 %}
+	ip-address: {{ address }}
+{% endfor %}
+
+remote-control:
+	control-enable: no
+
+{% if scenario == 1 %}
+zone:
+	name: "."
+	zonefile: "/root/scenarios/2/root.zone"
+
+zone:
+	name: "p53"
+	zonefile: "/root/scenarios/2/p53.zone.current"
+
+zone:
+	name: "some-servers.p53"
+	zonefile: "/root/scenarios/2/some-servers.p53.zone.unsigned"
+
+{% else %}
+zone:
+	name: "."
+	zonefile: "/root/scenarios/{{ scenario }}/root.zone"
+
+{% endif %}
+{%if scenario == 2 %}
+zone:
+	name: "p53"
+	zonefile: "/root/scenarios/2/p53.zone"
+zone:
+	name: "some-servers.p53"
+	zonefile: "/root/scenarios/2/some-servers.p53.zone"
+
+{% elif scenario == 4 %}
+zone:
+	name: "some-servers"
+	zonefile: "/root/scenarios/4/some-servers.zone"
+
+{% elif scenario == 5 %}{% for letter in "abcdefghijklm" %}
+zone:
+	name: "{{ letter }}.some-servers"
+	zonefile: "/root/scenarios/5/{{ letter }}.some-servers.zone"
+
+{% endfor %}{% endif %}
+

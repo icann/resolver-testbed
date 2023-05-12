@@ -1,0 +1,18 @@
+options {
+recursion no;
+empty-zones-enable no;
+listen-on { {{ listen_addrs | join(';') }}; };
+listen-on-v6 { {{ listen_addrs_6 | join(';') }}; };
+dnssec-enable yes;
+allow-transfer { any; };
+version "{{ software_name }}";
+{% if cfg.minimal_responses | default(false) %}
+minimal-responses {{ cfg.minimal_responses }};
+{% endif %}
+{% if cfg.cookie | default(false) %}
+answer-cookie {{ cfg.cookie }};
+{% endif %}
+{% if cfg.v4_edns_size | default(false) %}
+max-udp-size {{ cfg.v4_edns_size }};
+{% endif %}
+};

@@ -1,0 +1,11 @@
+---
+- hosts: root_servers
+  gather_facts: false
+
+  tasks:
+    - ansible.builtin.include_tasks:
+        file: tasks/dig_version_check.yml
+      vars:
+        destinations: "{{ item.1 }}"
+        expect: "{{ item.0.name }}"
+      loop: "{{ build_config.software | zip((network_configuration.networks.0.v4.alias | map('dirname')) | zip(network_configuration.networks.0.v6.alias | map('dirname'))) }}"

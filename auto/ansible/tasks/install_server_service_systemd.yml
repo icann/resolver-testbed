@@ -1,0 +1,11 @@
+---
+- name: "Install {{ software_name }} service file."
+  ansible.builtin.template:
+    src: "templates/systemd_{{ software_type }}.service.j2"
+    dest: "/lib/systemd/system/{{ software_name }}.service"
+  register: installed
+
+- name: "Reload systemd module."
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: installed is changed

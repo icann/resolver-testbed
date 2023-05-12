@@ -1,0 +1,12 @@
+[Unit]
+Description={{ software_name }} service
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+#ExecStartPre={{ software_target_dir }}/sbin/knotc conf-check
+ExecStart={{ software_target_dir }}/sbin/knotd
+ExecReload={{ software_target_dir }}/sbin/knotc reload
+
+[Install]
+WantedBy=multi-user.target

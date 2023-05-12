@@ -1,0 +1,8 @@
+---
+- ansible.builtin.shell:
+    cmd: "dig +short +timeout=1 +tries=1 @{{ a }} version.bind ch txt"
+  loop: "{{ destinations }}"
+  loop_control:
+    loop_var: a
+  register: dig
+  failed_when: dig.rc != 0 or dig.stdout.strip('"') != expect

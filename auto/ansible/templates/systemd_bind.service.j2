@@ -1,0 +1,11 @@
+[Unit]
+Description={{ software_name }} service
+After=syslog.target network-online.target
+
+[Service]
+ExecStart={{ software_target_dir }}/sbin/named -f -c {{ software_target_dir }}/etc/bind/bind.conf
+ExecReload={{ software_target_dir }}/sbin/rndc -c {{ software_target_dir }}/etc/bind/bind.conf reload
+ExecStop={{ software_target_dir }}/sbin/rndc -c {{ software_target_dir }}/etc/bind/bind.conf stop
+
+[Install]
+WantedBy=multi-user.target

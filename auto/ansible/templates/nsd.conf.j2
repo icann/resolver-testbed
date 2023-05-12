@@ -1,0 +1,24 @@
+server:
+    database: ""
+    username: ""
+    chroot: ""
+    version: "{{ software_name }}"
+    hide-version: no
+{% for a in listen_addrs + listen_addrs_6 %}
+    interface: {{ a }}
+{% endfor %}
+{% if cfg.minimal_responses | default(false) %}
+    minimal-responses: {{ cfg.minimal_responses }}
+{% endif %}
+{% if cfg.cookie | default(false) %}
+    answer-cookie: {{ cfg.cookie }}
+{% endif %}
+{% if cfg.mss | default(false) %}
+    tcp-mss: {{ cfg.mss }}
+{% endif %}
+{% if cfg.v4_edns_size | default(false) %}
+    ipv4-edns-size: {{ cfg.v4_edns_size }}
+{% endif %}
+{% if cfg.v6_edns_size | default(false) %}
+    ipv6-edns-size: {{ cfg.v6_edns_size }}
+{% endif %}

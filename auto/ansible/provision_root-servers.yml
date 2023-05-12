@@ -7,8 +7,8 @@
     - ansible.builtin.import_tasks:
         file: tasks/install_server_packages.yml
       vars:
-        server_packages: "{{ build_config['packages'] }}"
-        enablerepo: "{{ build_config['enablerepo'] | default([]) }}"
+        server_packages: "{{ build_config.packages }}"
+        enablerepo: "{{ build_config.enablerepo | default([]) }}"
 
     - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages.yml
@@ -36,3 +36,44 @@
         incept_copy_files:
           - tasks/read_build_configuration.yml
           - tasks/inception/read_inception_variables.yml
+
+    - ansible.builtin.include_tasks:
+        file: "tasks/install_server_service_{{ system.service }}.yml"
+      vars:
+        software_type: "{{ item.name | split('-', 1) | first }}"
+        software_name: "{{ item.name }}"
+        software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.name }}"
+      loop: "{{ build_config.software }}"
+
+    - name: For bind create etc/bind directory.
+      ansible.builtin.file:
+        path: "{{ software_target_dir }}/etc/{{ software_type }}"
+        state: directory
+      vars:
+        software_type: "{{ item.name | split('-', 1) | first }}"
+        software_name: "{{ item.name }}"
+        software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.name }}"
+      loop: "{{ build_config.software }}"
+      when: software_type == 'bind'
+
+    - name: Copy configuration.
+      ansible.builtin.template:
+        src: "templates/{{ software_type }}.conf.j2"
+        dest: "{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf"
+      vars:
+        software_type: "{{ item.0.name | split('-', 1) | first }}"
+        software_name: "{{ item.0.name }}"
+        software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.0.name }}"
+        cfg: "{{ item.0.cfg }}"
+        listen_addrs:
+          - "{{ item.1.0 }}"
+        listen_addrs_6:
+          - "{{ item.1.1 }}"
+      loop: "{% set ips = network_configuration.networks.0.v4.alias | map('dirname') | zip(network_configuration.networks.0.v6.alias | map('dirname')) %}\
+             {{ build_config.software | zip(ips) }}"
+
+    - name: (Re)Start name servers.
+      ansible.builtin.service:
+        name: "{{ item.name }}"
+        state: restarted
+      loop: "{{ build_config.software }}"

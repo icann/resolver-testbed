@@ -1,0 +1,11 @@
+[Unit]
+Description={{ software_name }} service
+After=syslog.target network-online.target
+
+[Service]
+ExecStart={{ software_target_dir }}/sbin/nsd -d
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target

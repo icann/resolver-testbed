@@ -9,15 +9,15 @@
 
 - name: Add the build software as hosts.
   ansible.builtin.add_host:
-    name: "{{ item.key }}"
+    name: "{{ item.name }}"
     groups: "{{ inventory_hostname | replace('-', '_') }}_build_group"
-    url: "{{ item.value['url'] }}"
-    make_str: "{{ software_build_config['templates'][item.value['make_str']] }}"
-    files_copy: "{{ ('files_copy' in item.value and item.value['files_copy']) or [] }}"
+    url: "{{ item.url }}"
+    make_str: "{{ software_build_config.templates[item.make_str] }}"
+    files_copy: "{{ ('files_copy' in item and item.files_copy) or [] }}"
     # This is needed when delegate_to is used to preserve the hostname
     # since Ansible uses the delegate_to hostname as the inventory_hostname
-    software_name: "{{ item.key }}"
-  loop: "{{ software_build_config['software'] | dict2items }}"
+    software_name: "{{ item.name }}"
+  loop: "{{ software_build_config.software }}"
 
 - name: Make sure the needed directories are there.
   ansible.builtin.file:

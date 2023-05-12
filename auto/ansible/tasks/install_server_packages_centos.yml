@@ -1,0 +1,12 @@
+---
+- name: (CentOS) Install EPEL.
+  ansible.builtin.yum:
+    name:
+      - epel-release
+    state: present
+
+- name: (CentOS) Install packages for building.
+  ansible.builtin.yum:
+    name: "{{ server_packages }}"
+    state: present
+    enablerepo: "{{ enablerepo }}"

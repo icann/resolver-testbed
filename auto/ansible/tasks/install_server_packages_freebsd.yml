@@ -1,0 +1,5 @@
+---
+- name: (FreeBSD) Install packages for building.
+  community.general.pkgng:
+    name: "{{ server_packages }}"
+    state: present

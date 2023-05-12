@@ -1,0 +1,6 @@
+---
+- name: (Linux) Install packages for building.
+  ansible.builtin.apt:
+    pkg: "{{ server_packages }}"
+    state: present
+    update_cache: yes

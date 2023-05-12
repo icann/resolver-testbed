@@ -1,0 +1,54 @@
+---
+- name: (NetBSD) Get mozilla-rootcerts.
+  community.general.pkgin:
+    name:
+      - mozilla-rootcerts
+    state: present
+    update_cache: true
+    force: true
+
+- name: (NetBSD) Install mozilla-rootcerts.
+  ansible.builtin.shell:
+    cmd: "/usr/pkg/sbin/mozilla-rootcerts install"
+  register: result
+  failed_when:
+    - result.rc != 0
+    - '"already contains certificates" not in result.stderr'
+
+- name: (NetBSD) Install generic packages.
+  community.general.pkgin:
+    name:
+      - gtar
+      - tree
+      - wget
+      - vim
+      - tmux
+      - htop
+      - rsync
+    state: present
+
+- name: (NetBSD) Install system ansible.
+  community.general.pkgin:
+    name:
+      - ansible
+    state: present
+  when: system_ansible is true
+
+- block:
+  - name: (NetBSD) Remove unwanted packages.
+    community.general.pkgin:
+      name:
+        - ansible
+      state: absent
+
+  - name: (NetBSD) Get latest pip.
+    ansible.builtin.pip:
+      name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+      state: "{{ 'present' if pip_version else 'latest' }}"
+      executable: "{{ pip_executable }}"
+
+  - name: (NetBSD) Install Ansible with pip.
+    ansible.builtin.pip:
+      name: ansible==4.2.0
+      executable: "{{ pip_executable }}"
+  when: system_ansible is false

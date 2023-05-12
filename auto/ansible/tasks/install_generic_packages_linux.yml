@@ -1,0 +1,40 @@
+---
+- name: (Linux) Install generic packages.
+  ansible.builtin.apt:
+    pkg:
+      - tar
+      - tree
+      - wget
+      - vim
+      - tmux
+      - htop
+      - dnsutils
+      - rsync
+    state: present
+    update_cache: yes
+
+- name: (Linux) Install system ansible.
+  ansible.builtin.apt:
+    pkg:
+      - ansible
+    state: present
+  when: system_ansible is true
+
+- block:
+  - name: (Linux) Remove unwanted packages.
+    ansible.builtin.apt:
+      pkg:
+        - ansible
+      state: absent
+
+  - name: (Linux) Get latest pip.
+    ansible.builtin.pip:
+      name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+      state: "{{ 'present' if pip_version else 'latest' }}"
+      executable: "{{ pip_executable }}"
+
+  - name: (Linux) Install Ansible with pip.
+    ansible.builtin.pip:
+      name: ansible==4.2.0
+      executable: "{{ pip_executable }}"
+  when: system_ansible is false

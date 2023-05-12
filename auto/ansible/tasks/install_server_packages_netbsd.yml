@@ -1,0 +1,5 @@
+---
+- name: (NetBSD) Install packages for building.
+  community.general.pkgin:
+    name: "{{ server_packages }}"
+    state: present

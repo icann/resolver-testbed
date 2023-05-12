@@ -13,9 +13,6 @@ server:
 {% if cfg.cookie | default(false) %}
     answer-cookie: {{ cfg.cookie }}
 {% endif %}
-{% if cfg.mss | default(false) %}
-    tcp-mss: {{ cfg.mss }}
-{% endif %}
 {% if cfg.v4_edns_size | default(false) %}
     ipv4-edns-size: {{ cfg.v4_edns_size }}
 {% endif %}

@@ -43,8 +43,8 @@
         - name: Install tcpdump service file on gateway-vm
           delegate_to: gateway-vm
           ansible.builtin.copy:
-            src: files/gateway-vm/tcpdumpd.service
-            dest: /etc/systemd/system
+            src: files/gateway/tcpdumpd.service
+            dest: /lib/systemd/system
 
         - name: Start tcpdump on gateway-vm
           delegate_to: gateway-vm

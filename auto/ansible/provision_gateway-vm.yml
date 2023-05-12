@@ -18,6 +18,6 @@
 
     - name: Install tcpdump service file
       ansible.builtin.copy:
-        src: files/gateway-vm/tcpdumpd.service
-        dest: /etc/systemd/system
+        src: files/gateway/tcpdumpd.service
+        dest: /lib/systemd/system
 

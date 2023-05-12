@@ -4,8 +4,8 @@
   become: true
 
   tasks:
-    - ansible.builtin.include_tasks:
-        file: "tasks/install_generic_packages_{{ system.package }}.yml"
+    - ansible.builtin.import_tasks:
+        file: tasks/install_generic_packages.yml
 
     - name: Install VM specific packages.
       ansible.builtin.apt:

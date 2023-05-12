@@ -10,8 +10,8 @@
         server_packages: "{{ build_config.packages }}"
         enablerepo: "{{ build_config.enablerepo | default([]) }}"
 
-    - ansible.builtin.include_tasks:
-        file: "tasks/install_generic_packages_{{ system.package }}.yml"
+    - ansible.builtin.import_tasks:
+        file: tasks/install_generic_packages.yml
 
     - name: Make sure the zone configuration directory is there.
       ansible.builtin.file:

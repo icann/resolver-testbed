@@ -56,6 +56,11 @@
       loop: "{{ build_config.software }}"
       when: software_type == 'bind'
 
+    - name: Set the scenario configuration if given.
+      ansible.builtin.include_tasks:
+        file: "tasks/set_zone_cfg_scenario_{{ scenario }}.yml"
+      when: scenario is defined
+
     - name: Copy configuration.
       ansible.builtin.template:
         src: "templates/{{ software_type }}.conf.j2"

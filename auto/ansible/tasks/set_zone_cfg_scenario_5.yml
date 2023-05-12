@@ -1,0 +1,19 @@
+---
+- name: Set the zones for scenario 5
+  ansible.builtin.set_fact:
+    zone_cfg:
+      - [".", "{{ ZONE_DIR }}/5/root.zone"]
+      - ["p53.", "{{ ZONE_DIR }}/2/p53.zone.current"]
+      - ["a.some-servers.", "{{ ZONE_DIR }}/5/a.some-servers.zone"]
+      - ["b.some-servers.", "{{ ZONE_DIR }}/5/b.some-servers.zone"]
+      - ["c.some-servers.", "{{ ZONE_DIR }}/5/c.some-servers.zone"]
+      - ["d.some-servers.", "{{ ZONE_DIR }}/5/d.some-servers.zone"]
+      - ["e.some-servers.", "{{ ZONE_DIR }}/5/e.some-servers.zone"]
+      - ["f.some-servers.", "{{ ZONE_DIR }}/5/f.some-servers.zone"]
+      - ["g.some-servers.", "{{ ZONE_DIR }}/5/g.some-servers.zone"]
+      - ["h.some-servers.", "{{ ZONE_DIR }}/5/h.some-servers.zone"]
+      - ["i.some-servers.", "{{ ZONE_DIR }}/5/i.some-servers.zone"]
+      - ["j.some-servers.", "{{ ZONE_DIR }}/5/j.some-servers.zone"]
+      - ["k.some-servers.", "{{ ZONE_DIR }}/5/k.some-servers.zone"]
+      - ["l.some-servers.", "{{ ZONE_DIR }}/5/l.some-servers.zone"]
+      - ["m.some-servers.", "{{ ZONE_DIR }}/5/m.some-servers.zone"]

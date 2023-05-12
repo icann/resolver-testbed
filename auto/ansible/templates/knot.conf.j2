@@ -1,15 +1,24 @@
 server:
     version: "{{ software_name }}"
     listen: [ {{ (listen_addrs + listen_addrs_6) | join('@53, ') }}@53 ]
-{% if cfg.v4_edns_size | default(false) %}
+{% if cfg.v4_edns_size is defined %}
     udp-max-payload-ipv4: {{ cfg.v4_edns_size }}
 {% endif %}
-{% if cfg.v6_edns_size | default(false) %}
+{% if cfg.v6_edns_size is defined %}
     udp-max-payload-ipv6: {{ cfg.v6_edns_size }}
 {% endif %}
 
 template:
   - id: default
     storage: ""
-    file: "%s.zone"
-    global-module: {% if cfg.cookie | default(false) %}mod-cookies {% endif %}
+    global-module: {% if cfg.cookie is defined %}mod-cookies {% endif %}
+
+
+{% if zone_cfg is defined %}
+zone:
+{% for zone, file in zone_cfg %}
+  - domain: "{{ zone }}"
+    file: "{{ file }}"
+
+{% endfor %}
+{% endif %}

@@ -1,0 +1,7 @@
+---
+- name: Set the zones for scenario 1
+  ansible.builtin.set_fact:
+    zone_cfg:
+      - [".", "{{ ZONE_DIR }}/2/root.zone"]
+      - ["p53.", "{{ ZONE_DIR }}/2/p53.zone.current"]
+      - ["some-servers.p53.", "{{ ZONE_DIR }}/2/some-servers.p53.zone.unsigned"]

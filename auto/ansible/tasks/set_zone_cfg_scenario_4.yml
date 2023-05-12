@@ -1,0 +1,6 @@
+---
+- name: Set the zones for scenario 4
+  ansible.builtin.set_fact:
+    zone_cfg:
+      - [".", "{{ ZONE_DIR }}/4/root.zone"]
+      - ["some-servers.", "{{ ZONE_DIR }}/4/some-servers.zone"]

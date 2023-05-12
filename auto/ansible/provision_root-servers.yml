@@ -4,14 +4,14 @@
   become: true
 
   tasks:
-    - ansible.builtin.import_tasks:
-        file: tasks/install_server_packages.yml
+    - ansible.builtin.include_tasks:
+        file: "tasks/install_server_packages_{{ system.package }}.yml"
       vars:
         server_packages: "{{ build_config.packages }}"
         enablerepo: "{{ build_config.enablerepo | default([]) }}"
 
-    - ansible.builtin.import_tasks:
-        file: tasks/install_generic_packages.yml
+    - ansible.builtin.include_tasks:
+        file: "tasks/install_generic_packages_{{ system.package }}.yml"
 
     - name: Make sure the zone configuration directory is there.
       ansible.builtin.file:

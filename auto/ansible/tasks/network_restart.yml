@@ -1,4 +1,0 @@
----
-- ansible.builtin.include_tasks:
-    file: "tasks/network_restart_{{ system.network }}.yml"
-  when: system.network in ['linux', 'ubuntu', 'freebsd', 'netbsd', 'centos']

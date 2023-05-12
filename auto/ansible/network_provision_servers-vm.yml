@@ -17,8 +17,8 @@
           - ca_root_nss
         state: present
 
-    - ansible.builtin.import_tasks:
-        file: tasks/network_provision.yml
+    - ansible.builtin.include_tasks:
+        file: "tasks/network_provision_{{ system.network }}.yml"
 
     - name: Making the bind-configs directory.
       ansible.builtin.file:
@@ -64,8 +64,8 @@
         mode: "a+x"
 
     - name: Restart network.
-      ansible.builtin.import_tasks:
-        file: tasks/network_restart.yml
+      ansible.builtin.include_tasks:
+        file: "tasks/network_restart_{{ system.network }}.yml"
 
     - name: Activate ipfw configuration.
       ansible.builtin.shell:

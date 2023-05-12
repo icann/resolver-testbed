@@ -1,4 +1,0 @@
----
-- ansible.builtin.include_tasks:
-    file: "tasks/install_server_packages_{{ system.package }}.yml"
-  when: system.package in ['linux', 'freebsd', 'netbsd', 'centos']

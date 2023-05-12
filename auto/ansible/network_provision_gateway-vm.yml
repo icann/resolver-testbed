@@ -18,8 +18,8 @@
           - nftlb
         state: present
 
-    - ansible.builtin.import_tasks:
-        file: tasks/network_provision.yml
+    - ansible.builtin.include_tasks:
+        file: "tasks/network_provision_{{ system.network }}.yml"
 
     - name: Copy over IP forwarding configuration.
       ansible.builtin.copy:

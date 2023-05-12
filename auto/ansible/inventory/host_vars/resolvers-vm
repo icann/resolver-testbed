@@ -92,15 +92,15 @@ build_config:
       url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.0.0.tar.xz"
       make_str: "knotmake"
     - name: pdns-recursor-4.0.9
-       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
-       make_str: "pdns4make"
-       files_copy:
-         - src: "files/pdns_patches/4_0_9/webserver.cc"
-           dest: "."
-         - src: "files/pdns_patches/4_0_9/ws-recursor.cc"
-           dest: "."
-         - src: "files/pdns_patches/4_0_9/reqresp.cpp"
-           dest: "./ext/yahttp/yahttp/"
+      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
+      make_str: "pdns4make"
+      files_copy:
+        - src: "files/pdns_patches/4_0_9/webserver.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_0_9/ws-recursor.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_0_9/reqresp.cpp"
+          dest: "./ext/yahttp/yahttp/"
     - name: pdns-recursor-4.1.15
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.1.15.tar.bz2"
       make_str: "pdns4make"

@@ -1,6 +1,10 @@
 ---
 - name: CentOS network configuration.
   block:
+  - name: (CentOS) Disable SELinux.
+    ansible.posix.selinux:
+      state: disabled
+
   - name: (CentOS) Configure interfaces.
     ansible.builtin.template:
       src: templates/centos_ifcfg.j2

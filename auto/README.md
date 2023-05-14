@@ -12,6 +12,7 @@ For now bullet point documentation follows.
 
 ### Virtual Box configuration
 
+**UPDATE: Consider removing this dependency; it is not actively used anymore**
 
 - Configure `ansible/host_vars/VBox-host`; either specify an existing host-only
   interface or _the_ new one to be created by VirtualBox.
@@ -49,10 +50,11 @@ Since this is an Ansible playbook it can be run again and again and it will do
 what needs to be done each run. Just bringing up an already created environment
 from a previous run is part of this.
 
-With this playbook, reloading is discouraged. Instead the following steps are
-a faster alternative:
+With this playbook, reloading is discouraged as it would follow Vagrant's
+default serial execution).
+Instead the following steps are a faster alternative:
 ```
-vagrant halt
+vagrant halt  # This is still serial but fast enough
 ansible-playbook ansible/vagrant_fast_up.yml
 ```
 
@@ -67,13 +69,13 @@ when using Virtual Box as the provider.
   Vagrant may timeout while trying to connect.
   **If that happens**, just reissue `vagrant up` to make sure the VMs are up.
 - VMs **need** to be provisioned for their initial network/system configuration.
-  Do that with `ansible-playbook ansible/network_provision_*`; _it will
-  shutdown the VMs when done_.
-- Bring the VMs up again with `vagrant up`. This will make sure the system
+  Do that with `ansible-playbook ansible/network_provision_*`; ~it will
+  shutdown the VMs when done~.
+- ~Bring the VMs up again with `vagrant up`. This will make sure the system
   configuration changes that were made, will take effect regardless of OS
-  services peculiarities.
+  services peculiarities.~
 - If system changes are needed in the future, after editing the relevant files,
-  run `ansible-playbook ansible/network_provision_*` followed by `vagrant up`.
+  run `ansible-playbook ansible/network_provision_*` ~followed by `vagrant up`~.
 - Further interaction with the Virtual Box VMs should only be done through the
   Vagrant cli to allow Vagrant specific actions to take effect.
 - Changing the box configuration (e.g., adding more CPU, memory, interfaces)

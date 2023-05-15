@@ -1,20 +1,20 @@
 #!/bin/sh
 
-# PROVIDE: {{ software_service }}
+# PROVIDE: {{ service_name }}
 # REQUIRE: NETWORKING ldconfig syslogd
 # KEYWORD: shutdown
 
 . /etc/rc.subr
 
-name="{{ software_service }}"
-desc="{{ software_service }} startup script"
-rcvar="{{ software_service }}_enable"
+name="{{ service_name }}"
+desc="{{ service_name }} startup script"
+rcvar="{{ service_name }}_enable"
 
 command="{{ software_target_dir }}/sbin/named"
 command_args="-c {{ software_target_dir }}/etc/bind/bind.conf"
 
 load_rc_config ${name}
 
-{{ software_service }}_enable="YES"
+{{ service_name }}_enable="YES"
 
 run_rc_command "$1"

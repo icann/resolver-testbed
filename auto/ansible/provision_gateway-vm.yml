@@ -12,6 +12,7 @@
         pkg:
           - tcpdump
           - dtach
+          # TODO: This is getting both uninstalled(network provision) and installed here. Do we even need it?
           - iptables
         state: present
         update_cache: yes

@@ -2,12 +2,15 @@
 - hosts: resolvers-vm
   gather_subset: "!all,!min,distribution_release"
   become: true
-
+  vars:
+    software_source_dir: "{{ BUILD_SOURCE_DIR }}"
+    software_target_dir: "{{ BUILD_TARGET_DIR }}"
+    software_build_config: "{{ build_config }}"
   tasks:
     - ansible.builtin.import_tasks:
         file: tasks/read_build_configuration.yml
 
-- hosts: build_group
+- hosts: resolvers_vm_build_group 
   gather_facts: false
   become: true
   vars:

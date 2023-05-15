@@ -2,17 +2,112 @@
 - hosts: resolvers-vm
   gather_subset: "!all,!min,distribution_release"
   become: true
-
+  vars:
+    software_source_dir: "{{ BUILD_SOURCE_DIR }}"
+    software_target_dir: "{{ BUILD_TARGET_DIR }}"
+    software_build_config: "{{ build_config }}"
   tasks:
     - ansible.builtin.import_tasks:
         file: tasks/read_build_configuration.yml
 
-- hosts: build_group
+- hosts: gateway-vm
   gather_facts: false
   become: true
-  serial: 1
+  tasks:
+    - name: Stop tcpdump service
+      ansible.builtin.service:
+        name: tcpdumpd
+        state: stopped
+
+- hosts: servers-vm
+  gather_facts: false
+  become: true
+  vars:
+    scenario: 2
+    implementation: "{{ nameservers|first }}"
+  tasks:
+    - name: Stop any still running nameservers
+      ansible.builtin.service:
+        name: "{{ item.service }}"
+        state: 'stopped'
+      loop: "{{ nameservers }}"
+
+    - name: Configure {{ implementation.name }} for scenario 5.{{ scenario }}
+      ansible.builtin.template:
+        src: "templates/rssac028-appendix-a/{{ implementation.service }}.conf.j2"
+        dest: "{{ implementation.config_file }}"
+    
+    - name: Start {{ implementation.name }}
+      ansible.builtin.service:
+        name: "{{ implementation.service }}"
+        state: 'started'
+    
+- hosts: resolvers_vm_build_group 
+  gather_facts: false
+  become: true
   vars:
     on_host: resolvers-vm
   tasks:
     - ansible.builtin.import_tasks:
-        file: tasks/run_test.yml
+        file: tasks/stop_resolver.yml
+
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Start tcpdump service
+      ansible.builtin.service:
+        name: tcpdumpd
+        state: started
+
+- hosts: resolvers_vm_build_group 
+  gather_facts: false
+  become: true
+  vars:
+    on_host: resolvers-vm
+  tasks:
+    - ansible.builtin.import_tasks:
+        file: tasks/query_resolver.yml
+
+- hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Wait a second or two
+      command: sleep 10
+
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Stop tcpdump service
+      ansible.builtin.service:
+        name: tcpdumpd
+        state: stopped
+
+- hosts: resolvers_vm_build_group 
+  gather_facts: false
+  become: true
+  vars:
+    on_host: resolvers-vm
+  tasks:
+    - ansible.builtin.import_tasks:
+        file: tasks/stop_resolver.yml
+
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Get packet captures
+      ansible.builtin.find:
+        paths: /var/log/tcpdumpd
+        patterns: '*.pcap'
+      register: files
+
+    - name: Fetch latest capture
+      ansible.builtin.fetch:
+        src: '{{ (files.files | sort(attribute="mtime", reverse=true) | first).path }}'
+        dest: 'captures/resolvers-5.1__{{ (files.files | sort(attribute="mtime", reverse=true) | first).path | basename | splitext | first }}.pcap'
+        flat: true
+      when: files.files|count > 0
+

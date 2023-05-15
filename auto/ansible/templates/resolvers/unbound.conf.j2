@@ -1,0 +1,13 @@
+server:
+	interface: {{ listen_ipv4 }}
+        outgoing-interface: {{ outgoing_ipv4 }}
+        outgoing-interface: {{ outgoing_ipv6 }}
+	access-control: 127.0.0.1/24 allow
+	chroot: ""
+	username: ""
+#	root-hints: "/usr/share/dns/root.hints"
+
+remote-control:
+	control-enable: yes
+	control-interface: {{ listen_ipv4 }}
+

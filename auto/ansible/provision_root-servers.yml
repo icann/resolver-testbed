@@ -66,6 +66,7 @@
         src: "templates/{{ software_type }}.conf.j2"
         dest: "{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf"
       vars:
+        software_name: "{{ item.0.name }}"
         software_type: "{{ item.0.name | split('-', 1) | first }}"
         software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.0.name }}"
         cfg: "{{ item.0.cfg }}"

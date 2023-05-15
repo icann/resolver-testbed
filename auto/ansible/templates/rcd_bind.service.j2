@@ -12,6 +12,7 @@ rcvar="{{ service_name }}_enable"
 
 command="{{ software_target_dir }}/sbin/named"
 command_args="-c {{ software_target_dir }}/etc/bind/bind.conf"
+pidfile="{{ software_target_dir }}/etc/bind/bind.pid"
 
 load_rc_config ${name}
 

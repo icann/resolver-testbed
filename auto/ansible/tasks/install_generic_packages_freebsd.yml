@@ -9,6 +9,7 @@
       - tmux
       - htop
       - rsync
+      - bind-tools
     state: present
 
 - name: (FreeBSD) Install system ansible.

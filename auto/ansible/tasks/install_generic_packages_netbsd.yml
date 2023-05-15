@@ -25,6 +25,7 @@
       - tmux
       - htop
       - rsync
+      - bind-tools
     state: present
 
 - name: (NetBSD) Install system ansible.

@@ -1,0 +1,6 @@
+---
+- name: "Install {{ service_name }} service file."
+  ansible.builtin.template:
+    src: "templates/rcd_{{ software_type }}.service.j2"
+    dest: "/etc/rc.d/{{ service_name }}"
+    mode: "+x-w"

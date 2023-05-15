@@ -42,7 +42,7 @@
       vars:
         software_type: "{{ item.name | split('-', 1) | first }}"
         software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.name }}"
-        service_name: "{{ item.name | replace('-', '') }}"
+        service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
       loop: "{{ build_config.software }}"
 
     - name: For bind create etc/bind directory.
@@ -52,7 +52,7 @@
       vars:
         software_type: "{{ item.name | split('-', 1) | first }}"
         software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.name }}"
-        service_name: "{{ item.name | replace('-', '') }}"
+        service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
       loop: "{{ build_config.software }}"
       when: software_type == 'bind'
 
@@ -81,6 +81,6 @@
       ansible.builtin.service:
         name: "{{ service_name }}"
         state: restarted
-      loop: "{{ build_config.software }}"
       vars:
-        service_name: "{{ item.name | replace('-', '') }}"
+        service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
+      loop: "{{ build_config.software }}"

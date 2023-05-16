@@ -9,9 +9,20 @@
       vars:
         server_packages: "{{ build_config.packages }}"
         enablerepo: "{{ build_config.enablerepo | default([]) }}"
+        task_title: "Install packages for building"
 
     - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages.yml
+
+    - ansible.builtin.include_tasks:
+        file: "tasks/install_server_packages_{{ system.package }}.yml"
+      vars:
+        server_packages:
+          - iptables
+          - nftables
+        package_state: absent
+        enablerepo: "{{ build_config.enablerepo | default([]) }}"
+        task_title: "Remove unwanted packages"
 
     - name: Make sure the zone configuration directory is there.
       ansible.builtin.file:

@@ -1,5 +1,5 @@
 ---
-- name: (NetBSD) Install packages for building.
+- name: (NetBSD) ~ " {{ task_title | default('Install packages') }}."
   community.general.pkgin:
     name: "{{ server_packages }}"
-    state: present
+    state: "{{ package_state | default('present') }}"

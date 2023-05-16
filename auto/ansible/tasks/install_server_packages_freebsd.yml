@@ -1,5 +1,5 @@
 ---
-- name: (FreeBSD) Install packages for building.
+- name: (FreeBSD) ~ " {{ task_title | default('Install packages') }}."
   community.general.pkgng:
     name: "{{ server_packages }}"
-    state: present
+    state: "{{ package_state | default('present') }}"

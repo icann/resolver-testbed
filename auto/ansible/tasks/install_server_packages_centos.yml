@@ -5,8 +5,8 @@
       - epel-release
     state: present
 
-- name: (CentOS) Install packages for building.
+- name: (CentOS) ~ " {{ task_title | default('Install packages') }}."
   ansible.builtin.yum:
     name: "{{ server_packages }}"
-    state: present
+    state: "{{ package_state | default('present') }}"
     enablerepo: "{{ enablerepo }}"

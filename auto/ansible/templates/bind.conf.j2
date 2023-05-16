@@ -4,7 +4,7 @@ empty-zones-enable no;
 listen-on { {{ listen_addrs | join(';') }}; };
 listen-on-v6 { {{ listen_addrs_6 | join(';') }}; };
 pid-file "{{ software_target_dir }}/etc/bind/bind.pid";
-dnssec-enable yes;
+directory "{{ software_target_dir }}/etc/bind/";
 allow-transfer { any; };
 version "{{ software_name }}";
 {% if cfg.minimal_responses is defined %}

@@ -3,32 +3,6 @@
   gather_facts: false
   become: true
   vars:
-    listen_addrs: "\
-      {% set output = [] %}\
-      {% for n in network_configuration['networks'] %}\
-      {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
-      {{ output.extend(n['v4']['alias'] | map('dirname')) }}\
-      {% endif %}\
-      {% endfor %}\
-      {{ output }}"
-    listen_addrs_6: "\
-      {% set output = [] %}\
-      {% for n in network_configuration['networks'] %}\
-      {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
-      {{ output.extend(n['v6']['alias'] | map('dirname')) }}\
-      {% endif %}\
-      {% endfor %}\
-      {{ output }}"
-    nameservers:
-      - service: 'named'
-        name: 'BIND'
-        config_file: '/usr/local/etc/namedb/named.conf'
-      - service: 'nsd'
-        name: 'NSD'
-        config_file: '/usr/local/etc/nsd/nsd.conf'
-      - service: 'knot'
-        name: 'Knot'
-        config_file: '/usr/local/etc/knot/knot.conf'
     scenarios: [ 1, 2, 3, 4, 5, 6 ]
     #scenarios: [ 1 ]
 

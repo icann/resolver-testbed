@@ -20,28 +20,12 @@
     - name: Configure Unbound
       when: software_sname == 'unbound'
       block: 
-      - name: Install (templated) unbound.conf
-        ansible.builtin.template:
-          src: "templates/resolvers/{{ software_sname }}.conf.j2"
-          dest: "{{ this_target_dir }}/etc/unbound/unbound.conf"
-    
-      - name: Is unbound-setup configured?
-        ansible.builtin.stat:
-          path: "{{ this_target_dir }}/etc/unbound/unbound_control.key"
-        register: unbound_control_key
-    
-      - name: Run unbound-control-setup
-        ansible.builtin.shell:
-          cmd: "sbin/unbound-control-setup"
-          chdir: "{{ this_target_dir }}"
-        when: not unbound_control_key.stat.exists
-    
       - name: Is resolver started?
-        stat:
+        ansible.builtin.stat:
           path: "{{ this_target_dir }}/etc/unbound/unbound.pid"
         register: unbound_pid
     
-      - name: stop resolver (if running)
+      - name: Stop resolver (if running)
         ansible.builtin.shell:
           cmd: "PATH={{ this_target_dir }}/bin:{{ this_target_dir }}/sbin:$PATH unbound-control stop"
           chdir: "{{ this_target_dir }}"

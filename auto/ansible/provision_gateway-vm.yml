@@ -7,18 +7,7 @@
     - ansible.builtin.import_tasks:
         file: tasks/install_generic_packages.yml
 
-    - name: Install VM specific packages.
-      ansible.builtin.apt:
-        pkg:
-          - tcpdump
-          - dtach
-          # TODO: This is getting both uninstalled(network provision) and installed here. Do we even need it?
-          - iptables
-        state: present
-        update_cache: yes
-
     - name: Install tcpdump service file
       ansible.builtin.copy:
         src: files/gateway/tcpdumpd.service
         dest: /lib/systemd/system
-

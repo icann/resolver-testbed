@@ -16,6 +16,7 @@
       - bind-utils
       - htop
       - rsync
+      - tcpdump
     state: present
 
 - name: (CentOS) Install system ansible.

@@ -10,6 +10,7 @@
       - htop
       - dnsutils
       - rsync
+      - tcpdump
     state: present
     update_cache: yes
 

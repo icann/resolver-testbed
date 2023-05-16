@@ -10,6 +10,7 @@
       - htop
       - rsync
       - bind-tools
+      - tcpdump
     state: present
 
 - name: (FreeBSD) Install system ansible.

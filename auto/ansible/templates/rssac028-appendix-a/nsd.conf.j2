@@ -9,7 +9,7 @@ server:
 remote-control:
 	control-enable: no
 
-{% if scenario == 1 %}
+{% if scenario | int == 1 %}
 zone:
 	name: "."
 	zonefile: "/root/scenarios/2/root.zone"
@@ -28,7 +28,7 @@ zone:
 	zonefile: "/root/scenarios/{{ scenario }}/root.zone"
 
 {% endif %}
-{%if scenario == 2 %}
+{%if scenario | int == 2 %}
 zone:
 	name: "p53"
 	zonefile: "/root/scenarios/2/p53.zone"
@@ -36,12 +36,12 @@ zone:
 	name: "some-servers.p53"
 	zonefile: "/root/scenarios/2/some-servers.p53.zone"
 
-{% elif scenario == 4 %}
+{% elif scenario | int == 4 %}
 zone:
 	name: "some-servers"
 	zonefile: "/root/scenarios/4/some-servers.zone"
 
-{% elif scenario == 5 %}{% for letter in "abcdefghijklm" %}
+{% elif scenario | int == 5 %}{% for letter in "m" %}
 zone:
 	name: "{{ letter }}.some-servers"
 	zonefile: "/root/scenarios/5/{{ letter }}.some-servers.zone"

@@ -6,7 +6,7 @@ server:
 {% endfor %}
 
 zone:
-{% if scenario == 1 %}
+{% if scenario | int == 1 %}
   - domain: "."
     file: "/root/scenarios/2/root.zone"
 
@@ -21,20 +21,20 @@ zone:
     file: "/root/scenarios/{{ scenario }}/root.zone"
 {% endif %}
 
-{%if scenario == 2 %}
+{%if scenario | int == 2 %}
   - domain: "p53"
     file: "/root/scenarios/2/p53.zone"
 
   - domain: "some-servers.p53"
     file: "/root/scenarios/2/some-servers.p53.zone"
 
-{% elif scenario == 4 %}
+{% elif scenario | int == 4 %}
   - domain: "some-servers"
     file: "/root/scenarios/4/some-servers.zone"
 
-{% elif scenario == 5 %}{% for letter in "abcdefghijklm" %}
-  - domain: "{{ letter }}.some-servers"
-    file: "/root/scenarios/5/a.some-servers.zone"
+{% elif scenario | int == 5 %}{% for letter in "m" %}
+  - domain: "{{ letter }}"
+    file: "/root/scenarios/5/a.zone"
 
 {% endfor %}{% endif %}
 

@@ -23,13 +23,5 @@
       dest: "/etc/sysconfig/network-scripts/route6-{{item.name}}"
     loop: "{{ network_configuration.networks }}"
 
-      #- name: (CentOS) Disable NetworkManager.
-      #  ansible.builtin.systemd:
-      #    name: NetworkManager
-      #    enabled: false
-
-  - ansible.builtin.include_tasks:
-      file: tasks/resolv.conf.yml
-
   - ansible.builtin.include_tasks:
       file: tasks/network_restart_centos.yml

@@ -6,9 +6,6 @@
       src: templates/freebsd_rc.conf.j2
       dest: /etc/rc.conf
 
-  - ansible.builtin.include_tasks:
-      file: tasks/resolv.conf.yml
-
   - name: (FreeBSD) Making boot faster; always autoboot.
     ansible.builtin.copy:
       content: 'autoboot_delay="-1"'

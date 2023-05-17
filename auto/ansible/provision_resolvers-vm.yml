@@ -91,7 +91,3 @@
           software_source_dir: "{{ BUILD_SOURCE_DIR }}"
           software_target_dir: "{{ BUILD_TARGET_DIR }}"
           software_build_config: "{{ build_config }}"
-        incept_copy_files:
-          - tasks/read_build_configuration.yml
-          - tasks/inception/read_inception_variables.yml
-          - files/pdns_patches/

@@ -44,9 +44,6 @@
           software_source_dir: "{{ BUILD_SOURCE_DIR }}"
           software_target_dir: "{{ BUILD_TARGET_DIR }}"
           software_build_config: "{{ build_config }}"
-        incept_copy_files:
-          - tasks/read_build_configuration.yml
-          - tasks/inception/read_inception_variables.yml
 
     - ansible.builtin.include_tasks:
         file: "tasks/install_server_service_{{ system.service }}.yml"

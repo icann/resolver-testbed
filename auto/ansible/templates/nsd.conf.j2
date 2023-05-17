@@ -2,7 +2,7 @@ server:
     database: ""
     username: ""
     chroot: ""
-    version: "{{ software_name }}"
+    version: "{{ software_name }}/{{ inventory_hostname }}"
     hide-version: no
 {% for a in listen_addrs + listen_addrs_6 %}
     interface: {{ a }}

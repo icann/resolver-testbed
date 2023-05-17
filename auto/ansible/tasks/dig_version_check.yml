@@ -5,4 +5,4 @@
   loop_control:
     loop_var: a
   register: dig
-  failed_when: dig.rc != 0 or dig.stdout.strip('"') != expect
+  failed_when: dig.rc != 0 or not dig.stdout.strip('"').startswith(expect)

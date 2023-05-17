@@ -1,5 +1,5 @@
 server:
-    version: "{{ software_name }}"
+    version: "{{ software_name }}/{{ inventory_hostname }}"
     listen: [ {{ (listen_addrs + listen_addrs_6) | join('@53, ') }}@53 ]
 {% if cfg.v4_edns_size is defined %}
     udp-max-payload-ipv4: {{ cfg.v4_edns_size }}

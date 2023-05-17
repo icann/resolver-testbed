@@ -6,7 +6,7 @@ listen-on-v6 { {{ listen_addrs_6 | join(';') }}; };
 pid-file "{{ software_target_dir }}/etc/bind/bind.pid";
 directory "{{ software_target_dir }}/etc/bind/";
 allow-transfer { any; };
-version "{{ software_name }}";
+version "{{ software_name }}/{{ inventory_hostname }}";
 {% if cfg.minimal_responses is defined %}
 minimal-responses {{ cfg.minimal_responses }};
 {% endif %}

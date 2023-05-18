@@ -10,7 +10,7 @@ options {
   listen-on-v6 { {{ listen_addrs_6 | join(';') }}; ::1; }; 
 };
 
-{% if scenario == 1 %}
+{% if scenario | int == 1 %}
 zone "." { type master; file "/root/scenarios/2/root.zone"; };
 zone "p53." { type master; file "/root/scenarios/2/p53.zone.current"; };
 zone "some-servers.p53." { type master; file "/root/scenarios/2/some-servers.p53.zone.unsigned"; };
@@ -20,15 +20,15 @@ zone "." { type master; file "/root/scenarios/{{ scenario }}/root.zone"; };
 
 {% endif %}
 
-{%if scenario == 2 %}
+{%if scenario | int == 2 %}
 zone "p53." { type master; file "/root/scenarios/2/p53.zone"; };
 zone "some-servers.p53." { type master; file "/root/scenarios/2/some-servers.p53.zone"; };
 
-{% elif scenario == 4 %}
+{% elif scenario | int == 4 %}
 zone "some-servers." { type master; file "/root/scenarios/4/some-servers.zone"; };
 
-{% elif scenario == 5 %}{% for letter in "abcdefghijklm" %}
-zone "{{ letter }}.some-servers." { type master; file "/root/scenarios/5/{{ letter }}.some-servers.zone"; };
+{% elif scenario | int == 5 %}{% for letter in "m" %}
+zone "{{ letter }}." { type master; file "/root/scenarios/5/{{ letter }}.zone"; };
 
 {% endfor %}{% endif %}
 

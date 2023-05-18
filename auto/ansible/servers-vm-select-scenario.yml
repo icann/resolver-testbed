@@ -1,0 +1,49 @@
+---
+- hosts: servers-vm
+  gather_facts: false
+  become: true
+  tasks:
+  - name: "Check that scenario and nameserver software is chosen"
+    assert:
+      that:
+        - scenario is defined and scenario in ['1', '2', '3', '4', '5', '6']
+        - software is defined and software | lower in ['bind', 'nsd', 'knot']
+      fail_msg: "usage: ansible-playbook --extra-vars \"scenario=[1-6] software=[bind | nsd | knot]\""
+
+  - name: Set implementation from software
+    when: item.name | lower == software | lower
+    ansible.builtin.set_fact:
+      implementation: '{{ item }}'
+    loop: "{{ nameservers }}"
+
+  - name: Copying root zones scenarios
+    ansible.posix.synchronize:
+      src: files/scenarios/
+      dest: /root/scenarios
+
+  - name: Is named running?
+    command: "pgrep -f /usr/local/sbin/named"
+    register: named_pid
+    failed_when: named_pid.rc > 1
+    changed_when: false
+
+  - name: Kill named if running
+    shell: "kill {{ named_pid.stdout_lines[0] }}"
+    when: named_pid.stdout_lines
+
+  - name: Stop any still running nameservers
+    ansible.builtin.service:
+      name: "{{ item.service }}"
+      state: 'stopped'
+    loop: "{{ nameservers }}"
+
+  - name: Configure {{ implementation.name }} for scenario 5.{{ scenario }}
+    ansible.builtin.template:
+      src: "templates/rssac028-appendix-a/{{ implementation.service }}.conf.j2"
+      dest: "{{ implementation.config_file }}"
+
+  - name: Start {{ implementation.name }}
+    ansible.builtin.service:
+      name: "{{ implementation.service }}"
+      state: 'started'
+

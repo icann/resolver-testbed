@@ -1,6 +1,8 @@
 ---
+# Test that all resolver IPs can reach the root servers' IPs.
 - hosts: resolvers-vm
   gather_facts: false
+  become: true
 
   tasks:
     # V4

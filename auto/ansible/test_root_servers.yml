@@ -1,0 +1,28 @@
+---
+- hosts: root_servers
+  gather_facts: false
+  become: true
+
+  tasks:
+# Test that the nameserver software is up and identifies itself.
+    - block:
+      - ansible.builtin.include_tasks:
+          file: tasks/dig_version_check.yml
+        vars:
+          destinations: "{{ item.1 }}"
+          expect: "{{ item.0.name }}"
+        loop: "{{ build_config.software | zip((network_configuration.networks.0.v4.alias | map('dirname')) | zip(network_configuration.networks.0.v6.alias | map('dirname'))) }}"
+      delegate_to: resolvers-vm
+
+# Test that the root servers' MTU settings (if any) are applied correctly.
+    - ansible.builtin.include_tasks:
+        file: tasks/net_ping.yml
+      vars:
+        mtu: "{{ network_configuration.networks.0['v' ~ version].mtu + 1 }}"
+        destinations:
+          - "{{ hostvars['gateway-vm'].network_configuration.networks.1['v' ~ version].addr | dirname }}"
+        must_fail: true
+      loop: [4, 6]
+      loop_control:
+        loop_var: version
+      when: "network_configuration.networks.0['v' ~ version] is defined and network_configuration.networks.0['v' ~ version].mtu is defined"

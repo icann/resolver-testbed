@@ -1,5 +1,13 @@
 ---
 - name: Test network reachability.
   ansible.builtin.command:
-    cmd: "ping{{ version }} -l 2 -c 1 -I {{ src }} {{ item }}"
+    cmd: "{{ this_ping }} -l 2 -c 1 {{ this_timeout }} {{ this_src }} {{ this_frag }} {{ item }}"
+  vars:
+    this_timeout: "{% if system.network in ['freebsd', 'netbsd'] %} -t {% else %} -W {% endif %} 1"
+    this_ping: "ping{{ version == 6 and '6' or '' }}"
+    this_src: "{% if src is defined %}-I {{ src }}{% endif %}"
+    this_frag: "{% if mtu is defined %}{% if system.network in ['freebsd', 'netbsd'] %} -D -s {{ (mtu | int) - 20 }} {% else %} -M do -s {{ mtu }} {% endif %}{% endif %}"
+    this_must_fail: "{{ must_fail | default(false) }}"
+  register: result
+  failed_when: "(result.rc != 0 and this_must_fail is false) or (result.rc == 0 and this_must_fail is true)"
   loop: "{{ destinations }}"

@@ -1,0 +1,13 @@
+# Maintained by Ansible.
+
+# Set MTU
+{% for n in network_configuration.networks %}
+{% if n.v4.mtu is defined %}
+ip link set {{ n.name }} mtu {{ n.v4.mtu }}
+{% endif %}
+{% if n.v6.mtu is defined %}
+echo {{ n.v6.mtu }} > /proc/sys/net/ipv6/conf/{{ n.sysctl_name | default(n.name) }}/mtu
+{% endif %}
+{% endfor %}
+
+# Set MSS

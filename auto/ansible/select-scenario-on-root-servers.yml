@@ -49,6 +49,12 @@
     ansible.builtin.set_fact:
       do_realips: true
 
+  - name: Copying root zones scenarios
+    ansible.posix.synchronize:
+      src: files/scenarios/
+      dest: /root/scenarios
+    when: scenario | int == 1 or scenario | int == 2
+
   - name: Configure bind on servers-vm for .net zone
     ansible.builtin.template:
       src: "templates/named.conf.j2"

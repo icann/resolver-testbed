@@ -24,4 +24,3 @@
       name: local-rc.local.service
       enabled: true
       state: restarted
-    when: was_changed is changed or installed is changed

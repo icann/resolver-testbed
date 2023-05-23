@@ -13,3 +13,8 @@
 
   - ansible.builtin.include_tasks:
       file: tasks/network_restart_freebsd.yml
+
+  - ansible.builtin.include_tasks:
+      file: "tasks/install_rc.local_{{ system.service }}.yml"
+    vars:
+      rc_template: "templates/rc.local_freebsd.j2"

@@ -7,10 +7,6 @@
       group: root
       mode: "u+x"
 
-  # - name: (Systemd) Source rc.local.
-  #   ansible.builtin.shell:
-  #     cmd: ". /root/rc.local"
-
   - name: (Systemd) Install rc.local as a systemd service.
     ansible.builtin.copy:
       src: files/systemd-rc.local.service

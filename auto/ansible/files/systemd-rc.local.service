@@ -5,7 +5,7 @@ After=network-online.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=sh -c '/root/rc.local'
+ExecStart=/bin/sh -c '/root/rc.local'
 
 [Install]
 WantedBy=multi-user.target

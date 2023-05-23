@@ -1,11 +1,16 @@
 # Maintained by Ansible.
 
-# Set MTU
 {% for n in network_configuration.networks %}
 {% if n.v4.mtu is defined or n.v6.mtu is defined %}
+# Set MTU for {{ n.name }}
 # XXX Not possible to set separate MTU for v4 and v6 in FreeBSD; ignoring v6 if v4 is set.
 ifconfig {{ n.name }} mtu {{ n.v4.mtu | default(n.v6.mtu) }}
 {% endif %}
-{% endfor %}
 
-# Set MSS
+{% if n.v4.mss is defined or n.v6.mss is defined %}
+# Set MSS for {{ n.name }}
+# MSS is not available in FreeBSD; this will throw an error in purpose
+# {{ n.the_aforementioned_error }}
+{% endif %}
+
+{% endfor %}

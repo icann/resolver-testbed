@@ -52,6 +52,11 @@
           {% endfor %}\
           {{ output }}"
 
+    # FIXME This replaces the rc.local from the network provisioning task.
+    #       For now this is fine since that rc.local file is about MTU and MSS
+    #       network settings that this VM does not have.
+    #       The generic rc.local logic in network provision could change to
+    #       source different script files instead
     - name: rc.local for named and ipfw init.
       ansible.builtin.copy:
         src: files/servers-rc.local

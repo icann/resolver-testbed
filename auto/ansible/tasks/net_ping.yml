@@ -3,7 +3,7 @@
   ansible.builtin.command:
     cmd: "{{ this_ping }} -l 10 -c 1 {{ this_timeout }} {{ this_src }} {{ this_frag }} {{ item }}"
   vars:
-    this_timeout: "{% if system.network in ['freebsd', 'netbsd'] %} -t {% else %} -W {% endif %} 1"
+    this_timeout: "{% if system.network in ['freebsd', 'netbsd'] %} -t {% else %} -W {% endif %} 2"
     this_ping: "ping{{ version == 6 and '6' or '' }}"
     this_src: "{% if src is defined %}-I {{ src }}{% endif %}"
     this_frag: "{% if mtu is defined %}{% if system.network in ['freebsd', 'netbsd'] %} -D -s {{ mtu }} {% else %} -M do -s {{ mtu }} {% endif %}{% endif %}"

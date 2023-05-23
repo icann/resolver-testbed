@@ -23,7 +23,7 @@ ip route change {{ r.network }} via {{ r.gateway }} advmss {{ n.v4.mss }}
 {% if n.v6.mss is defined and n.v6.static_routes is defined %}
 {% for r in n.v6.static_routes %}
 # Set MSS for {{ r.network }}
-ip route change {{ r.network }} advmss {{ n.v6.mss }}
+ip route change {{ r.network }} via {{ r.gateway }} advmss {{ n.v6.mss }}
 {% endfor %}
 {% endif %}
 

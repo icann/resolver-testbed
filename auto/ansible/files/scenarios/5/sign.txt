@@ -13,6 +13,7 @@ ldns-signzone -i 20230101000000 -e 20300101000000 -o k -f k.zone k.zone.unsigned
 ldns-signzone -i 20230101000000 -e 20300101000000 -o l -f l.zone l.zone.unsigned Kl.+008+10751
 ldns-signzone -i 20230101000000 -e 20300101000000 -o m -f m.zone m.zone.unsigned Km.+008+39182
 
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o . -f root_.zone root.zone.2.unsigned K.+008+09646 K.+008+15873
 # ldns-signzone -i 20230101000000 -e 20300101000000 -o a.some-servers -f a.some-servers.zone a.some-servers.zone.unsigned Ka.some-servers.+008+27874 Ka.some-servers.+008+61791
 # ldns-signzone -i 20230101000000 -e 20300101000000 -o b.some-servers -f b.some-servers.zone b.some-servers.zone.unsigned Kb.some-servers.+008+17970 Kb.some-servers.+008+18631
 # ldns-signzone -i 20230101000000 -e 20300101000000 -o c.some-servers -f c.some-servers.zone c.some-servers.zone.unsigned Kc.some-servers.+008+38628 Kc.some-servers.+008+44585

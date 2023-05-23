@@ -1,3 +1,21 @@
+{# Template for BIND config file
+ # ----------------------------
+ # Required variables:
+ # 
+ # - scenario: The zones for the naming scheme scenario to configure [1-6]
+ #
+ # - do_variant: Boolean to select the alternative for the scenario.
+ #               Scenarios 3, 5 and 6 have a variant.
+ #
+ # - do_realips: Boolean. When true, the config will load zones with the same
+ #               IP addresses for the root servers as they currently use on the
+ #               internet. Also the names in the zones match more closely theo
+ #               ones that were used in section 5 of the RSSAC028 document.
+ #
+ # Optional variables:
+ #
+ # - letter: Load only the zone for the letter in scenario 5
+ #}
 # BIND config file for RSSAC028 Appendix A Scenario 5.{{ scenario }}
 #
 options {
@@ -10,25 +28,67 @@ options {
   listen-on-v6 { {{ listen_addrs_6 | join(';') }}; ::1; }; 
 };
 
-{% if scenario | int == 1 %}
+{% if do_realips %}
+{%   if scenario | int == 1 or scenario | int == 2 %}
+zone "." { type master; file "/root/scenarios/5.{{ scenario }}-root"; };
+zone "net." { type master; file "/root/scenarios/5.{{ scenario }}-net"; };
+zone "root-servers.net." { type master; file "/root/scenarios/5.{{ scenario }}-root-servers.net"; };
+
+{%   elif scenario | int != 5 %}
+zone "." { type master; file "/root/scenarios/5.{{ scenario }}{% if do_variant %}.1{% endif %}-root"; };
+
+{%   endif %}
+
+{%   if scenario | int == 4 %}
+zone "root-servers." { type master; file "/root/scenarios/5.4-root-servers"; };
+
+{%   elif scenario | int == 5 %}
+{%     if letter is not defined %}
+{%       for letter in "abcdefghijklm" %}
+view {{ letter }} {
+  match-destinations { {{ listen_addrs[root_letters[letter].n + 2] }}/32;
+                       {{ listen_addrs_6[root_letters[letter].n + 2] }}/128; };
+  zone "." { type master; file "/root/scenarios/5.5{% if do_variant %}.1{% endif %}-root"; };
+  zone "{{ letter }}.{% if do_variant %}root-servers.{% endif %}" { type master; file "/root/scenarios/5.5{% if do_variant %}.1{% endif %}-{{ letter }}{% if do_variant %}.root-servers{% endif %}"; };
+};
+{%       endfor %}
+{%     else %}{# if letter is not defined #}
+  zone "." { type master; file "/root/scenarios/5.5{% if do_variant %}.1{% endif %}-root"; };
+  zone "{{ letter }}.{% if do_variant %}root-servers.{% endif %}" { type master; file "/root/scenarios/5.5{% if do_variant %}.1{% endif %}-{{ letter }}{% if do_variant %}.root-servers{% endif %}"; };
+{%     endif %}{# if letter is not defined #}
+{%   endif %}{# elif scenario | int == 5 #}
+
+{% else %}{# if do_realips #}
+{%   if scenario | int == 1 %}
 zone "." { type master; file "/root/scenarios/2/root.zone"; };
 zone "p53." { type master; file "/root/scenarios/2/p53.zone.current"; };
 zone "some-servers.p53." { type master; file "/root/scenarios/2/some-servers.p53.zone.unsigned"; };
 
-{% else %}
-zone "." { type master; file "/root/scenarios/{{ scenario }}/root.zone"; };
+{%   elif scenario | int != 5 %}
+zone "." { type master; file "/root/scenarios/{{ scenario }}/root{% if do_variant %}_{% endif %}.zone"; };
 
-{% endif %}
+{%   endif %}
 
-{%if scenario | int == 2 %}
+{%   if scenario | int == 2 %}
 zone "p53." { type master; file "/root/scenarios/2/p53.zone"; };
 zone "some-servers.p53." { type master; file "/root/scenarios/2/some-servers.p53.zone"; };
 
-{% elif scenario | int == 4 %}
+{%   elif scenario | int == 4 %}
 zone "some-servers." { type master; file "/root/scenarios/4/some-servers.zone"; };
 
-{% elif scenario | int == 5 %}{% for letter in "m" %}
-zone "{{ letter }}." { type master; file "/root/scenarios/5/{{ letter }}.zone"; };
-
-{% endfor %}{% endif %}
-
+{%   elif scenario | int == 5 %}
+{%     if letter is not defined %}
+{%       for letter in "abcdefghijklm" %}
+view {{ letter }} {
+  match-destinations { {{ listen_addrs[root_letters[letter].n + 2] }}/32;
+                       {{ listen_addrs_6[root_letters[letter].n + 2] }}/128; };
+  zone "." { type master; file "/root/scenarios/5/root{% if do_variant %}_{% endif %}.zone"; };
+  zone "{{ letter }}.{% if do_variant %}some-servers.{% endif %}" { type master; file "/root/scenarios/5/{{ letter }}{% if do_variant %}.some-servers{% endif %}.zone"; };
+};
+{%       endfor %}
+{%     else %}{# if letter is not defined #}
+  zone "." { type master; file "/root/scenarios/5/root{% if do_variant %}_{% endif %}.zone"; };
+  zone "{{ letter }}.{% if do_variant %}some-servers.{% endif %}" { type master; file "/root/scenarios/5/{{ letter }}{% if do_variant %}.some-servers{% endif %}.zone"; };
+{%     endif %}{# if letter is not defined #}
+{%   endif %}{# elif scenario | int == 5 #}
+{% endif %}{# if do_realips #}

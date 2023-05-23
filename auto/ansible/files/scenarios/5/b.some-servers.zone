@@ -1,7 +1,7 @@
 b.some-servers.	60	IN	SOA	ns1.b.some-servers. admin.ns1.b.some-servers. 123 1800 900 6054800 60
 b.some-servers.	60	IN	RRSIG	SOA 8 2 60 20300101000000 20230101000000 17970 b.some-servers. qbXS9S/9ZJIC4cIv7hAE3Y0vJj5bxAYEIAbq4CKGwYX4QXbgIcxuhjYYMOBrNpvFXuL2rPPu/A1Arnhfsz7ArbRsNl3R3Qnez/4gGI0Gel7A4+x+NZ33NbblfamwJdA3RcmGx9n2amHAWaGnQhtQXERWmEjJmOr9akWIIrszwrw=
-b.some-servers.	60	IN	NS	ns1.b.
-b.some-servers.	60	IN	RRSIG	NS 8 2 60 20300101000000 20230101000000 17970 b.some-servers. ESWW4EXGkOT2GhM+ZiHgkZ4NzZxxv2UNtt4rVaA+tcHZElJvzIaE7dsn/zfIEMcZxtQMROSDbjrmVm+P5eEhDKw5DaojWFM+q5uu/2k5salQB51nFtEAPG3tAQP62b3RXrLMidnGBKIXnoX6V/EkVvEJXoaFkzvEOBG/2QtNA7E=
+b.some-servers.	60	IN	NS	ns1.b.some-servers.
+b.some-servers.	60	IN	RRSIG	NS 8 2 60 20300101000000 20230101000000 17970 b.some-servers. jSu5NsfTx8iVCpRZQHti2rflbnYYnlLMKi/KBO/x5ipIJVS44QYe0+bAB0IvyIyxwh910IhGS78Zx+mhBwd2XWsvAX5HARfWL7b479jeVV0sMHmyerW9UKDo9Cs5sg3vmsTITznMjxKmY4iaoKj5uNC/2p7ujxOWWJKhUfUzyWE=
 b.some-servers.	60	IN	DNSKEY	256 3 8 AwEAAbWtfsym/6mPLwfNWADulBQ+VjACPB/PI8Mp4ldM3812PHgbJ/wi5+VQ/t5ncNkDVP+AxJmZSJqijaE2yMbSv3oidw8C5MAeAL6XEDfy9sImHcP51AXLzei1dNNEzMm9oeJFHPE6O7bQ9Fm7Krcc8PKq7F7hLrhxiGzynJEDbRfh ;{id = 17970 (zsk), size = 1024b}
 b.some-servers.	60	IN	DNSKEY	257 3 8 AwEAAdTZbNOnHX9oz8485oRNi0ON3Scgps2Xcf71GxAA+urIYVbH8tsQdeBQ9TtuNZ6mThmSqujxDx4Lh0mgv8ws9hw9JxSEko/a/mKoXdcITY8NSdpvsbHkcHqjTOckt1EoZf3yL9q7f7joUMGVCBtVDRKcyLm+X10lEHBWSn8z20yV ;{id = 18631 (ksk), size = 1024b}
 b.some-servers.	60	IN	RRSIG	DNSKEY 8 2 60 20300101000000 20230101000000 18631 b.some-servers. t/EUqEcCFzardy/sfo6HZYVC5SYvM1+LRMme+V2R86O9w44V0kT2xmoqxR26Th7/zd8Gz4XTCT1qCu9QOsWmtXHpDTwSpRduwu5GM1+91G+Cni9oJlcgg1huzl24x2d1OYcoSmHDUZV4yurHlal9zyTFhgbglxJ/jT5VLXTRhpc=

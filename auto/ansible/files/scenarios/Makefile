@@ -323,8 +323,8 @@ $(5_5_1_ROOT): $(5_5_1_MKDIR) $(5_5_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 $(5_5_1_ROOT_SERVERS): $(5_5_1_MKDIR) $(ROOT_SERVER_2_KSK_FILES) $(ROOT_SERVER_2_ZSK_FILES) $(ROOT_SERVERS_NET_UNSIGNED)
 	awk -vfqdn=$(patsubst $(5_5_1_PREFIX)%,%.,$@) '\
 		/[A-Za-z.-]+[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+SOA[[:space:]]/{printf("%s\t%s\tIN\tSOA\tns.%s hostmaster.%s %s %s %s %s %s\n",fqdn,$$2,fqdn,fqdn,$$(NF-4),$$(NF-3),$$(NF-2),$$(NF-1),$$NF)}\
-		/^$(patsubst $(5_5_1_PREFIX)%,%,$@)\.root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]/{printf("ns.%s\t%s\tIN\t%s\t%s\n",fqdn,$$2,$$(NF-1),$$NF)} \
-		/^root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]]+$(patsubst $(5_5_1_PREFIX)%,%,$@)\.root-servers\.net\.$$/{printf("%s\t%s\tIN\tNS\tns.%s\n",fqdn,$$2,fqdn)} \
+		/^$(patsubst $(5_5_1_PREFIX)%,%,$@)\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]/{printf("ns.%s\t%s\tIN\t%s\t%s\n",fqdn,$$2,$$(NF-1),$$NF)} \
+		/^root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]]+$(patsubst $(5_5_1_PREFIX)%,%,$@)\.net\.$$/{printf("%s\t%s\tIN\tNS\tns.%s\n",fqdn,$$2,fqdn)} \
 		' $(ROOT_SERVERS_NET_UNSIGNED) \
 	| ldns-signzone  -i $(INCEPTION) -e $(EXPIRATION) -o $(patsubst $(5_5_1_PREFIX)%,%,$@) -f $@ - \
 		$(KEYS_DIR)/K$(patsubst $(5_5_1_PREFIX)%,%,$@).ksk $(KEYS_DIR)/K$(patsubst $(5_5_1_PREFIX)%,%,$@).zsk

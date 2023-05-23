@@ -1,4 +1,4 @@
 a.some-servers. 60 IN SOA ns1.a.some-servers. admin.ns1.a.some-servers. 123 1800 900 6054800 60
-a.some-servers. 60 IN NS ns1.a.
+a.some-servers. 60 IN NS ns1.a.some-servers.
 ns1.a.some-servers. 60 IN A 172.21.101.1
 ns1.a.some-servers. 60 IN AAAA fd00::21:101:1

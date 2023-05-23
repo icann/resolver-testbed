@@ -67,7 +67,16 @@
     - name: Set the scenario configuration if given.
       ansible.builtin.include_tasks:
         file: "tasks/set_zone_cfg_scenario_{{ scenario }}.yml"
-      when: scenario is defined
+      vars:
+        letter: "{{ inventory_hostname.split('-') | first }}"
+      when: scenario is defined and (do_variant is not defined or do_variant is false)
+
+    - name: Set the alternative (variant) scenario configuration if given.
+      ansible.builtin.include_tasks:
+        file: "tasks/set_zone_cfg_scenario_{{ scenario }}.1.yml"
+      vars:
+        letter: "{{ inventory_hostname.split('-') | first }}"
+      when: scenario is defined and do_variant is defined and do_variant is true
 
     - name: Copy configuration.
       ansible.builtin.template:

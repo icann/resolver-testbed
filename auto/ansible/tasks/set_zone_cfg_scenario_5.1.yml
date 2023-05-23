@@ -1,0 +1,30 @@
+---
+- name: Set the zones for scenario 5.1 with real IPs (for aj)
+  ansible.builtin.set_fact:
+    zone_cfg:
+      - [".", "{{ ZONE_DIR }}/5.5.1-root"]
+      - ["a.root-servers", "{{ ZONE_DIR }}/5.5.1-a.root-servers"]
+      - ["j.root-servers", "{{ ZONE_DIR }}/5.5.1-j.root-servers"]
+  when: letter == 'aj' and (do_realips is not defined or do_realips is true)
+
+- name: Set the zones for scenario 5.1 without real IPs (for aj)
+  ansible.builtin.set_fact:
+    zone_cfg:
+      - [".", "{{ ZONE_DIR }}/5/root_.zone"]
+      - ["a.some-servers.", "{{ ZONE_DIR }}/5/a.some-servers.zone"]
+      - ["j.some-servers.", "{{ ZONE_DIR }}/5/j.some-servers.zone"]
+  when: letter == 'aj' and do_realips is defined and do_realips is false
+
+- name: Set the zones for scenario 5.1 with real IPs
+  ansible.builtin.set_fact:
+    zone_cfg:
+      - [".", "{{ ZONE_DIR }}/5.5.1-root"]
+      - ["{{ letter }}.root-servers", "{{ ZONE_DIR }}/5.5.1-{{ letter }}.root-servers"]
+  when: do_realips is not defined or do_realips is true
+
+- name: Set the zones for scenario 5.1 without real IPs
+  ansible.builtin.set_fact:
+    zone_cfg:
+      - [".", "{{ ZONE_DIR }}/5/root_.zone"]
+      - ["{{ letter }}.some-servers.", "{{ ZONE_DIR }}/5/{{ letter }}.some-servers.zone"]
+  when: do_realips is defined and do_realips is false

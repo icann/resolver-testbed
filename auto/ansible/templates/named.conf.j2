@@ -1,11 +1,10 @@
 options {
-recursion no;
-empty-zones-enable no;
-listen-on { {{ listen_addrs | join(';') }}; 127.0.0.1; };
-listen-on-v6 { {{ listen_addrs_6 | join(';') }}; ::1; };
-dnssec-enable yes;
-allow-transfer { any; };
+  recursion no;
+  empty-zones-enable no;
+  pid-file "/var/run/named/named.pid";
+  directory "/usr/local/etc/namedb/working";
+  listen-on { {{ listen_addrs[0] }}; {{ listen_addrs[1] }}; };
+  listen-on-v6 { {{ listen_addrs_6[0] }}; {{ listen_addrs_6[1] }}; };
 };
-zone "." { type master; file "root.zone"; };
-zone "p53." { type master; file "p53.zone"; };
-zone "some-servers.p53." { type master; file "some-servers.p53.zone"; };
+zone "net." { type master; file "/root/scenarios/5.{{ scenario }}-net"; };
+

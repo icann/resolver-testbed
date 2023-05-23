@@ -1,4 +1,4 @@
-. 60 IN SOA some-servers. foo.some-servers. 2019080499 1800 900 604800 60
+. 60 IN SOA all-some-servers. foo.all-some-servers. 2019080499 1800 900 604800 60
 aaa. 172800 IN NS ns1.dns.nic.aaa.
 aaa. 172800 IN NS ns2.dns.nic.aaa.
 aaa. 172800 IN NS ns3.dns.nic.aaa.
@@ -17921,30 +17921,30 @@ ns2.telone.co.zw. 172800 IN A 194.133.122.42
 ns2.telone.co.zw. 172800 IN AAAA 2c0f:f758:0:13:0:0:0:42
 . 60 IN DNSKEY 257 3 8 AwEAAc6NJM/J3aH7uMnQErHHtsKyEfUJXFu98YzVYv8UXPa4eHMAaisK SK4szX5CFOcg1OkVPhytcPqr4udM324BLoN5WIn8iPB22RbuUC4LN0Fh QJM2XRaW6lvHjiykDqh7tBm8wpLJGy8YBWixPJQ9udkKYoilFm0GeKgk WudWestYEyEk+gLl5N81gXiKQmeXRTnm26nm1zFRsQQfE1d/yrlDxQen hmcwgs8PAzByjTTyHMsIwWPUi69Lh+AMONeUb8ULj26ynkIfE7uGENwl tWQXkkb0ghEYtyiGfWkMIUG+LxF47gL+dCGj+2gfApR7A4+KSUVnxx3l UZgZ4DgR7z8=
 . 60 IN DNSKEY 256 3 8 AwEAAeglmDFJIcPjnf0ADGwyJ2ETsINH1qPxaNqxtkV/IXBjCec87rAP zZw0yEWBsGfKM1QnfCP3ld0b7nqqAvrdasU3mRXuGcEpANfgDpdscHau wI4CvG1CMs4OihTyJ5wenAC3+JhY74LeZHiQf/4yww0egCPvjJbORzZZ 6tJA3F2qojAX1LoDHCO5t8nArGX9l9SarK2rJ6Lyk51rfjt+MI7kRfHX B9gsry9En0vL9Vo3TObWd4UP1R6oIA1GyRfP+BHGye9hfBRs/1RtbbYx zMKjUD1RqmUaJCXD3cs4NHODxh47+pXzvylMsLLkXmIvsiAvB2eO8KKi Acfvoq/+8+U=
-. 60 IN NS some-servers.
-some-servers. 60 IN A 172.21.101.1
-some-servers. 60 IN A 172.21.102.1
-some-servers. 60 IN A 172.21.103.1
-some-servers. 60 IN A 172.21.104.1
-some-servers. 60 IN A 172.21.105.1
-some-servers. 60 IN A 172.21.106.1
-some-servers. 60 IN A 172.21.107.1
-some-servers. 60 IN A 172.21.108.1
-some-servers. 60 IN A 172.21.109.1
-some-servers. 60 IN A 172.21.110.1
-some-servers. 60 IN A 172.21.111.1
-some-servers. 60 IN A 172.21.112.1
-some-servers. 60 IN A 172.21.113.1
-some-servers. 60 IN AAAA fd00::21:101:1
-some-servers. 60 IN AAAA fd00::21:102:1
-some-servers. 60 IN AAAA fd00::21:103:1
-some-servers. 60 IN AAAA fd00::21:104:1
-some-servers. 60 IN AAAA fd00::21:105:1
-some-servers. 60 IN AAAA fd00::21:106:1
-some-servers. 60 IN AAAA fd00::21:107:1
-some-servers. 60 IN AAAA fd00::21:108:1
-some-servers. 60 IN AAAA fd00::21:109:1
-some-servers. 60 IN AAAA fd00::21:110:1
-some-servers. 60 IN AAAA fd00::21:111:1
-some-servers. 60 IN AAAA fd00::21:112:1
-some-servers. 60 IN AAAA fd00::21:113:1
+. 60 IN NS all-some-servers.
+all-some-servers. 60 IN A 172.21.101.1
+all-some-servers. 60 IN A 172.21.102.1
+all-some-servers. 60 IN A 172.21.103.1
+all-some-servers. 60 IN A 172.21.104.1
+all-some-servers. 60 IN A 172.21.105.1
+all-some-servers. 60 IN A 172.21.106.1
+all-some-servers. 60 IN A 172.21.107.1
+all-some-servers. 60 IN A 172.21.108.1
+all-some-servers. 60 IN A 172.21.109.1
+all-some-servers. 60 IN A 172.21.110.1
+all-some-servers. 60 IN A 172.21.111.1
+all-some-servers. 60 IN A 172.21.112.1
+all-some-servers. 60 IN A 172.21.113.1
+all-some-servers. 60 IN AAAA fd00::21:101:1
+all-some-servers. 60 IN AAAA fd00::21:102:1
+all-some-servers. 60 IN AAAA fd00::21:103:1
+all-some-servers. 60 IN AAAA fd00::21:104:1
+all-some-servers. 60 IN AAAA fd00::21:105:1
+all-some-servers. 60 IN AAAA fd00::21:106:1
+all-some-servers. 60 IN AAAA fd00::21:107:1
+all-some-servers. 60 IN AAAA fd00::21:108:1
+all-some-servers. 60 IN AAAA fd00::21:109:1
+all-some-servers. 60 IN AAAA fd00::21:110:1
+all-some-servers. 60 IN AAAA fd00::21:111:1
+all-some-servers. 60 IN AAAA fd00::21:112:1
+all-some-servers. 60 IN AAAA fd00::21:113:1

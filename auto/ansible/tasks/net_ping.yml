@@ -1,7 +1,7 @@
 ---
 - name: "{{ title | default('Test network reachability.') }}"
   ansible.builtin.command:
-    cmd: "{{ this_ping }} -l 2 -c 1 {{ this_timeout }} {{ this_src }} {{ this_frag }} {{ item }}"
+    cmd: "{{ this_ping }} -l 10 -c 1 {{ this_timeout }} {{ this_src }} {{ this_frag }} {{ item }}"
   vars:
     this_timeout: "{% if system.network in ['freebsd', 'netbsd'] %} -t {% else %} -W {% endif %} 1"
     this_ping: "ping{{ version == 6 and '6' or '' }}"

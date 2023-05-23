@@ -1,0 +1,30 @@
+---
+  - name: (Systemd) Set rc.local.
+    ansible.builtin.template:
+      src: "{{ rc_template }}"
+      dest: /root/rc.local
+      owner: root
+      group: root
+      mode: "u+x"
+
+  # - name: (Systemd) Source rc.local.
+  #   ansible.builtin.shell:
+  #     cmd: ". /root/rc.local"
+
+  - name: (Systemd) Install rc.local as a systemd service.
+    ansible.builtin.copy:
+      src: files/systemd-rc.local.service
+      dest: /lib/systemd/system/local-rc.local.service
+    register: installed
+
+  - name: (Systemd) Reload systemd module.
+    ansible.builtin.systemd:
+      daemon_reload: true
+    when: installed is changed
+
+  - name: (Systemd) Enable the service.
+    ansible.builtin.systemd:
+      name: local-rc.local.service
+      enabled: true
+      state: restarted
+    when: installed is changed

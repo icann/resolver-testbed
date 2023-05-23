@@ -26,14 +26,12 @@
   - ansible.builtin.include_tasks:
       file: tasks/network_restart_centos.yml
 
-  - name: (CentoOS) Set rc.local.
-    ansible.builtin.template:
-      src: templates/rc.local_linux.j2
-      dest: /etc/rc.local
-      owner: root
-      group: root
-      mode: "u+x"
+  - name: (CentOS) Create /var/log/journal to circumvent broken systemd-journal-flush.service.
+    ansible.builtin.file:
+      path: /var/log/journal
+      state: directory
 
-  - name: (CentoOS) Source rc.local.
-    ansible.builtin.shell:
-      cmd: ". /etc/rc.local"
+  - ansible.builtin.include_tasks:
+      file: "tasks/install_rc.local_{{ system.service }}.yml"
+    vars:
+      rc_template: "templates/rc.local_linux.j2"

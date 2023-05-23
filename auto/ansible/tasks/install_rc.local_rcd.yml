@@ -6,6 +6,6 @@
       owner: root
       mode: "u+x"
 
-  - name: (Systemd) Source rc.local.
+  - name: (Rc.d) Source rc.local.
     ansible.builtin.shell:
       cmd: ". /etc/rc.local"

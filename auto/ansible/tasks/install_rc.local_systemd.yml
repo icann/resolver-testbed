@@ -6,6 +6,7 @@
       owner: root
       group: root
       mode: "u+x"
+    register: was_changed
 
   - name: (Systemd) Install rc.local as a systemd service.
     ansible.builtin.copy:
@@ -23,4 +24,4 @@
       name: local-rc.local.service
       enabled: true
       state: restarted
-    when: installed is changed
+    when: was_changed is changed or installed is changed

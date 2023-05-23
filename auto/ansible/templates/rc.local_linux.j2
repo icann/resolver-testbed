@@ -6,6 +6,7 @@
 ip link set {{ n.name }} mtu {{ n.v4.mtu }}
 {% endif %}
 {% if n.v6.mtu is defined %}
+echo 0 > /proc/sys/net/ipv6/conf/{{ n.sysctl_name | default(n.name) }}/accept_ra_mtu
 echo {{ n.v6.mtu }} > /proc/sys/net/ipv6/conf/{{ n.sysctl_name | default(n.name) }}/mtu
 {% endif %}
 {% endfor %}

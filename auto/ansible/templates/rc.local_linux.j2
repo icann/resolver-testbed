@@ -14,14 +14,14 @@ echo {{ n.v6.mtu }} > /proc/sys/net/ipv6/conf/{{ n.sysctl_name | default(n.name)
 {% endif %}
 
 {% if n.v4.mss is defined and n.v4.static_routes is defined %}
-{% for r in n.static_routes
+{% for r in n.static_routes %}
 # Set MSS for {{ r.network }}
 ip route change {{ r.network }} advmss {{ n.v4.mss }}
 {% endfor %}
 {% endif %}
 
 {% if n.v6.mss is defined and n.v6.static_routes is defined %}
-{% for r in n.static_routes
+{% for r in n.static_routes %}
 # Set MSS for {{ r.network }}
 ip route change {{ r.network }} advmss {{ n.v6.mss }}
 {% endfor %}

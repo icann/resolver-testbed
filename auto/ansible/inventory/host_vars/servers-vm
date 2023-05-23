@@ -12,7 +12,7 @@ memory: 2048
 system:
   network: freebsd
   package: freebsd
-  service: systemd
+  service: rcd
 
 # (Vagrant) network configuration
 network_configuration:

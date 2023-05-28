@@ -1,5 +1,29 @@
----
 # This playbook configures the gateway-vm to do loadbalancing;
+# All the logic in how the root server IPs are forwarded to simulated
+# root (and .net) servers is in the template definition:
+#
+#   templates/full_loadbalance_file.json.j2
+#
+#   - If only one root-server is configured, all root-server ip addresses
+#     will be directed to that root-server.
+#
+#   - If no root-server is configured, all root-server ip addresses will be
+#     directed to servers-vm ip addresses.
+#
+#   - One specific root-server can be explicitly selected by specifying the
+#     name in the test_host variable.
+#
+#   - If the test_host variable is set to an empty string, all root-server
+#     ip addresses will be directed to servers-vm ip addresses.
+#
+#   - If the test_host variable is set to "<ipv4>,<ipv6>", then all addresses
+#     will be directed to those IP addresses.
+#
+#  Note that variables can be set with the --extra-vars parameter to
+#  ansible-playbook. For example:
+#
+#      ansible-playbook --extra-vars="test_host=b-linux"
+---
 - hosts: gateway-vm
   gather_facts: false
   become: true

@@ -12,6 +12,9 @@
  #   - If the test_host variable is set to an empty string, all root-server
  #     ip addresses will be directed to servers-vm ip addresses.
  #
+ #   - If the test_host variable is set to "<ipv4>,<ipv6>", then all addresses
+ #     will be directed to those IP addresses.
+ #
  #  Note that variables can be set with the --extra-vars parameter to
  #  ansible-playbook. For example:
  #
@@ -22,19 +25,24 @@
 {% if test_host is defined %}
 {%   set ips = namespace(v4s = [], v6s = []) %}
 {%   if test_host|length > 0 %}
-{%     for network in hostvars[test_host]['network_configuration']['networks'] %}
-{%       if network['v4'] is defined %}
-{%         set _dummy = ips.v4s.extend(network['v4']['alias']) %}
+{%     if ',' in test_host %}
+{%       set _dummy = ns.v4s.update({ 'x': [test_host.split(',')[0]] }) %}
+{%       set _dummy = ns.v6s.update({ 'x': [test_host.split(',')[1]] }) %}
+{%     else %}
+{%       for network in hostvars[test_host]['network_configuration']['networks'] %}
+{%         if network['v4'] is defined %}
+{%           set _dummy = ips.v4s.extend(network['v4']['alias']) %}
+{%         endif %}
+{%         if network['v6'] is defined %}
+{%           set _dummy = ips.v6s.extend(network['v6']['alias']) %}
+{%         endif %}
+{%       endfor %}
+{%       if ips.v4s|count > 0 %}
+{%         set _dummy = ns.v4s.update({ test_host[0]: ips.v4s }) %}
 {%       endif %}
-{%       if network['v6'] is defined %}
-{%         set _dummy = ips.v6s.extend(network['v6']['alias']) %}
+{%       if ips.v6s|count > 0 %}
+{%         set _dummy = ns.v6s.update({ test_host[0]: ips.v6s }) %}
 {%       endif %}
-{%     endfor %}
-{%     if ips.v4s|count > 0 %}
-{%       set _dummy = ns.v4s.update({ test_host[0]: ips.v4s }) %}
-{%     endif %}
-{%     if ips.v6s|count > 0 %}
-{%       set _dummy = ns.v6s.update({ test_host[0]: ips.v6s }) %}
 {%     endif %}
 {%   endif %}
 {% else %}
@@ -178,7 +186,7 @@
     , "scheduler": "rr"
     , "state": "up"
     , "backends":
-      [ { "name": "{{ letter }}1", "ip-addr": "fd00::21:{{ number }}:2", "state": "up" } ]
+      [ { "name": "{{ letter }}1", "ip-addr": "fd00::21:{{ number }}:1", "state": "up" } ]
     }
 {%   endif %}
 {% endfor %}

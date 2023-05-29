@@ -65,6 +65,38 @@
         name: meson
         executable: pip3
 
+    - name: Create directory trust anchors
+      file:
+        path: /usr/share/dns
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Install default root.key
+      ansible.builtin.copy:
+        src: "files/scenarios/keys/K.+008+47944.key"
+        dest: "/usr/share/dns/root.key"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Install bind.keys
+      ansible.builtin.copy:
+        src: "files/bind.keys"
+        dest: "/usr/share/dns/bind.keys"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Install pdns.lua
+      ansible.builtin.copy:
+        src: "files/pdns.lua"
+        dest: "/usr/share/dns/pdns.lua"
+        owner: root
+        group: root
+        mode: 0644
+
     - ansible.builtin.import_tasks:
         file: tasks/inception/incept.yml
       vars:

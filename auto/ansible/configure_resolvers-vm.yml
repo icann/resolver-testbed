@@ -34,15 +34,10 @@
           state: directory
           mode: '0755'
           
-      - name: Copy bind.keys
-        ansible.builtin.copy:
-          src: files/bind.keys
-          dest: "{{ this_target_dir }}/etc/bind.keys"
-
       - name: Install (templated) {{ software_sname }}.conf
         ansible.builtin.template:
           src: "templates/resolvers/{{ software_sname }}.conf.j2"
-          dest: "{{ this_target_dir }}/etc/{{ software_sname }}/{{ software_sname }}.conf"
+          dest: "{{ this_target_dir }}/etc/{{ software_sname }}/{% if software_sname == 'pdns' %}recursor{% else %}{{ software_sname }}{% endif %}.conf"
 
       - ansible.builtin.include_tasks:
           file: "tasks/install_server_service_systemd.yml"

@@ -5,10 +5,5 @@ server:
 	access-control: 0.0.0.0/0 allow
 	chroot: ""
 	username: ""
-	trusted-keys-file: "{{ this_target_dir }}/etc/bind.keys"
-#	root-hints: "/usr/share/dns/root.hints"
-
-#remote-control:
-#	control-enable: yes
-#	control-interface: {{ listen_ipv4 }}
+	trust-anchor-file: "/usr/share/dns/root.key"
 

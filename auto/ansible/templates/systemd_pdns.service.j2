@@ -1,0 +1,12 @@
+[Unit]
+Description={{ service_name }} service
+After=syslog.target network-online.target
+
+[Service]
+ExecStart={{ software_target_dir }}/usr/local/sbin/pdns_recursor --daemon=no --write-pid=no --disable-syslog --config-dir={{ software_target_dir }}/etc/pdns
+Type=simple
+Restart=on-failure
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target

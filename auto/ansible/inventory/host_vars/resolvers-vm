@@ -124,6 +124,9 @@ build_config:
           dest: "."
         - src: "files/pdns_patches/4_0_9/reqresp.cpp"
           dest: "./ext/yahttp/yahttp/"
+      listen_ipv4: 172.20.0.43
+      outgoing_ipv4: 172.20.0.43
+      outgoing_ipv6: fd00::20:0:43
     - name: pdns-recursor-4.1.15
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.1.15.tar.bz2"
       make_str: "pdns4make"
@@ -134,6 +137,9 @@ build_config:
           dest: "."
         - src: "files/pdns_patches/4_1_15/reqresp.cpp"
           dest: "./ext/yahttp/yahttp/"
+      listen_ipv4: 172.20.0.44
+      outgoing_ipv4: 172.20.0.44
+      outgoing_ipv6: fd00::20:0:44
     - name: pdns-recursor-4.2.1
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.2.1.tar.bz2"
       make_str: "pdns4make"
@@ -144,6 +150,9 @@ build_config:
           dest: "."
         - src: "files/pdns_patches/4_2_1/reqresp.cpp"
           dest: "./ext/yahttp/yahttp/"
+      listen_ipv4: 172.20.0.45
+      outgoing_ipv4: 172.20.0.45
+      outgoing_ipv6: fd00::20:0:45
     - name: unbound-1.5.10
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.5.10.tar.gz"
       make_str: "unboundmake"

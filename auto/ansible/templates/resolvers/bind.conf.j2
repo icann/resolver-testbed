@@ -5,7 +5,7 @@ options {
   empty-zones-enable no;
   directory      "{{ this_target_dir }}/etc/bind/";
   pid-file       "{{ this_target_dir }}/etc/bind/bind.pid";
-  bindkeys-file  "{{ this_target_dir }}/etc/bind.keys";
+  bindkeys-file  "/usr/share/dns/bind.keys";
 
   listen-on     { {{ listen_ipv4 }}; };
   listen-on-v6  { none; };

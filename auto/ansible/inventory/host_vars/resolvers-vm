@@ -67,32 +67,53 @@ build_config:
     - name: bind-9.9.11
       url: "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz"
       make_str: "bind9make"
+      listen_ipv4: 172.20.0.23
+      outgoing_ipv4: 172.20.0.23
+      outgoing_ipv6: fd00::20:0:23
     - name: bind-9.10.8
       url: "https://ftp.isc.org/isc/bind9/9.10.8/bind-9.10.8.tar.gz"
       make_str: "bind9make"
+      listen_ipv4: 172.20.0.24
+      outgoing_ipv4: 172.20.0.24
+      outgoing_ipv6: fd00::20:0:24
     - name: bind-9.11.6
       url: "https://ftp.isc.org/isc/bind9/9.11.6/bind-9.11.6.tar.gz"
       make_str: "bind9make"
+      listen_ipv4: 172.20.0.25
+      outgoing_ipv4: 172.20.0.25
+      outgoing_ipv6: fd00::20:0:25
     - name: bind-9.12.4
       url: "https://ftp.isc.org/isc/bind9/9.12.4/bind-9.12.4.tar.gz"
       make_str: "bind9make"
+      listen_ipv4: 172.20.0.26
+      outgoing_ipv4: 172.20.0.26
+      outgoing_ipv6: fd00::20:0:26
     - name: bind-9.13.7
       url: "https://ftp.isc.org/isc/bind9/9.13.7/bind-9.13.7.tar.gz"
       make_str: "bind9make"
+      listen_ipv4: 172.20.0.27
+      outgoing_ipv4: 172.20.0.27
+      outgoing_ipv6: fd00::20:0:27
     - name: bind-9.14.10
       url: "https://ftp.isc.org/isc/bind9/9.14.10/bind-9.14.10.tar.gz"
       make_str: "bind9make"
+      listen_ipv4: 172.20.0.28
+      outgoing_ipv4: 172.20.0.28
+      outgoing_ipv6: fd00::20:0:28
     - name: bind-9.15.8
       url: "https://ftp.isc.org/isc/bind9/9.15.8/bind-9.15.8.tar.xz"
       make_str: "bind9make"
+      listen_ipv4: 172.20.0.29
+      outgoing_ipv4: 172.20.0.29
+      outgoing_ipv6: fd00::20:0:29
     # XXX This needs fixing
-    - name: knot-resolver-4.1.0
-      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.1.0.tar.xz"
-      make_str: "knotmake"
+#    - name: knot-resolver-4.1.0
+#      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-4.1.0.tar.xz"
+#      make_str: "knotmake"
     # XXX This needs fixing
-    - name: knot-resolver-5.0.0
-      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.0.0.tar.xz"
-      make_str: "knotmake"
+#    - name: knot-resolver-5.0.0
+#      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.0.0.tar.xz"
+#      make_str: "knotmake"
     - name: pdns-recursor-4.0.9
       url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
       make_str: "pdns4make"

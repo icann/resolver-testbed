@@ -1,0 +1,15 @@
+controls { };
+
+options {
+  recursion yes;
+  empty-zones-enable no;
+  directory      "{{ this_target_dir }}/etc/bind/";
+  pid-file       "{{ this_target_dir }}/etc/bind/bind.pid";
+  bindkeys-file  "{{ this_target_dir }}/etc/bind.keys";
+
+  listen-on     { {{ listen_ipv4 }}; };
+  listen-on-v6  { none; };
+  query-source    {{ outgoing_ipv4 }};
+  query-source-v6 {{ outgoing_ipv6 }};
+};
+

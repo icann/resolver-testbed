@@ -7,14 +7,47 @@
     software_target_dir: "{{ BUILD_TARGET_DIR }}"
     software_build_config: "{{ build_config }}"
   tasks:
-    - ansible.builtin.import_tasks:
-        file: tasks/read_build_configuration.yml
+  - ansible.builtin.import_tasks:
+      file: tasks/read_build_configuration.yml
 
 - hosts: resolvers_vm_build_group 
   gather_facts: false
   become: true
-  vars:
-    on_host: resolvers-vm
   tasks:
-    - ansible.builtin.import_tasks:
-        file: tasks/configure_resolver.yml
+  - name: Per software configuration tasks.
+    delegate_to: resolvers-vm
+    vars:
+      this_source_dir: "{{ BUILD_SOURCE_DIR }}/{{ software_name }}"
+      this_target_dir: "{{ BUILD_TARGET_DIR }}/{{ software_name }}"
+    block:
+    - name: Check if we already built the source.
+      ansible.builtin.stat:
+        path: "{{ this_target_dir }}/.compiled.this"
+      register: software_compiled
+
+    - name: Configure compiled software
+      when: software_compiled.stat.exists and ready2run
+      block:
+      - name: Create {{ this_target_dir }}/etc/{{ software_sname }} directory
+        ansible.builtin.file:
+          path: "{{ this_target_dir }}/etc/{{ software_sname }}"
+          state: directory
+          mode: '0755'
+          
+      - name: Copy bind.keys
+        ansible.builtin.copy:
+          src: files/bind.keys
+          dest: "{{ this_target_dir }}/etc/bind.keys"
+
+      - name: Install (templated) {{ software_sname }}.conf
+        ansible.builtin.template:
+          src: "templates/resolvers/{{ software_sname }}.conf.j2"
+          dest: "{{ this_target_dir }}/etc/{{ software_sname }}/{{ software_sname }}.conf"
+
+      - ansible.builtin.include_tasks:
+          file: "tasks/install_server_service_systemd.yml"
+        vars:
+          software_type: "{{ software_sname }}"
+          software_target_dir: "{{ this_target_dir }}"
+          n_cpus: 1
+

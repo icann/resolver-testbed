@@ -65,22 +65,6 @@
         name: meson
         executable: pip3
 
-    - name: Create directory for root.hints
-      file:
-        path: /usr/share/dns
-        state: directory
-        owner: root
-        group: root
-        mode: 0755
-
-    - name: Install default root.hints
-      ansible.builtin.copy:
-        src: "files/root.hints"
-        dest: "/usr/share/dns/root.hints"
-        owner: root
-        group: root
-        mode: 0644
-
     - ansible.builtin.import_tasks:
         file: tasks/inception/incept.yml
       vars:

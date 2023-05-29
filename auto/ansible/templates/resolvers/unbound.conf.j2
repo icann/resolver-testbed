@@ -2,12 +2,13 @@ server:
 	interface: {{ listen_ipv4 }}
         outgoing-interface: {{ outgoing_ipv4 }}
         outgoing-interface: {{ outgoing_ipv6 }}
-	access-control: 127.0.0.1/24 allow
+	access-control: 0.0.0.0/0 allow
 	chroot: ""
 	username: ""
+	trusted-keys-file: "{{ this_target_dir }}/etc/bind.keys"
 #	root-hints: "/usr/share/dns/root.hints"
 
-remote-control:
-	control-enable: yes
-	control-interface: {{ listen_ipv4 }}
+#remote-control:
+#	control-enable: yes
+#	control-interface: {{ listen_ipv4 }}
 

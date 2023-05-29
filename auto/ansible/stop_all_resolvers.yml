@@ -7,15 +7,17 @@
     software_target_dir: "{{ BUILD_TARGET_DIR }}"
     software_build_config: "{{ build_config }}"
   tasks:
-    - ansible.builtin.import_tasks:
-        file: tasks/read_build_configuration.yml
+  - ansible.builtin.import_tasks:
+      file: tasks/read_build_configuration.yml
 
 - hosts: resolvers_vm_build_group 
   gather_facts: false
   become: true
-  vars:
-    on_host: resolvers-vm
   tasks:
-    - ansible.builtin.import_tasks:
-        file: tasks/stop_resolver.yml
+  - name: Stop {{ software_name }}
+    ansible.builtin.service:
+      name: "{{ service_name }}"
+      state: stopped
+    when: ready2run
+    delegate_to: resolvers-vm
 

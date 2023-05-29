@@ -147,31 +147,31 @@ build_config:
     - name: unbound-1.5.10
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.5.10.tar.gz"
       make_str: "unboundmake"
-      listen_ipv4: 127.0.0.3
+      listen_ipv4: 172.20.0.3
       outgoing_ipv4: 172.20.0.3
       outgoing_ipv6: fd00::20:0:3
     - name: unbound-1.6.8
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.6.8.tar.gz"
       make_str: "unboundmake"
-      listen_ipv4: 127.0.0.4
+      listen_ipv4: 172.20.0.4
       outgoing_ipv4: 172.20.0.4
       outgoing_ipv6: fd00::20:0:4
     - name: unbound-1.7.3
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.7.3.tar.gz"
       make_str: "unboundmake"
-      listen_ipv4: 127.0.0.5
+      listen_ipv4: 172.20.0.5
       outgoing_ipv4: 172.20.0.5
       outgoing_ipv6: fd00::20:0:5
     - name: unbound-1.8.3
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.8.3.tar.gz"
       make_str: "unboundmake"
-      listen_ipv4: 127.0.0.6
+      listen_ipv4: 172.20.0.6
       outgoing_ipv4: 172.20.0.6
       outgoing_ipv6: fd00::20:0:6
     - name: unbound-1.9.6
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.9.6.tar.gz"
       make_str: "unboundmake"
-      listen_ipv4: 127.0.0.7
+      listen_ipv4: 172.20.0.7
       outgoing_ipv4: 172.20.0.7
       outgoing_ipv6: fd00::20:0:7
 

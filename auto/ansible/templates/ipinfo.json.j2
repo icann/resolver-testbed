@@ -1,0 +1,25 @@
+{% set ns = namespace(ips = dict()) %}
+{% for rs in  groups.root_servers %}
+{%   for x in hostvars[rs].build_config.software | selectattr('name') | zip(hostvars[rs].network_configuration.networks.0.v4.alias | map('dirname')| zip(hostvars[rs].network_configuration.networks.0.v6.alias | map('dirname'))) %}
+{%     set d = { 'host': rs, 'software': x.0.name, 'ipv4': x.1.0, 'ipv6': x.1.1 } %}
+{%     set _dummy = ns.ips.update({ x.1.0: d }) %}
+{%     set _dummy = ns.ips.update({ x.1.1: d }) %}
+{%   endfor %}
+{% endfor %}
+{% for letter, v in root_letters.items() %}
+{%  set d = { 'host': 'rs', 'software': '*', 'ipv4': v.ipv4, 'ipv6': v.ipv6 } %}
+{%  set _dummy = ns.ips.update({ v.ipv4: d }) %}
+{%  set _dummy = ns.ips.update({ v.ipv6: d }) %}
+{% endfor %}
+{% for sw in hostvars['resolvers-vm'].build_config.software %}
+{%  if 'outgoing_ipv4' in sw %}
+{%    set d = { 'host': 'resolvers-vm', 'software': sw.name, 'ipv4': sw.outgoing_ipv4, 'ipv6': sw.outgoing_ipv6 } %}
+{%    set _dummy = ns.ips.update({ sw.outgoing_ipv4: d }) %}
+{%    set _dummy = ns.ips.update({ sw.outgoing_ipv6: d }) %}
+{%  endif %}
+{% endfor %}
+{% set d = { 'host': 'servers-vm', 'software': 'bind-9.16.40', 'ipv4': '172.21.0.2', 'ipv6': 'fd00::21:0:2' } %}
+{% set _dummy = ns.ips.update({ d.ipv4: d }) %}
+{% set _dummy = ns.ips.update({ d.ipv6: d }) %}
+{% set d = { 'host': 'servers-vm', 'software': 'bind-9.16.40', 'ipv4': '185.49.142.30', 'ipv6': 'fd00::21:0:2' } %}
+{{ ns.ips }}

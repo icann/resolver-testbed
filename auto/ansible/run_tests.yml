@@ -74,6 +74,13 @@
     when: ready2run
     delegate_to: resolvers-vm
 
+- hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait a second or two
+    command: sleep 20
+
 - hosts: resolvers_vm_build_group 
   gather_facts: false
   become: true
@@ -89,7 +96,7 @@
   become: false
   tasks:
   - name: Wait a second or two
-    command: sleep 30
+    command: sleep 70
 
 - hosts: gateway-vm
   gather_facts: false
@@ -121,10 +128,17 @@
       patterns: '*.pcap'
     register: files
 
+  - name: Fetch latest capture (generic)
+    ansible.builtin.fetch:
+      src: '{{ (files.files | sort(attribute="mtime", reverse=true) | first).path }}'
+      dest: 'captures/{{ (files.files | sort(attribute="mtime", reverse=true) | first).path | basename | splitext | first }}.pcap'
+      flat: true
+    when: files.files|count > 0 and cap_name is not defined
+
   - name: Fetch latest capture
     ansible.builtin.fetch:
       src: '{{ (files.files | sort(attribute="mtime", reverse=true) | first).path }}'
-      dest: 'captures/resolvers-5.1__{{ (files.files | sort(attribute="mtime", reverse=true) | first).path | basename | splitext | first }}.pcap'
+      dest: 'captures/{{ cap_name }}__{{ (files.files | sort(attribute="mtime", reverse=true) | first).path | basename | splitext | first }}.pcap'
       flat: true
-    when: files.files|count > 0
+    when: files.files|count > 0 and cap_name is defined
 

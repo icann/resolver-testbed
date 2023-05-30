@@ -22,4 +22,4 @@
 {% set _dummy = ns.ips.update({ d.ipv4: d }) %}
 {% set _dummy = ns.ips.update({ d.ipv6: d }) %}
 {% set d = { 'host': 'servers-vm', 'software': 'bind-9.16.40', 'ipv4': '185.49.142.30', 'ipv6': 'fd00::21:0:2' } %}
-{{ ns.ips }}
+{{ ns.ips|tojson }}

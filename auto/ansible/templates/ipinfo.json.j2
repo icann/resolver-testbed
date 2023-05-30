@@ -7,7 +7,7 @@
 {%   endfor %}
 {% endfor %}
 {% for letter, v in root_letters.items() %}
-{%  set d = { 'host': 'rs', 'software': '*', 'ipv4': v.ipv4, 'ipv6': v.ipv6 } %}
+{%  set d = { 'host': 'gateway-vm', 'software': letter, 'ipv4': v.ipv4, 'ipv6': v.ipv6 } %}
 {%  set _dummy = ns.ips.update({ v.ipv4: d }) %}
 {%  set _dummy = ns.ips.update({ v.ipv6: d }) %}
 {% endfor %}
@@ -21,5 +21,13 @@
 {% set d = { 'host': 'servers-vm', 'software': 'bind-9.16.40', 'ipv4': '172.21.0.2', 'ipv6': 'fd00::21:0:2' } %}
 {% set _dummy = ns.ips.update({ d.ipv4: d }) %}
 {% set _dummy = ns.ips.update({ d.ipv6: d }) %}
-{% set d = { 'host': 'servers-vm', 'software': 'bind-9.16.40', 'ipv4': '185.49.142.30', 'ipv6': 'fd00::21:0:2' } %}
+{% set d = { 'host': 'servers-vm', 'software': 'bind-9.16.40', 'ipv4': '185.49.142.30', 'ipv6': '2a04:b907::30' } %}
+{% set _dummy = ns.ips.update({ d.ipv4: d }) %}
+{% set _dummy = ns.ips.update({ d.ipv6: d }) %}
+{% set d = { 'host': 'a.iana-servers.net', 'software': '?', 'ipv4': '199.43.135.53', 'ipv6': '2001:500:8f::53' } %}
+{% set _dummy = ns.ips.update({ d.ipv4: d }) %}
+{% set _dummy = ns.ips.update({ d.ipv6: d }) %}
+{% set d = { 'host': 'b.iana-servers.net', 'software': '?', 'ipv4': '199.43.133.53', 'ipv6': '2001:500:8d::53' } %}
+{% set _dummy = ns.ips.update({ d.ipv4: d }) %}
+{% set _dummy = ns.ips.update({ d.ipv6: d }) %}
 {{ ns.ips|tojson }}

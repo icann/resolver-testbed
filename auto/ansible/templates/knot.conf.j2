@@ -15,9 +15,11 @@ template:
     global-module: mod-cookies
 {% endif %}
 
+{% if cfg.cookie is defined %}
 mod-cookies:
     - id: default
       secret: 0xdeadbeefdeadbeefdeadbeefdeadbeef
+{% endif %}
 
 {% if zone_cfg is defined %}
 zone:

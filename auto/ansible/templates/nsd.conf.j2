@@ -10,9 +10,9 @@ server:
 {% if cfg.minimal_responses is defined %}
     minimal-responses: {{ cfg.minimal_responses }}
 {% endif %}
-    cookie-secret: "deadbeefdeadbeefdeadbeefdeadbeef"
 {% if cfg.cookie is defined %}
     answer-cookie: {{ cfg.cookie }}
+    cookie-secret: "deadbeefdeadbeefdeadbeefdeadbeef"
 {% endif %}
 {% if cfg.v4_edns_size is defined %}
     ipv4-edns-size: {{ cfg.v4_edns_size }}

@@ -19,30 +19,6 @@
         name: tcpdumpd
         state: stopped
 
-- hosts: servers-vm
-  gather_facts: false
-  become: true
-  vars:
-    scenario: 2
-    implementation: "{{ nameservers | first }}"
-    do_realips: true
-  tasks:
-    - name: Stop any still running nameservers
-      ansible.builtin.service:
-        name: "{{ item.service }}"
-        state: 'stopped'
-      loop: "{{ nameservers }}"
-
-    - name: Configure {{ implementation.name }} for scenario 5.{{ scenario }}
-      ansible.builtin.template:
-        src: "templates/rssac028-appendix-a/{{ implementation.service }}.conf.j2"
-        dest: "{{ implementation.config_file }}"
-    
-    - name: Start {{ implementation.name }}
-      ansible.builtin.service:
-        name: "{{ implementation.service }}"
-        state: 'started'
-    
 - hosts: resolvers_vm_build_group 
   gather_facts: false
   become: true
@@ -79,7 +55,7 @@
   become: false
   tasks:
   - name: Wait a second or two
-    command: sleep 20
+    command: sleep 5
 
 - hosts: resolvers_vm_build_group 
   gather_facts: false
@@ -87,16 +63,16 @@
   tasks:
   - name: Do query
     ansible.builtin.shell:
-      cmd: dig @{{ listen_ipv4 }} example.net +timeout=5
+      cmd: dig @{{ listen_ipv4 }} example. +timeout=15
     when: ready2run
-    delegate_to: resolvers-vm
+    delegate_to: gateway-vm
 
 - hosts: localhost
   gather_facts: false
   become: false
   tasks:
   - name: Wait a second or two
-    command: sleep 70
+    command: sleep 5
 
 - hosts: gateway-vm
   gather_facts: false

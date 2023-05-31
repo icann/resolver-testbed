@@ -53,13 +53,11 @@
     ansible.posix.synchronize:
       src: files/scenarios/
       dest: /root/scenarios
-    when: scenario | int == 1 or scenario | int == 2
 
-  - name: Configure bind on servers-vm for .net zone
+  - name: Configure bind on servers-vm for .net and example. zone
     ansible.builtin.template:
       src: "templates/named.conf.j2"
       dest: /usr/local/etc/namedb/named.conf
-    when: scenario | int == 1 or scenario | int == 2
 
   - name: Stop nameservers on servers-vm
     ansible.builtin.service:
@@ -67,11 +65,10 @@
       state: stopped
     loop: [ 'knot', 'nsd', 'named' ]
 
-  - name: Start bind on servers-vm for .net zone
+  - name: Start bind on servers-vm for .net and example. zone
     ansible.builtin.service:
       name: named
       state: started
-    when: do_realips is true and (scenario | int == 1 or scenario | int == 2)
 
 - hosts: root_servers
   gather_facts: false

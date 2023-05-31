@@ -11,8 +11,13 @@ server:
 template:
   - id: default
     storage: ""
-    global-module: {% if cfg.cookie is defined %}mod-cookies {% endif %}
+{% if (cfg.cookie | default('no')) == 'yes' %}
+    global-module: mod-cookies
+{% endif %}
 
+mod-cookies:
+    - id: default
+      secret: 0xdeadbeefdeadbeefdeadbeefdeadbeef
 
 {% if zone_cfg is defined %}
 zone:

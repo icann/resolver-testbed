@@ -10,6 +10,7 @@ version "{{ software_name }}/{{ inventory_hostname }}";
 {% if cfg.minimal_responses is defined %}
 minimal-responses {{ cfg.minimal_responses }};
 {% endif %}
+cookie-secret "deadbeefdeadbeefdeadbeefdeadbeef";
 {% if cfg.cookie is defined %}
 answer-cookie {{ cfg.cookie }};
 {% endif %}

@@ -5,8 +5,7 @@ After=syslog.target network-online.target
 [Service]
 Type=forking
 PIDFile={{ software_target_dir }}/etc/bind/bind.pid
-ExecStart={{ software_target_dir }}/sbin/named -c {{ software_target_dir }}/etc/bind/bind.conf{% if n_cpus is defined %} -n {{ n_cpus }}
-{% endif %}
+ExecStart={{ software_target_dir }}/sbin/named {% if n_cpus is defined %} -n {{ n_cpus }} {% endif %} -c {{ software_target_dir }}/etc/bind/bind.conf
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStop=/bin/kill -TERM $MAINPID
 

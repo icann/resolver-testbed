@@ -20468,3 +20468,6 @@ aaa.	172800	IN	NS	c.nic.aaa.
 aaa.	172800	IN	NS	b.nic.aaa.
 aaa.	172800	IN	NS	a.nic.aaa.
 .	518400	IN	NS	root-servers.
+example.	172800	IN	NS	ns.example.
+ns.example.	172800	IN	A	185.49.142.30
+ns.example.	172800	IN	AAAA	2a04:b907::30

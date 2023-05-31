@@ -25,6 +25,16 @@ NET_NS_DNAME="a.some-servers.net."
 NET_NS_IPv4="185.49.142.30"
 NET_NS_IPv6="2a04:b907::30"
 
+EXAMPLE="example"
+EXAMPLE_NS_DNAME="ns.$(EXAMPLE)."
+EXAMPLE_NS_IPv4=$(NET_NS_IPv4)
+EXAMPLE_NS_IPv6=$(NET_NS_IPv6)
+EXAMPLE_SOA_TTL=$(NET_SOA_TTL)
+EXAMPLE_NS_TTL=$(NET_NS_TTL)
+EXAMPLE_DEL_NS_TTL=$(NET_DEL_NS_TTL)
+EXAMPLE_DEL_DS_TTL=$(NET_DEL_DS_TTL)
+EXAMPLE_A="185.49.142.42"
+
 DEV_RANDOM=/dev/urandom
 
 KEYS_DIR=keys
@@ -189,7 +199,8 @@ KEYS=$(ROOT_KEYS) $(ROOT_SERVERS_NET_KEYS)
 5_9_PREFIX=5.9-
 5_9_NET_UNSIGNED=unsigned/$(5_9_PREFIX)net
 5_9_NET=$(5_9_DIR)/$(5_9_PREFIX)net
-5_9=$(5_9_NET)
+5_9_EXAMPLE=$(5_9_DIR)/$(5_9_PREFIX)$(EXAMPLE)
+5_9=$(5_9_NET) $(5_9_EXAMPLE)
 5_9_FILES=$(5_9) $(5_9_NET_UNSIGNED)
 
 all: 5.1 5.2 5.3 5.3.1 5.4 5.5 5.5.1 5.6 5.6.1 5.9
@@ -238,6 +249,9 @@ $(5_2_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(NET_DS)
 	printf "net.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(NET_NS_DNAME)\n" >> $@
 	printf "$(NET_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(NET_NS_IPv4)\n" >> $@
 	printf "$(NET_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(NET_NS_IPv6)\n" >> $@
+	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(EXAMPLE_NS_IPv6)\n" >> $@
 
 $(5_2_NET_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVERS_NET_DS)
 	printf "net.\t$(NET_SOA_TTL)\tIN\tSOA\t$(NET_NS_DNAME) nstld.verisign-grs.com. %d 1800 900 604800 86400\n" `date +%s` > $@
@@ -265,12 +279,18 @@ $(5_2_ROOT_SERVERS_NET): $(5_2_MKDIR) $(ROOT_SERVERS_NET_UNSIGNED) $(ROOT_SERVER
 
 $(5_3_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	sed 's/\b\([a-z]\)\.root-servers\.net.\B/\1.root-servers./g' $(ROOT_UNSIGNED) > $@
+	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(EXAMPLE_NS_IPv6)\n" >> $@
 
 $(5_3_ROOT): $(5_3_MKDIR) $(5_3_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_3_ROOT_UNSIGNED) $(ROOT_KEYS)
 
 $(5_3_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	sed 's/\b\([a-z]\)\.root-servers\.net.\B/\1./g' $(ROOT_UNSIGNED) > $@
+	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(EXAMPLE_NS_IPv6)\n" >> $@
 
 $(5_3_1_ROOT): $(5_3_1_MKDIR) $(5_3_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_3_1_ROOT_UNSIGNED) $(ROOT_KEYS)
@@ -295,6 +315,9 @@ $(5_5_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVER_KSK_FILES) $(ROOT_SERVER_ZS
 	for LETTER in $(LETTERS); do \
 		printf "%s.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\troot.%s.\n" $$LETTER $$LETTER >> $@; \
 		awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(KEYS_DIR)/K$${LETTER}.ksk.ds >> $@; done
+	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(EXAMPLE_NS_IPv6)\n" >> $@
 
 $(5_5_ROOT): $(5_5_MKDIR) $(5_5_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_5_ROOT_UNSIGNED) $(ROOT_KEYS)
@@ -316,6 +339,9 @@ $(5_5_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVER_2_KSK_FILES) $(ROOT_SERVE
 	for LETTER in $(LETTERS); do \
 		printf "%s.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\tns.%s.\n" $${LETTER}.root-servers $${LETTER}.root-servers >> $@; \
 		awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(KEYS_DIR)/K$${LETTER}.root-servers.ksk.ds >> $@; done
+	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(EXAMPLE_NS_IPv6)\n" >> $@
 
 $(5_5_1_ROOT): $(5_5_1_MKDIR) $(5_5_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_5_1_ROOT_UNSIGNED) $(ROOT_KEYS)
@@ -333,6 +359,9 @@ $(5_6_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	egrep -iv '^\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]][b-z]+\.root-servers\.net\.\B'  $(ROOT_UNSIGNED) \
 	| sed -e 's/\b[a-z]\.root-servers\.net.\B/root-servers./g' \
 	> $@
+	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(EXAMPLE_NS_IPv6)\n" >> $@
 
 $(5_6_ROOT): $(5_6_MKDIR) $(5_6_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_6_ROOT_UNSIGNED) $(ROOT_KEYS)
@@ -341,6 +370,9 @@ $(5_6_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	egrep -iv '^\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]][b-z]+\.root-servers\.net\.\B'  $(ROOT_UNSIGNED) \
 	| sed -e 's/\b[a-z]\.root-servers\.net.\B/all-root-servers./g' \
 	> $@
+	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(EXAMPLE_NS_IPv6)\n" >> $@
 
 $(5_6_1_ROOT): $(5_6_1_MKDIR) $(5_6_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_6_1_ROOT_UNSIGNED) $(ROOT_KEYS)
@@ -351,6 +383,12 @@ $(5_9_NET_UNSIGNED): $(5_2_NET_UNSIGNED)
 $(5_9_NET): $(5_9_NET_UNSIGNED) $(NET_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_9_NET_UNSIGNED) $(NET_KEYS)
 
+$(5_9_EXAMPLE):
+	printf "$(EXAMPLE).\t$(EXAMPLE_SOA_TTL)\tIN\tSOA\t$(EXAMPLE_NS_DNAME) hostmaster.$(EXAMPLE). %d 1800 900 604800 86400\n" `date +%s` > $@
+	printf "$(EXAMPLE).\t$(EXAMPLE_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
+	printf "$(EXAMPLE).\t$(EXAMPLE_NS_TTL)\tIN\tA\t$(EXAMPLE_A)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(EXAMPLE_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
+	printf "$(EXAMPLE_NS_DNAME)\t$(EXAMPLE_NS_TTL)\tIN\tAAAA\t$(EXAMPLE_NS_IPv6)\n" >> $@
 
 $(ROOT_KSK_FILES): $(KEYS_MKDIR)
 	cd $(KEYS_DIR) \

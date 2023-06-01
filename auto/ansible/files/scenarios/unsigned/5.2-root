@@ -20471,5 +20471,6 @@ net.	172800	IN	NS	a.some-servers.net.
 a.some-servers.net.	172800	IN	A	185.49.142.30
 a.some-servers.net.	172800	IN	AAAA	2a04:b907::30
 example.	172800	IN	NS	ns.example.
+example2.	172800	IN	NS	ns.example.
 ns.example.	172800	IN	A	185.49.142.30
 ns.example.	172800	IN	AAAA	2a04:b907::30

@@ -7,6 +7,6 @@ server:
 	username: ""
 	trust-anchor-file: "/usr/share/dns/root.key"
 {% if software_name.split('-')[1].split('.') | map('int') | list >= [1, 6, 8] %}
-	trust-anchor-signalling: no
+	trust-anchor-signaling: no
 {% endif %}
 

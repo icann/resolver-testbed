@@ -4,6 +4,10 @@ ZSK_ALGO=8
 ZSK_SIZE=2048
 NET_ZSK_ALGO=8
 NET_ZSK_SIZE=1280
+EXAMPLE_ZSK_ALGO=8
+EXAMPLE_ZSK_SIZE=1280
+EXAMPLE2_ZSK_ALGO=8
+EXAMPLE2_ZSK_SIZE=1280
 
 INCEPTION =20230101000000
 EXPIRATION=20330101000000
@@ -72,6 +76,24 @@ NET_ZSK_FILES=$(NET_ZSK).key $(NET_ZSK).private
 NET_ZSK2_FILES=$(NET_ZSK2).key $(NET_ZSK2).private
 NET_KEYS=$(NET_KSK) $(NET_ZSK) $(NET_ZSK2)
 NET_KEY_FILES=$(NET_KSK_FILES) $(NET_ZSK_FILES) $(NET_ZSK2_FILES)
+
+EXAMPLE_DNAME=example
+EXAMPLE_KSK=$(KEYS_DIR)/K$(EXAMPLE_DNAME).ksk
+EXAMPLE_ZSK=$(KEYS_DIR)/K$(EXAMPLE_DNAME).zsk
+EXAMPLE_DS=$(EXAMPLE_KSK).ds
+EXAMPLE_KSK_FILES=$(EXAMPLE_KSK).key $(EXAMPLE_KSK).private $(EXAMPLE_DS)
+EXAMPLE_ZSK_FILES=$(EXAMPLE_ZSK).key $(EXAMPLE_ZSK).private
+EXAMPLE_KEYS=$(EXAMPLE_KSK) $(EXAMPLE_ZSK)
+EXAMPLE_KEY_FILES=$(EXAMPLE_KSK_FILES) $(EXAMPLE_ZSK_FILES)
+
+EXAMPLE2_DNAME=example2
+EXAMPLE2_KSK=$(KEYS_DIR)/K$(EXAMPLE2_DNAME).ksk
+EXAMPLE2_ZSK=$(KEYS_DIR)/K$(EXAMPLE2_DNAME).zsk
+EXAMPLE2_DS=$(EXAMPLE2_KSK).ds
+EXAMPLE2_KSK_FILES=$(EXAMPLE2_KSK).key $(EXAMPLE2_KSK).private $(EXAMPLE2_DS)
+EXAMPLE2_ZSK_FILES=$(EXAMPLE2_ZSK).key $(EXAMPLE2_ZSK).private
+EXAMPLE2_KEYS=$(EXAMPLE2_KSK) $(EXAMPLE2_ZSK)
+EXAMPLE2_KEY_FILES=$(EXAMPLE2_KSK_FILES) $(EXAMPLE2_ZSK_FILES)
 
 ROOT_SERVERS_DNAME=root-servers
 ROOT_SERVERS_KSK=$(KEYS_DIR)/K$(ROOT_SERVERS_DNAME).ksk
@@ -200,7 +222,9 @@ KEYS=$(ROOT_KEYS) $(ROOT_SERVERS_NET_KEYS)
 5_9_PREFIX=5.9-
 5_9_NET_UNSIGNED=unsigned/$(5_9_PREFIX)net
 5_9_NET=$(5_9_DIR)/$(5_9_PREFIX)net
+5_9_EXAMPLE_UNSIGNED=unsigned/$(5_9_PREFIX)$(EXAMPLE)
 5_9_EXAMPLE=$(5_9_DIR)/$(5_9_PREFIX)$(EXAMPLE)
+5_9_EXAMPLE2_UNSIGNED=unsigned/$(5_9_PREFIX)$(EXAMPLE)2
 5_9_EXAMPLE2=$(5_9_DIR)/$(5_9_PREFIX)$(EXAMPLE)2
 5_9=$(5_9_NET) $(5_9_EXAMPLE) $(5_9_EXAMPLE2)
 5_9_FILES=$(5_9) $(5_9_NET_UNSIGNED)
@@ -251,6 +275,8 @@ $(5_2_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(NET_DS)
 	printf "net.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(NET_NS_DNAME)\n" >> $@
 	printf "$(NET_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(NET_NS_IPv4)\n" >> $@
 	printf "$(NET_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(NET_NS_IPv6)\n" >> $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE_DS) >> $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE2_DS) >> $@
 	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE)2.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
@@ -282,6 +308,8 @@ $(5_2_ROOT_SERVERS_NET): $(5_2_MKDIR) $(ROOT_SERVERS_NET_UNSIGNED) $(ROOT_SERVER
 
 $(5_3_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	sed 's/\b\([a-z]\)\.root-servers\.net.\B/\1.root-servers./g' $(ROOT_UNSIGNED) > $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE_DS) >> $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE2_DS) >> $@
 	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE)2.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
@@ -292,6 +320,8 @@ $(5_3_ROOT): $(5_3_MKDIR) $(5_3_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 
 $(5_3_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	sed 's/\b\([a-z]\)\.root-servers\.net.\B/\1./g' $(ROOT_UNSIGNED) > $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE_DS) >> $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE2_DS) >> $@
 	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE)2.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
@@ -320,6 +350,8 @@ $(5_5_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVER_KSK_FILES) $(ROOT_SERVER_ZS
 	for LETTER in $(LETTERS); do \
 		printf "%s.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\troot.%s.\n" $$LETTER $$LETTER >> $@; \
 		awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(KEYS_DIR)/K$${LETTER}.ksk.ds >> $@; done
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE_DS) >> $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE2_DS) >> $@
 	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE)2.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
@@ -345,6 +377,8 @@ $(5_5_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVER_2_KSK_FILES) $(ROOT_SERVE
 	for LETTER in $(LETTERS); do \
 		printf "%s.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\tns.%s.\n" $${LETTER}.root-servers $${LETTER}.root-servers >> $@; \
 		awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(KEYS_DIR)/K$${LETTER}.root-servers.ksk.ds >> $@; done
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE_DS) >> $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE2_DS) >> $@
 	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE)2.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
@@ -366,6 +400,8 @@ $(5_6_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	egrep -iv '^\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]][b-z]+\.root-servers\.net\.\B'  $(ROOT_UNSIGNED) \
 	| sed -e 's/\b[a-z]\.root-servers\.net.\B/root-servers./g' \
 	> $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE_DS) >> $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE2_DS) >> $@
 	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE)2.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
@@ -378,6 +414,8 @@ $(5_6_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	egrep -iv '^\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]][b-z]+\.root-servers\.net\.\B'  $(ROOT_UNSIGNED) \
 	| sed -e 's/\b[a-z]\.root-servers\.net.\B/all-root-servers./g' \
 	> $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE_DS) >> $@
+	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE2_DS) >> $@
 	printf "$(EXAMPLE).\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE)2.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
@@ -392,17 +430,23 @@ $(5_9_NET_UNSIGNED): $(5_2_NET_UNSIGNED)
 $(5_9_NET): $(5_9_NET_UNSIGNED) $(NET_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_9_NET_UNSIGNED) $(NET_KEYS)
 
-$(5_9_EXAMPLE):
+$(5_9_EXAMPLE_UNSIGNED):
 	printf "$(EXAMPLE).\t$(EXAMPLE_SOA_TTL)\tIN\tSOA\t$(EXAMPLE_NS_DNAME) hostmaster.$(EXAMPLE). %d 1800 900 604800 86400\n" `date +%s` > $@
 	printf "$(EXAMPLE).\t$(EXAMPLE_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE).\t$(EXAMPLE_NS_TTL)\tIN\tA\t$(EXAMPLE_A)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(EXAMPLE_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(EXAMPLE_NS_TTL)\tIN\tAAAA\t$(EXAMPLE_NS_IPv6)\n" >> $@
 
-$(5_9_EXAMPLE2):
+$(5_9_EXAMPLE2_UNSIGNED):
 	printf "$(EXAMPLE)2.\t$(EXAMPLE_SOA_TTL)\tIN\tSOA\t$(EXAMPLE_NS_DNAME) hostmaster.$(EXAMPLE)2. %d 1800 900 604800 86400\n" `date +%s` > $@
 	printf "$(EXAMPLE)2.\t$(EXAMPLE_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE)2.\t$(EXAMPLE_NS_TTL)\tIN\tAAAA\t$(EXAMPLE2_AAAA)\n" >> $@
+
+$(5_9_EXAMPLE): $(5_9_EXAMPLE_UNSIGNED) $(EXAMPLE_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_9_EXAMPLE_UNSIGNED) $(EXAMPLE_KEYS)
+
+$(5_9_EXAMPLE2): $(5_9_EXAMPLE2_UNSIGNED) $(EXAMPLE2_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_9_EXAMPLE2_UNSIGNED) $(EXAMPLE2_KEYS)
 
 $(ROOT_KSK_FILES): $(KEYS_MKDIR)
 	cd $(KEYS_DIR) \
@@ -465,6 +509,36 @@ $(ROOT_SERVERS_NET_ZSK_FILES) $(ROOT_SERVERS_ZSK_FILES) $(ROOT_SERVER_ZSK_FILES)
 	K$(patsubst $(KEYS_DIR)/K%,%,$(patsubst %.zsk.private,%,$(patsubst %.zsk.key,%,$@))).zsk.key \
 	&& mv .private \
 	K$(patsubst $(KEYS_DIR)/K%,%,$(patsubst %.zsk.private,%,$(patsubst %.zsk.key,%,$@))).zsk.private
+
+$(EXAMPLE_KSK_FILES): $(KEYS_MKDIR)
+	cd $(KEYS_DIR) \
+	&& ldns-keygen -a $(KSK_ALGO) -k -b $(KSK_SIZE) -r $(DEV_RANDOM) -sf $(EXAMPLE_DNAME) \
+	&& (cd ..; rm -f $(EXAMPLE_KSK_FILES)) \
+	&& mv .ds K$(EXAMPLE_DNAME).ksk.ds \
+	&& mv .key K$(EXAMPLE_DNAME).ksk.key \
+	&& mv .private K$(EXAMPLE_DNAME).ksk.private
+
+$(EXAMPLE_ZSK_FILES): $(KEYS_MKDIR)
+	cd $(KEYS_DIR) \
+	&& ldns-keygen -a $(EXAMPLE_ZSK_ALGO) -b $(EXAMPLE_ZSK_SIZE) -r $(DEV_RANDOM) -sf $(EXAMPLE_DNAME) \
+	&& (cd ..; rm -f $(EXAMPLE_ZSK_FILES)) \
+	&& mv .key K$(EXAMPLE_DNAME).zsk.key \
+	&& mv .private K$(EXAMPLE_DNAME).zsk.private
+
+$(EXAMPLE2_KSK_FILES): $(KEYS_MKDIR)
+	cd $(KEYS_DIR) \
+	&& ldns-keygen -a $(KSK_ALGO) -k -b $(KSK_SIZE) -r $(DEV_RANDOM) -sf $(EXAMPLE2_DNAME) \
+	&& (cd ..; rm -f $(EXAMPLE2_KSK_FILES)) \
+	&& mv .ds K$(EXAMPLE2_DNAME).ksk.ds \
+	&& mv .key K$(EXAMPLE2_DNAME).ksk.key \
+	&& mv .private K$(EXAMPLE2_DNAME).ksk.private
+
+$(EXAMPLE2_ZSK_FILES): $(KEYS_MKDIR)
+	cd $(KEYS_DIR) \
+	&& ldns-keygen -a $(EXAMPLE2_ZSK_ALGO) -b $(EXAMPLE2_ZSK_SIZE) -r $(DEV_RANDOM) -sf $(EXAMPLE2_DNAME) \
+	&& (cd ..; rm -f $(EXAMPLE2_ZSK_FILES)) \
+	&& mv .key K$(EXAMPLE2_DNAME).zsk.key \
+	&& mv .private K$(EXAMPLE2_DNAME).zsk.private
 
 clean-5.9:
 	rm -f $(5_9_FILES)

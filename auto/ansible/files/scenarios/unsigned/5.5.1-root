@@ -20506,6 +20506,8 @@ l.root-servers.	172800	IN	NS	ns.l.root-servers.
 l.root-servers.	86400	IN	DS	50069 8 2 826b05b0063a1a2fae6879ab369ac45dd70c15616a5970f3b0e11d4d3b9d5eb1
 m.root-servers.	172800	IN	NS	ns.m.root-servers.
 m.root-servers.	86400	IN	DS	16432 8 2 134315d5313fa696a239e22bce87859cacb7bd874196ca56617ebe6a9693b5d5
+example.	86400	IN	DS	2239 8 2 d9364627148e5fbf691c1acf5681cea7101bf59711d370c0f41f6fa4d0f8b6a0
+example2.	86400	IN	DS	13081 8 2 871d476c3bc579ddf7fd32618c1f93bb7d4f7ff679037f0a1cadb708593b2718
 example.	172800	IN	NS	ns.example.
 example2.	172800	IN	NS	ns.example.
 ns.example.	172800	IN	A	185.49.142.30

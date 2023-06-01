@@ -20470,6 +20470,8 @@ net.	86400	IN	DS	36884 8 2 c3ee87c4a9a1d050fdcaabd8dce8b6a541ba29a86c7a811b38bb3
 net.	172800	IN	NS	a.some-servers.net.
 a.some-servers.net.	172800	IN	A	185.49.142.30
 a.some-servers.net.	172800	IN	AAAA	2a04:b907::30
+example.	86400	IN	DS	2239 8 2 d9364627148e5fbf691c1acf5681cea7101bf59711d370c0f41f6fa4d0f8b6a0
+example2.	86400	IN	DS	13081 8 2 871d476c3bc579ddf7fd32618c1f93bb7d4f7ff679037f0a1cadb708593b2718
 example.	172800	IN	NS	ns.example.
 example2.	172800	IN	NS	ns.example.
 ns.example.	172800	IN	A	185.49.142.30

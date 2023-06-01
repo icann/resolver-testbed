@@ -74,6 +74,23 @@
   - name: Wait a second or two
     command: sleep 5
 
+- hosts: resolvers_vm_build_group 
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Do query
+    ansible.builtin.shell:
+      cmd: dig @{{ listen_ipv4 }} example2. +timeout=15
+    when: ready2run
+    delegate_to: gateway-vm
+
+- hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait a second or two
+    command: sleep 5
+
 - hosts: gateway-vm
   gather_facts: false
   become: true

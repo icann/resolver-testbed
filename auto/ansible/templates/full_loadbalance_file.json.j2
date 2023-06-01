@@ -94,11 +94,12 @@
       [ { "name": "net1", "ip-addr": "fd00::21:0:2", "state": "up" } ]
     }
 {% for letter, l in root_letters.items() %}
-{%   set number = '1%02d' % loop.index %}
-{%   if letter in ns.v4s %}
-  , { "name": "{{ letter }}-v4"
+{%   for ipv4_address in l.ipv4 %}
+{%     set number = '1%02d' % loop.index %}
+{%     if letter in ns.v4s %}
+  , { "name": "{{ letter }}-v4-{{ loop.index }}"
     , "family": "ipv4"
-    , "virtual-addr": "{{ l['ipv4'] }}"
+    , "virtual-addr": "{{ ipv4_address }}"
     , "virtual-ports": "53"
     , "mode": "dnat"
     , "protocol": "all"
@@ -112,10 +113,10 @@
 { "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
 {%           endfor %} ]
     }
-{%   elif ns.v4s|count == 1  %}
-  , { "name": "{{ letter }}-v4"
+{%     elif ns.v4s|count == 1  %}
+  , { "name": "{{ letter }}-v4-{{ loop.index }}"
     , "family": "ipv4"
-    , "virtual-addr": "{{ l['ipv4'] }}"
+    , "virtual-addr": "{{ ipv4_address }}"
     , "virtual-ports": "53"
     , "mode": "dnat"
     , "protocol": "all"
@@ -129,10 +130,10 @@
 { "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
 {%           endfor %} ]
     }
-{%   elif ns.v4s|count == 0 %}
-  , { "name": "{{ letter }}-v4"
+{%     elif ns.v4s|count == 0 %}
+  , { "name": "{{ letter }}-v4-{{ loop.index }}"
     , "family": "ipv4"
-    , "virtual-addr": "{{ l['ipv4'] }}"
+    , "virtual-addr": "{{ ipv4_address }}"
     , "virtual-ports": "53"
     , "mode": "dnat"
     , "protocol": "all"
@@ -141,11 +142,13 @@
     , "backends":
       [ { "name": "{{ letter }}1", "ip-addr": "172.21.{{ number }}.1", "state": "up" } ]
     }
-{%   endif %}
-{%   if letter in ns.v6s %}
-  , { "name": "{{ letter }}-v6"
+{%     endif %}
+{%   endfor %}
+{%   for ipv6_address in l.ipv6 %}
+{%     if letter in ns.v6s %}
+  , { "name": "{{ letter }}-v6-{{ loop.index }}"
     , "family": "ipv6"
-    , "virtual-addr": "{{ l['ipv6'] }}"
+    , "virtual-addr": "{{ ipv6_address }}"
     , "virtual-ports": "53"
     , "mode": "dnat"
     , "protocol": "all"
@@ -159,10 +162,10 @@
 { "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
 {%           endfor %} ]
     }
-{%   elif ns.v6s|count == 1  %}
-  , { "name": "{{ letter }}-v6"
+{%     elif ns.v6s|count == 1  %}
+  , { "name": "{{ letter }}-v6-{{ loop.index }}"
     , "family": "ipv6"
-    , "virtual-addr": "{{ l['ipv6'] }}"
+    , "virtual-addr": "{{ ipv6_address }}"
     , "virtual-ports": "53"
     , "mode": "dnat"
     , "protocol": "all"
@@ -176,10 +179,10 @@
 { "name": "{{ letter }}{{ loop.index }}", "ip-addr": "{{ alias.split('/')[0] }}", "state": "up" }{# #}
 {%           endfor %} ]
     }
-{%   elif ns.v6s|count == 0 %}
-  , { "name": "{{ letter }}-v6"
+{%     elif ns.v6s|count == 0 %}
+  , { "name": "{{ letter }}-v6-{{ loop.index }}"
     , "family": "ipv6"
-    , "virtual-addr": "{{ l['ipv6'] }}"
+    , "virtual-addr": "{{ ipv6_address }}"
     , "virtual-ports": "53"
     , "mode": "dnat"
     , "protocol": "all"
@@ -188,7 +191,8 @@
     , "backends":
       [ { "name": "{{ letter }}1", "ip-addr": "fd00::21:{{ number }}:1", "state": "up" } ]
     }
-{%   endif %}
+{%     endif %}
+{%   endfor %}
 {% endfor %}
   ]
 }

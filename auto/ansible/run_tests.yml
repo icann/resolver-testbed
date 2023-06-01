@@ -54,7 +54,7 @@
   gather_facts: false
   become: false
   tasks:
-  - name: Wait a second or two
+  - name: Wait a five seconds
     command: sleep 5
 
 - hosts: resolvers_vm_build_group 
@@ -71,16 +71,16 @@
   gather_facts: false
   become: false
   tasks:
-  - name: Wait a second or two
+  - name: Wait a five seconds
     command: sleep 5
 
 - hosts: resolvers_vm_build_group 
   gather_facts: false
   become: true
   tasks:
-  - name: Do query
+  - name: Do a second query
     ansible.builtin.shell:
-      cmd: dig @{{ listen_ipv4 }} example2. +timeout=15
+      cmd: dig @{{ listen_ipv4 }} example2. AAAA +timeout=15
     when: ready2run
     delegate_to: gateway-vm
 
@@ -88,7 +88,7 @@
   gather_facts: false
   become: false
   tasks:
-  - name: Wait a second or two
+  - name: Wait a five seconds
     command: sleep 5
 
 - hosts: gateway-vm
@@ -131,7 +131,7 @@
   - name: Fetch latest capture
     ansible.builtin.fetch:
       src: '{{ (files.files | sort(attribute="mtime", reverse=true) | first).path }}'
-      dest: 'captures/{{ cap_name }}__{{ (files.files | sort(attribute="mtime", reverse=true) | first).path | basename | splitext | first }}.pcap'
+      dest: 'captures/{{ (files.files | sort(attribute="mtime", reverse=true) | first).path | basename | splitext | first }}__{{ cap_name }}.pcap'
       flat: true
     when: files.files|count > 0 and cap_name is defined
 

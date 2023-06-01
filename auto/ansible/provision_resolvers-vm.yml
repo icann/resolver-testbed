@@ -73,7 +73,7 @@
         group: root
         mode: 0755
 
-    - name: Install default root.key
+    - name: Install trust anchor root.key
       ansible.builtin.copy:
         src: "files/scenarios/keys/K.+008+47944.key"
         dest: "/usr/share/dns/root.key"
@@ -81,21 +81,21 @@
         group: root
         mode: 0644
 
-    - name: Install bind.keys
+    - name: Install trust anchors root.ds
       ansible.builtin.copy:
-        src: "files/bind.keys"
-        dest: "/usr/share/dns/bind.keys"
+        src: "files/scenarios/keys/K.+008+47944.ds"
+        dest: "/usr/share/dns/root.ds"
         owner: root
         group: root
         mode: 0644
 
-    - name: Install pdns.lua
-      ansible.builtin.copy:
-        src: "files/pdns.lua"
-        dest: "/usr/share/dns/pdns.lua"
-        owner: root
-        group: root
-        mode: 0644
+    - name: Create trust anchors for bind and pdns
+      ansible.builtin.shell:
+        chdir: "/usr/share/dns"
+        cmd: |
+          awk '{printf("trusted-keys {\n  %s %s %s %s \"%s\";\n};\n", $1, $4, $5, $6, $7)}' root.key > bind.keys
+          awk '{printf("trust-anchors {\n  %s static-key %s %s %s \"%s\";\n};\n", $1, $4, $5, $6, $7)}' root.key > new-bind.keys
+          awk '{printf("addDS(\"%s\", \"%s %s %s %s\")\n", $1, $4, $5, $6, $7)}' root.ds > pdns.lua
 
     - ansible.builtin.import_tasks:
         file: tasks/inception/incept.yml

@@ -5,7 +5,11 @@ options {
   empty-zones-enable no;
   directory      "{{ this_target_dir }}/etc/bind/";
   pid-file       "{{ this_target_dir }}/etc/bind/bind.pid";
+{% if software_name.split('-')[1].split('.') | map('int') | list < [9, 15, 8] %}
   bindkeys-file  "/usr/share/dns/bind.keys";
+{% else %}
+  bindkeys-file  "/usr/share/dns/new-bind.keys";
+{% endif %}
 
   listen-on     { {{ listen_ipv4 }}; };
   listen-on-v6  { none; };

@@ -204,15 +204,12 @@ build_config:
       make_str: "unboundmake"
       cfg:
         ta_signal: 'absent'
-        rk_sentinel: 'absent'
       listen_ipv4: 172.20.0.3
       outgoing_ipv4: 172.20.0.3
       outgoing_ipv6: fd00::20:0:3
     - name: unbound-1.6.8
       url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.6.8.tar.gz"
       make_str: "unboundmake"
-      cfg:
-        rk_sentinel: 'absent'
       listen_ipv4: 172.20.0.4
       outgoing_ipv4: 172.20.0.4
       outgoing_ipv6: fd00::20:0:4

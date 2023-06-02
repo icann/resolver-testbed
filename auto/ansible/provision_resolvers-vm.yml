@@ -57,6 +57,7 @@
           - libsystemd-dev
           - liblmdb-dev
           - ninja-build
+          - luajit
           - libboost-test-dev
         state: present
         update_cache: yes

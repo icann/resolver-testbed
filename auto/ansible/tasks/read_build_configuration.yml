@@ -19,7 +19,7 @@
     outgoing_ipv6: "{{ 'outgoing_ipv6' in item and item.outgoing_ipv6 }}"
     cfg: "{{ item.cfg | default({}) }}"
     software_sname: "{{ item.name.rsplit('-', 1)[0] }}"
-    ready2run: "{{ item.name.rsplit('-', 1)[0] in ['bind', 'unbound', 'pdns-recursor'] }}"
+    ready2run: "{{ item.name.rsplit('-', 1)[0] in ['bind', 'unbound', 'pdns-recursor', 'knot-resolver'] }}"
     # This is needed when delegate_to is used to preserve the hostname
     # since Ansible uses the delegate_to hostname as the inventory_hostname
     software_name: "{{ item.name }}"

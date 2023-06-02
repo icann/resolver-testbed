@@ -6,7 +6,9 @@ server:
 	chroot: ""
 	username: ""
 	trust-anchor-file: "/usr/share/dns/root.key"
-{% if software_name.split('-')[1].split('.') | map('int') | list >= [1, 6, 8] %}
-	trust-anchor-signaling: no
+{% if not ((cfg.ta_signal | default(false)) and cfg.ta_signal == 'absent') %}
+        trust-anchor-signaling: no
 {% endif %}
-
+{% if not ((cfg.rk_sentinel | default(false)) and cfg.rk_sentinel == 'absent') %}
+        root-key-sentinel: no
+{% endif %}

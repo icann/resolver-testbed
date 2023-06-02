@@ -1,0 +1,6 @@
+net.listen('{{ listen_ipv4 }}', 53, { kind = 'dns' })
+net.outgoing_v4('{{ outgoing_ipv4 }}')
+net.outgoing_v6('{{ outgoing_ipv6 }}')
+trust_anchors.add_file('/usr/share/dns/root.key', { readonly = true })
+modules.unload('ta_signal_query')
+modules.unload('ta_sentinel')

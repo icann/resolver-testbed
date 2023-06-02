@@ -54,6 +54,7 @@
           - libboost-thread-dev
           - libboost-context-dev
           - libknot-dev
+          - libsystemd-dev
           - liblmdb-dev
           - ninja-build
           - libboost-test-dev

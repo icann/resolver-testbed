@@ -7,7 +7,7 @@
 # Optional variables:
 #
 # - variant: [ true | *false* ]
-#            Alternative for the naming scheme scenario. 
+#            Alternative for the naming scheme scenario.
 #            Scenarios 3, 5 and 6 have a variant.
 #
 # - realips: [ *true* | false ]

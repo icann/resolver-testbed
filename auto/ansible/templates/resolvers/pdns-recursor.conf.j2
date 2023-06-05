@@ -1,0 +1,10 @@
+allow-from=0.0.0.0/0
+local-address={{ listen_ipv4 }}
+{% if software_name.rsplit('-', 1)[1].split('.') | map('int') | list < [4, 4, 0] %}
+query-local-address={{ outgoing_ipv4 }}
+query-local-address6={{ outgoing_ipv6 }}
+{% else %}
+query-local-address={{ outgoing_ipv4 }},{{ outgoing_ipv6 }}
+{% endif %}
+lua-config-file=/usr/share/dns/pdns.lua
+security-poll-suffix=""

@@ -10,7 +10,7 @@
   - ansible.builtin.import_tasks:
       file: tasks/read_build_configuration.yml
 
-- hosts: resolvers_vm_build_group 
+- hosts: resolvers_vm_build_group
   gather_facts: false
   become: true
   tasks:
@@ -33,11 +33,11 @@
           path: "{{ this_target_dir }}/etc/{{ software_sname }}"
           state: directory
           mode: '0755'
-          
+
       - name: Install (templated) {{ software_sname }}.conf
         ansible.builtin.template:
           src: "templates/resolvers/{{ software_sname }}.conf.j2"
-          dest: "{{ this_target_dir }}/etc/{{ software_sname }}/{% if software_sname == 'pdns' %}recursor{% else %}{{ software_sname }}{% endif %}.conf"
+          dest: "{{ this_target_dir }}/etc/{{ software_sname }}/{% if software_sname == 'pdns-recursor' %}recursor{% elif software_sname == 'knot-resolver' %}kresd{% else %}{{ software_sname }}{% endif %}.conf"
 
       - ansible.builtin.include_tasks:
           file: "tasks/install_server_service_systemd.yml"
@@ -45,4 +45,3 @@
           software_type: "{{ software_sname }}"
           software_target_dir: "{{ this_target_dir }}"
           n_cpus: 1
-

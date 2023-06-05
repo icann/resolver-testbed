@@ -1,0 +1,53 @@
+#!/bin/sh
+
+# PROVIDE: {{ service_name }}
+# REQUIRE: NETWORKING ldconfig syslogd
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="{{ service_name }}"
+desc="{{ service_name }} startup script"
+rcvar="{{ service_name }}_enable"
+start_cmd="{{ service_name }}_start"
+stop_cmd="{{ service_name }}_stop"
+extra_commands="status"
+status_cmd="{{ service_name }}_status"
+
+pidfile="{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.pid"
+
+{{ service_name }}_start()
+{
+	nohup {{ software_target_dir }}/bin/ldns-testns -v {{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf >>{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.log 2>&1 &
+	echo $! > ${pidfile}
+}
+
+{{ service_name }}_stop()
+{
+	if [ -e ${pidfile} ]
+	then
+		kill `cat ${pidfile}`
+		rm -f ${pidfile}
+	fi
+}
+
+{{ service_name }}_status()
+{
+	if [ -e ${pidfile} ]
+	then
+                if ( ps -p `cat ${pidfile}` | grep ldns-testns >/dev/null 2>&1 )
+                then
+                        echo {{ service_name }} is running as pid `cat ${pidfile}`.
+                        exit 0
+                fi
+	fi
+        echo {{ service_name }} is not running
+	exit 1
+}
+
+load_rc_config {{ service_name }}
+
+{{ service_name }}_enable="YES"
+
+run_rc_command "$1"
+

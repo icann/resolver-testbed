@@ -48,7 +48,7 @@
     - ansible.builtin.include_tasks:
         file: "tasks/install_server_service_{{ system.service }}.yml"
       vars:
-        software_type: "{{ item.name | split('-', 1) | first }}"
+        software_type: "{{ item.name.rsplit('-', 1)[0] }}"
         software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.name }}"
         service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
       loop: "{{ build_config.software }}"
@@ -58,11 +58,11 @@
         path: "{{ software_target_dir }}/etc/{{ software_type }}"
         state: directory
       vars:
-        software_type: "{{ item.name | split('-', 1) | first }}"
+        software_type: "{{ item.name.rsplit('-', 1)[0] }}"
         software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.name }}"
         service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
       loop: "{{ build_config.software }}"
-      when: software_type == 'bind'
+      when: software_type in ('bind', 'ldns-cfsim', 'ldns-atlassim')
 
     - name: Set the scenario configuration if given.
       ansible.builtin.include_tasks:
@@ -84,7 +84,7 @@
         dest: "{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf"
       vars:
         software_name: "{{ item.0.name }}"
-        software_type: "{{ item.0.name | split('-', 1) | first }}"
+        software_type: "{{ item.0.name.rsplit('-', 1)[0] }}"
         software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.0.name }}"
         cfg: "{{ item.0.cfg }}"
         listen_addrs:

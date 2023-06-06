@@ -117,8 +117,7 @@
       letter: "{{ inventory_hostname.split('-') | first }}"
     when: do_variant is defined and do_variant is true
 
-  - name: Copy configuration for hosts other than aj-linux.
-    when: inventory_hostname != "aj-linux"
+  - name: Copy configuration
     ansible.builtin.template:
       src: "templates/{{ software_type }}.conf.j2"
       dest: "{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf"
@@ -133,32 +132,6 @@
         - "{{ item.1.1 }}"
     loop: "{% set ips = network_configuration.networks.0.v4.alias | map('dirname') | zip(network_configuration.networks.0.v6.alias | map('dirname')) %}\
            {{ build_config.software | zip(ips) }}"
-
-  - name: Copy configuration one for host aj-linux.
-    when: inventory_hostname == "aj-linux"
-    ansible.builtin.template:
-      src: "templates/{{ software_type }}.conf.j2"
-      dest: "{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf"
-    vars:
-      software_name: "{{ build_config.software.0.name }}"
-      software_type: "{{ build_config.software.0.name.rsplit('-', 1)[0] }}"
-      software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ build_config.software.0.name }}"
-      cfg: "{{ build_config.software.0.cfg }}"
-      listen_addrs: "{{ network_configuration.networks.0.v4.alias[:2] | map('dirname') }}"
-      listen_addrs_6: "{{ network_configuration.networks.0.v6.alias[:2] | map('dirname') }}"
-
-  - name: Copy configuration two for host aj-linux.
-    when: inventory_hostname == "aj-linux"
-    ansible.builtin.template:
-      src: "templates/{{ software_type }}.conf.j2"
-      dest: "{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf"
-    vars:
-      software_name: "{{ build_config.software.1.name }}"
-      software_type: "{{ build_config.software.1.name.rsplit('-', 1)[0] }}"
-      software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ build_config.software.1.name }}"
-      cfg: "{{ build_config.software.1.cfg }}"
-      listen_addrs: "{{ network_configuration.networks.0.v4.alias[2:] | map('dirname') }}"
-      listen_addrs_6: "{{ network_configuration.networks.0.v6.alias[2:] | map('dirname') }}"
 
   - name: (Re)Start name servers.
     ansible.builtin.service:

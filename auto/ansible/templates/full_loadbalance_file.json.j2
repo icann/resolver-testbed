@@ -94,7 +94,7 @@
       [ { "name": "net1", "ip-addr": "fd00::21:0:2", "state": "up" } ]
     }
 {% for letter, l in root_letters.items() %}
-{%   for ipv4_address in l.ipv4 %}
+{%   for ipv4_address in l.ipv4 + [fake_ips[letter].ipv4] %}
 {%     set number = '1%02d' % loop.index %}
 {%     if letter in ns.v4s %}
   , { "name": "{{ letter }}-v4-{{ loop.index }}"
@@ -144,7 +144,7 @@
     }
 {%     endif %}
 {%   endfor %}
-{%   for ipv6_address in l.ipv6 %}
+{%   for ipv6_address in l.ipv6 + [fake_ips[letter].ipv6] %}
 {%     if letter in ns.v6s %}
   , { "name": "{{ letter }}-v6-{{ loop.index }}"
     , "family": "ipv6"

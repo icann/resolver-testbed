@@ -15,6 +15,11 @@
 {%    set _dummy = ns.ips.update({ ipv6_address: d }) %}
 {%  endfor %}
 {% endfor %}
+{% for letter, v in fake_ips.items() %}
+{%  set d = { 'host': 'gateway-vm', 'software': letter | upper, 'ipv4': v.ipv4, 'ipv6': v.ipv6 } %}
+{%  set _dummy = ns.ips.update({ v.ipv4: d }) %}
+{%  set _dummy = ns.ips.update({ v.ipv6: d }) %}
+{% endfor %}
 {% for sw in hostvars['resolvers-vm'].build_config.software %}
 {%  if 'outgoing_ipv4' in sw %}
 {%    set d = { 'host': 'resolvers-vm', 'software': sw.name, 'ipv4': sw.outgoing_ipv4, 'ipv6': sw.outgoing_ipv6 } %}

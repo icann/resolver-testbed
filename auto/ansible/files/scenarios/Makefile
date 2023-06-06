@@ -120,100 +120,150 @@ KEYS=$(ROOT_KEYS) $(ROOT_SERVERS_NET_KEYS)
 5_1_DIR=.
 5_1_MKDIR=
 5_1_PREFIX=5.1-
-5_1_ROOT=$(5_1_DIR)/$(5_1_PREFIX)root
+9_1_PREFIX=9.1-
 5_1_NET_UNSIGNED=unsigned/$(5_1_PREFIX)net
+5_1_ROOT=$(5_1_DIR)/$(5_1_PREFIX)root
 5_1_NET=$(5_1_DIR)/$(5_1_PREFIX)net
 5_1_ROOT_SERVERS_NET=$(5_1_DIR)/$(5_1_PREFIX)root-servers.net
-5_1=$(5_1_ROOT) $(5_1_NET) $(5_1_ROOT_SERVERS_NET)
-5_1_FILES=$(5_1) $(5_1_NET_UNSIGNED)
+9_1_ROOT=$(5_1_DIR)/$(9_1_PREFIX)root
+9_1_NET=$(5_1_DIR)/$(9_1_PREFIX)net
+9_1_ROOT_SERVERS_NET=$(5_1_DIR)/$(9_1_PREFIX)root-servers.net
+9_1=$(9_1_ROOT) $(9_1_NET) $(9_1_ROOT_SERVERS_NET)
+5_1=$(5_1_ROOT) $(5_1_NET) $(5_1_ROOT_SERVERS_NET) $(9_1)
+9_1_FILES=$(9_1) $(9_1_NET_UNSIGNED)
+5_1_FILES=$(5_1) $(5_1_NET_UNSIGNED) $(9_1_FILES)
 
 #5_2_DIR=5.2
 #5_2_MKDIR=$(5_2_DIR)/.mkdir
 5_2_DIR=.
 5_2_MKDIR=
 5_2_PREFIX=5.2-
+9_2_PREFIX=9.2-
 5_2_ROOT_UNSIGNED=unsigned/$(5_2_PREFIX)root
 5_2_ROOT=$(5_2_DIR)/$(5_2_PREFIX)root
 5_2_NET_UNSIGNED=unsigned/$(5_2_PREFIX)net
 5_2_NET=$(5_2_DIR)/$(5_2_PREFIX)net
+9_2_NET=$(5_2_DIR)/$(9_2_PREFIX)net
 5_2_ROOT_SERVERS_NET_UNSIGNED=unsigned/$(5_2_PREFIX)root-servers.net
 5_2_ROOT_SERVERS_NET=$(5_2_DIR)/$(5_2_PREFIX)root-servers.net
-5_2=$(5_2_ROOT) $(5_2_NET) $(5_2_ROOT_SERVERS_NET)
-5_2_FILES=$(5_2) $(5_2_ROOT_UNSIGNED) $(5_2_NET_UNSIGNED) $(5_2_ROOT_SERVERS_NET_UNSIGNED)
+9_2_ROOT_SERVERS_NET=$(5_2_DIR)/$(9_2_PREFIX)root-servers.net
+9_2_ROOT_UNSIGNED=unsigned/$(9_2_PREFIX)root
+9_2_ROOT=$(5_2_DIR)/$(9_2_PREFIX)root
+9_2=$(9_2_ROOT) $(9_2_NET) $(9_2_ROOT_SERVERS_NET)
+5_2=$(5_2_ROOT) $(5_2_NET) $(5_2_ROOT_SERVERS_NET) $(9_2)
+9_2_FILES=$(9_2) $(9_2_ROOT_UNSIGNED) $(9_2_ROOT_SERVERS_NET_UNSIGNED)
+5_2_FILES=$(5_2) $(5_2_ROOT_UNSIGNED) $(5_2_NET_UNSIGNED) $(5_2_ROOT_SERVERS_NET_UNSIGNED) $(9_2_FILES)
 
 #5_3_DIR=5.3
 #5_3_MKDIR=$(5_3_DIR)/.mkdir
 5_3_DIR=.
 5_3_MKDIR=
 5_3_PREFIX=5.3-
+9_3_PREFIX=9.3-
 5_3_ROOT_UNSIGNED=unsigned/$(5_3_PREFIX)root
+9_3_ROOT_UNSIGNED=unsigned/$(9_3_PREFIX)root
 5_3_ROOT=$(5_3_DIR)/$(5_3_PREFIX)root
-5_3=$(5_3_ROOT)
-5_3_FILES=$(5_3) $(5_3_ROOT_UNSIGNED)
+9_3_ROOT=$(5_3_DIR)/$(9_3_PREFIX)root
+9_3=$(9_3_ROOT)
+5_3=$(5_3_ROOT) $(9_3)
+9_3_FILES=$(5_3) $(5_3_ROOT_UNSIGNED)
+5_3_FILES=$(5_3) $(5_3_ROOT_UNSIGNED) $(9_3_FILES)
 
 #5_3_1_DIR=5.3
 #5_3_1_MKDIR=$(5_3_1_DIR)/.mkdir
 5_3_1_DIR=.
 5_3_1_MKDIR=
 5_3_1_PREFIX=5.3.1-
+9_3_1_PREFIX=9.3.1-
 5_3_1_ROOT_UNSIGNED=unsigned/$(5_3_1_PREFIX)root
+9_3_1_ROOT_UNSIGNED=unsigned/$(9_3_1_PREFIX)root
 5_3_1_ROOT=$(5_3_1_DIR)/$(5_3_1_PREFIX)root
-5_3_1=$(5_3_1_ROOT)
-5_3_1_FILES=$(5_3_1) $(5_3_1_ROOT_UNSIGNED)
+9_3_1_ROOT=$(5_3_1_DIR)/$(9_3_1_PREFIX)root
+9_3_1=$(9_3_1_ROOT)
+5_3_1=$(5_3_1_ROOT) $(9_3_1)
+9_3_1_FILES=$(9_3_1) $(9_3_1_ROOT_UNSIGNED)
+5_3_1_FILES=$(5_3_1) $(5_3_1_ROOT_UNSIGNED) $(9_3_1_FILES)
 
 #5_4_DIR=5.4
 #5_4_MKDIR=$(5_4_DIR)/.mkdir
 5_4_DIR=.
 5_4_MKDIR=
 5_4_PREFIX=5.4-
+9_4_PREFIX=9.4-
 5_4_ROOT_UNSIGNED=unsigned/$(5_4_PREFIX)root
+9_4_ROOT_UNSIGNED=unsigned/$(9_4_PREFIX)root
 5_4_ROOT=$(5_4_DIR)/$(5_4_PREFIX)root
+9_4_ROOT=$(5_4_DIR)/$(9_4_PREFIX)root
 5_4_ROOT_SERVERS_UNSIGNED=unsigned/$(5_4_PREFIX)root-servers
 5_4_ROOT_SERVERS=$(5_4_DIR)/$(5_4_PREFIX)root-servers
-5_4=$(5_4_ROOT) $(5_4_ROOT_SERVERS)
-5_4_FILES=$(5_4) $(5_4_ROOT_UNSIGNED) $(5_4_ROOT_SERVERS_UNSIGNED)
+9_4_ROOT_SERVERS=$(5_4_DIR)/$(9_4_PREFIX)root-servers
+9_4=$(9_4_ROOT) $(9_4_ROOT_SERVERS)
+5_4=$(5_4_ROOT) $(5_4_ROOT_SERVERS) $(9_4)
+9_4_FILES=$(9_4) $(9_4_ROOT_UNSIGNED) $(9_4_ROOT_SERVERS_UNSIGNED)
+5_4_FILES=$(5_4) $(5_4_ROOT_UNSIGNED) $(5_4_ROOT_SERVERS_UNSIGNED) $(9_4_FILES)
 
 #5_5_DIR=5.5
 #5_5_MKDIR=$(5_5_DIR)/.mkdir
 5_5_DIR=.
 5_5_MKDIR=
 5_5_PREFIX=5.5-
+9_5_PREFIX=9.5-
 5_5_ROOT_SERVERS:=$(foreach LETTER,$(LETTERS),$(5_5_DIR)/$(5_5_PREFIX)$(LETTER))
+9_5_ROOT_SERVERS:=$(foreach LETTER,$(LETTERS),$(5_5_DIR)/$(9_5_PREFIX)$(LETTER))
 5_5_ROOT_UNSIGNED=unsigned/$(5_5_PREFIX)root
+9_5_ROOT_UNSIGNED=unsigned/$(9_5_PREFIX)root
 5_5_ROOT=$(5_5_DIR)/$(5_5_PREFIX)root
-5_5=$(5_5_ROOT) $(5_5_ROOT_SERVERS)
-5_5_FILES=$(5_5) $(5_5_ROOT_UNSIGNED)
+9_5_ROOT=$(5_5_DIR)/$(9_5_PREFIX)root
+9_5=$(9_5_ROOT) $(9_5_ROOT_SERVERS)
+5_5=$(5_5_ROOT) $(5_5_ROOT_SERVERS) $(9_5)
+9_5_FILES=$(9_5) $(9_5_ROOT_UNSIGNED)
+5_5_FILES=$(5_5) $(5_5_ROOT_UNSIGNED) $(9_5_FILES)
 
-#5_5_1_DIR=5.5.1
-#5_5_1_MKDIR=$(5_5_1_DIR)/.mkdir
 5_5_1_DIR=.
 5_5_1_MKDIR=
 5_5_1_PREFIX=5.5.1-
+9_5_1_PREFIX=9.5.1-
 5_5_1_ROOT_SERVERS:=$(foreach LETTER,$(LETTERS),$(5_5_1_DIR)/$(5_5_1_PREFIX)$(LETTER).root-servers)
+9_5_1_ROOT_SERVERS:=$(foreach LETTER,$(LETTERS),$(5_5_1_DIR)/$(9_5_1_PREFIX)$(LETTER).root-servers)
 5_5_1_ROOT_UNSIGNED=unsigned/$(5_5_1_PREFIX)root
+9_5_1_ROOT_UNSIGNED=unsigned/$(9_5_1_PREFIX)root
 5_5_1_ROOT=$(5_5_1_DIR)/$(5_5_1_PREFIX)root
-5_5_1=$(5_5_1_ROOT) $(5_5_1_ROOT_SERVERS)
-5_5_1_FILES=$(5_5_1) $(5_5_1_ROOT_UNSIGNED)
+9_5_1_ROOT=$(5_9_DIR)/$(9_5_1_PREFIX)root
+9_5_1=$(9_5_1_ROOT) $(9_5_1_ROOT_SERVERS)
+5_5_1=$(5_5_1_ROOT) $(5_5_1_ROOT_SERVERS) $(9_5_1)
+9_5_1_FILES=$(9_5_1) $(9_5_1_ROOT_UNSIGNED)
+5_5_1_FILES=$(5_5_1) $(5_5_1_ROOT_UNSIGNED) $(9_5_1_FILES)
+
 
 #5_6_DIR=5.6
 #5_6_MKDIR=$(5_6_DIR)/.mkdir
 5_6_DIR=.
 5_6_MKDIR=
 5_6_PREFIX=5.6-
+9_6_PREFIX=9.6-
 5_6_ROOT_UNSIGNED=unsigned/$(5_6_PREFIX)root
+9_6_ROOT_UNSIGNED=unsigned/$(9_6_PREFIX)root
 5_6_ROOT=$(5_6_DIR)/$(5_6_PREFIX)root
-5_6=$(5_6_ROOT)
-5_6_FILES=$(5_6) $(5_6_ROOT_UNSIGNED)
+9_6_ROOT=$(5_6_DIR)/$(9_6_PREFIX)root
+9_6=$(9_6_ROOT)
+5_6=$(5_6_ROOT) $(9_6)
+9_6_FILES=$(9_6) $(9_6_ROOT_UNSIGNED)
+5_6_FILES=$(5_6) $(5_6_ROOT_UNSIGNED) $(9_6_FILES)
 
 #5_6_1_DIR=5.6.1
 #5_6_1_MKDIR=$(5_6_1_DIR)/.mkdir
 5_6_1_DIR=.
 5_6_1_MKDIR=
 5_6_1_PREFIX=5.6.1-
+9_6_1_PREFIX=9.6.1-
 5_6_1_ROOT_UNSIGNED=unsigned/$(5_6_1_PREFIX)root
+9_6_1_ROOT_UNSIGNED=unsigned/$(9_6_1_PREFIX)root
 5_6_1_ROOT=$(5_6_1_DIR)/$(5_6_1_PREFIX)root
-5_6_1=$(5_6_1_ROOT)
-5_6_1_FILES=$(5_6_1) $(5_6_1_ROOT_UNSIGNED)
+9_6_1_ROOT=$(5_6_1_DIR)/$(9_6_1_PREFIX)root
+9_6_1=$(9_6_1_ROOT)
+5_6_1=$(5_6_1_ROOT) $(9_6_1)
+9_6_1_FILES=$(9_6_1) $(9_6_1_ROOT_UNSIGNED)
+5_6_1_FILES=$(5_6_1) $(5_6_1_ROOT_UNSIGNED) $(9_6_1_FILES)
 
 #5_9_DIR=5.9
 #5_9_MKDIR=$(5_9_DIR)/.mkdir
@@ -260,14 +310,24 @@ $(5_2_MKDIR) $(5_3_MKDIR) $(5_4_MKDIR) $(5_5_MKDIR) $(5_5_1_MKDIR) $(5_6_MKDIR) 
 $(5_1_ROOT): $(5_2_ROOT)
 	cp -p $< $@ 
 
+$(9_1_ROOT): $(9_2_ROOT)
+	cp -p $< $@ 
+
 $(5_1_NET_UNSIGNED): $(5_2_NET_UNSIGNED)
 	egrep -iv '^root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+DS[[:space:]]' $< > $@
 
 $(5_1_ROOT_SERVERS_NET): $(ROOT_SERVERS_NET_UNSIGNED)
 	cp -p $< $@ 
 
+$(9_1_ROOT_SERVERS_NET): $(5_1_MKDIR) $(ROOT_SERVERS_NET_UNSIGNED)
+	./replace-ips.sh $(ROOT_SERVERS_NET_UNSIGNED) >$@
+
 $(5_1_NET): $(5_1_NET_UNSIGNED) $(NET_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_1_NET_UNSIGNED) $(NET_KEYS)
+
+$(9_1_NET): $(5_1_NET_UNSIGNED) $(NET_KEY_FILES)
+	./replace-ips.sh $(5_1_NET_UNSIGNED) \
+	| ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ - $(NET_KEYS)
 
 $(5_2_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(NET_DS)
 	egrep -vi '^net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+[DN]S[[:space:]]' $(ROOT_UNSIGNED) > $@
@@ -281,6 +341,14 @@ $(5_2_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(NET_DS)
 	printf "$(EXAMPLE)2.\t$(ROOT_DEL_NS_TTL)\tIN\tNS\t$(EXAMPLE_NS_DNAME)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tA\t$(EXAMPLE_NS_IPv4)\n" >> $@
 	printf "$(EXAMPLE_NS_DNAME)\t$(ROOT_DEL_NS_TTL)\tIN\tAAAA\t$(EXAMPLE_NS_IPv6)\n" >> $@
+
+$(9_2_ROOT_UNSIGNED): $(5_2_ROOT_UNSIGNED)
+	egrep -vi '^[a-m]\.root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $(5_2_ROOT_UNSIGNED) >$@
+	egrep -i '^[a-m]\.root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $(5_2_ROOT_UNSIGNED) \
+	| ./replace-ips.sh >> $@
+
+$(9_2_ROOT): $(5_2_MKDIR) $(9_2_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(9_2_ROOT_UNSIGNED) $(ROOT_KEYS)
 
 $(5_2_NET_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVERS_NET_DS)
 	printf "net.\t$(NET_SOA_TTL)\tIN\tSOA\t$(NET_NS_DNAME) nstld.verisign-grs.com. %d 1800 900 604800 86400\n" `date +%s` > $@
@@ -306,6 +374,14 @@ $(5_2_NET): $(5_2_MKDIR) $(5_2_NET_UNSIGNED) $(NET_KEY_FILES)
 $(5_2_ROOT_SERVERS_NET): $(5_2_MKDIR) $(ROOT_SERVERS_NET_UNSIGNED) $(ROOT_SERVERS_NET_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o $(ROOT_SERVERS_NET_DNAME) -f $@ $(ROOT_SERVERS_NET_UNSIGNED) $(ROOT_SERVERS_NET_KEYS)
 
+$(9_2_NET): $(5_2_MKDIR) $(5_2_NET_UNSIGNED) $(NET_KEY_FILES)
+	./replace-ips.sh $(5_2_NET_UNSIGNED) \
+	| ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ - $(NET_KEYS)
+
+$(9_2_ROOT_SERVERS_NET): $(5_2_MKDIR) $(ROOT_SERVERS_NET_UNSIGNED) $(ROOT_SERVERS_NET_KEY_FILES)
+	./replace-ips.sh $(ROOT_SERVERS_NET_UNSIGNED) \
+	| ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o $(ROOT_SERVERS_NET_DNAME) -f $@ - $(ROOT_SERVERS_NET_KEYS)
+
 $(5_3_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	sed 's/\b\([a-z]\)\.root-servers\.net.\B/\1.root-servers./g' $(ROOT_UNSIGNED) > $@
 	awk '{printf("%s\t$(ROOT_DEL_DS_TTL)\tIN\tDS\t%s %s %s %s\n",$$1,$$(NF-3),$$(NF-2),$$(NF-1),$$(NF))}' $(EXAMPLE_DS) >> $@
@@ -317,6 +393,14 @@ $(5_3_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 
 $(5_3_ROOT): $(5_3_MKDIR) $(5_3_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_3_ROOT_UNSIGNED) $(ROOT_KEYS)
+
+$(9_3_ROOT_UNSIGNED): $(5_3_ROOT_UNSIGNED)
+	egrep -vi '^[a-m]\.root-servers\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< >$@
+	egrep -i '^[a-m]\.root-servers\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< \
+	| ./replace-ips.sh >> $@
+
+$(9_3_ROOT): $(5_3_MKDIR) $(9_3_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(9_3_ROOT_UNSIGNED) $(ROOT_KEYS)
 
 $(5_3_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	sed 's/\b\([a-z]\)\.root-servers\.net.\B/\1./g' $(ROOT_UNSIGNED) > $@
@@ -330,6 +414,14 @@ $(5_3_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 $(5_3_1_ROOT): $(5_3_1_MKDIR) $(5_3_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_3_1_ROOT_UNSIGNED) $(ROOT_KEYS)
 
+$(9_3_1_ROOT_UNSIGNED): $(5_3_1_ROOT_UNSIGNED)
+	egrep -vi '^[a-m]\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< >$@
+	egrep -i '^[a-m]\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< \
+	| ./replace-ips.sh >> $@
+
+$(9_3_1_ROOT): $(5_3_1_MKDIR) $(9_3_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(9_3_1_ROOT_UNSIGNED) $(ROOT_KEYS)
+
 $(5_4_ROOT_SERVERS_UNSIGNED): $(ROOT_SERVERS_NET_UNSIGNED)
 	sed 's/\broot-servers\.net.\B/root-servers./g' $(ROOT_SERVERS_NET_UNSIGNED) > $@
 
@@ -342,8 +434,20 @@ $(5_4_ROOT_UNSIGNED): $(5_3_ROOT_UNSIGNED) $(5_4_ROOT_SERVERS_UNSIGNED) $(ROOT_S
 $(5_4_ROOT): $(5_4_MKDIR) $(5_4_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_4_ROOT_UNSIGNED) $(ROOT_KEYS)
 
+$(9_4_ROOT_UNSIGNED): $(5_4_ROOT_UNSIGNED)
+	egrep -vi '^[a-m]\.root-servers\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< >$@
+	egrep -i '^[a-m]\.root-servers\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< \
+	| ./replace-ips.sh >> $@
+
+$(9_4_ROOT): $(5_4_MKDIR) $(9_4_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(9_4_ROOT_UNSIGNED) $(ROOT_KEYS)
+
 $(5_4_ROOT_SERVERS): $(5_4_MKDIR) $(5_4_ROOT_SERVERS_UNSIGNED) $(ROOT_SERVERS_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o $(ROOT_SERVERS_DNAME) -f $@ $(5_4_ROOT_SERVERS_UNSIGNED) $(ROOT_SERVERS_KEYS)
+
+$(9_4_ROOT_SERVERS): $(5_4_MKDIR) $(5_4_ROOT_SERVERS_UNSIGNED) $(ROOT_SERVERS_KEY_FILES)
+	./replace-ips.sh $(5_4_ROOT_SERVERS_UNSIGNED) \
+	| ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o $(ROOT_SERVERS_DNAME) -f $@ - $(ROOT_SERVERS_KEYS)
 
 $(5_5_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVER_KSK_FILES) $(ROOT_SERVER_ZSK_FILES)
 	sed 's/\b\([a-z]\)\.root-servers\.net.\B/root.\1./g' $(ROOT_UNSIGNED) > $@
@@ -360,8 +464,13 @@ $(5_5_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVER_KSK_FILES) $(ROOT_SERVER_ZS
 $(5_5_ROOT): $(5_5_MKDIR) $(5_5_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_5_ROOT_UNSIGNED) $(ROOT_KEYS)
 
-bla:
-	echo $(5_5_ROOT_SERVERS)
+$(9_5_ROOT_UNSIGNED): $(5_5_ROOT_UNSIGNED)
+	egrep -vi '^root\.[a-m]\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< >$@
+	egrep -i '^root\.[a-m]\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< \
+	| ./replace-ips.sh >> $@
+
+$(9_5_ROOT): $(5_5_MKDIR) $(9_5_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(9_5_ROOT_UNSIGNED) $(ROOT_KEYS)
 
 $(5_5_ROOT_SERVERS): $(5_5_MKDIR) $(ROOT_SERVER_KSK_FILES) $(ROOT_SERVER_ZSK_FILES) $(ROOT_SERVERS_NET_UNSIGNED)
 	awk -vfqdn=$(patsubst $(5_5_PREFIX)%,%.,$@) '\
@@ -371,6 +480,16 @@ $(5_5_ROOT_SERVERS): $(5_5_MKDIR) $(ROOT_SERVER_KSK_FILES) $(ROOT_SERVER_ZSK_FIL
 		' $(ROOT_SERVERS_NET_UNSIGNED) \
 	| ldns-signzone  -i $(INCEPTION) -e $(EXPIRATION) -o $(patsubst $(5_5_PREFIX)%,%,$@) -f $@ - \
 		$(KEYS_DIR)/K$(patsubst $(5_5_PREFIX)%,%,$@).ksk $(KEYS_DIR)/K$(patsubst $(5_5_PREFIX)%,%,$@).zsk
+
+$(9_5_ROOT_SERVERS): $(5_5_MKDIR) $(ROOT_SERVER_KSK_FILES) $(ROOT_SERVER_ZSK_FILES) $(ROOT_SERVERS_NET_UNSIGNED)
+	awk -vfqdn=$(patsubst $(9_5_PREFIX)%,%.,$@) '\
+		/[A-Za-z.-]+[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+SOA[[:space:]]/{printf("%s\t%s\tIN\tSOA\troot.%s hostmaster.%s %s %s %s %s %s\n",fqdn,$$2,fqdn,fqdn,$$(NF-4),$$(NF-3),$$(NF-2),$$(NF-1),$$NF)}\
+		/^$(patsubst $(9_5_PREFIX)%,%,$@)\.root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]/{printf("root.%s\t%s\tIN\t%s\t%s\n",fqdn,$$2,$$(NF-1),$$NF)} \
+		/^root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]]+$(patsubst $(9_5_PREFIX)%,%,$@)\.root-servers\.net\.$$/{printf("%s\t%s\tIN\tNS\troot.%s\n",fqdn,$$2,fqdn)} \
+		' $(ROOT_SERVERS_NET_UNSIGNED) \
+	| ./replace-ips.sh \
+	| ldns-signzone  -i $(INCEPTION) -e $(EXPIRATION) -o $(patsubst $(9_5_PREFIX)%,%,$@) -f $@ - \
+		$(KEYS_DIR)/K$(patsubst $(9_5_PREFIX)%,%,$@).ksk $(KEYS_DIR)/K$(patsubst $(9_5_PREFIX)%,%,$@).zsk
 
 $(5_5_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVER_2_KSK_FILES) $(ROOT_SERVER_2_ZSK_FILES)
 	sed 's/\b\([a-z]\)\.root-servers\.net.\B/ns.\1.root-servers./g' $(ROOT_UNSIGNED) > $@
@@ -387,6 +506,14 @@ $(5_5_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED) $(ROOT_SERVER_2_KSK_FILES) $(ROOT_SERVE
 $(5_5_1_ROOT): $(5_5_1_MKDIR) $(5_5_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_5_1_ROOT_UNSIGNED) $(ROOT_KEYS)
 
+$(9_5_1_ROOT_UNSIGNED): $(5_5_1_ROOT_UNSIGNED)
+	egrep -vi '^ns\.[a-m]\.root-servers.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< >$@
+	egrep -i '^ns\.[a-m]\.root-servers.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< \
+	| ./replace-ips.sh >> $@
+
+$(9_5_1_ROOT): $(5_5_1_MKDIR) $(9_5_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(9_5_1_ROOT_UNSIGNED) $(ROOT_KEYS)
+
 $(5_5_1_ROOT_SERVERS): $(5_5_1_MKDIR) $(ROOT_SERVER_2_KSK_FILES) $(ROOT_SERVER_2_ZSK_FILES) $(ROOT_SERVERS_NET_UNSIGNED)
 	awk -vfqdn=$(patsubst $(5_5_1_PREFIX)%,%.,$@) '\
 		/[A-Za-z.-]+[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+SOA[[:space:]]/{printf("%s\t%s\tIN\tSOA\tns.%s hostmaster.%s %s %s %s %s %s\n",fqdn,$$2,fqdn,fqdn,$$(NF-4),$$(NF-3),$$(NF-2),$$(NF-1),$$NF)}\
@@ -395,6 +522,16 @@ $(5_5_1_ROOT_SERVERS): $(5_5_1_MKDIR) $(ROOT_SERVER_2_KSK_FILES) $(ROOT_SERVER_2
 		' $(ROOT_SERVERS_NET_UNSIGNED) \
 	| ldns-signzone  -i $(INCEPTION) -e $(EXPIRATION) -o $(patsubst $(5_5_1_PREFIX)%,%,$@) -f $@ - \
 		$(KEYS_DIR)/K$(patsubst $(5_5_1_PREFIX)%,%,$@).ksk $(KEYS_DIR)/K$(patsubst $(5_5_1_PREFIX)%,%,$@).zsk
+
+$(9_5_1_ROOT_SERVERS): $(5_5_1_MKDIR) $(ROOT_SERVER_2_KSK_FILES) $(ROOT_SERVER_2_ZSK_FILES) $(ROOT_SERVERS_NET_UNSIGNED)
+	awk -vfqdn=$(patsubst $(9_5_1_PREFIX)%,%.,$@) '\
+		/[A-Za-z.-]+[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+SOA[[:space:]]/{printf("%s\t%s\tIN\tSOA\tns.%s hostmaster.%s %s %s %s %s %s\n",fqdn,$$2,fqdn,fqdn,$$(NF-4),$$(NF-3),$$(NF-2),$$(NF-1),$$NF)}\
+		/^$(patsubst $(9_5_1_PREFIX)%,%,$@)\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]/{printf("ns.%s\t%s\tIN\t%s\t%s\n",fqdn,$$2,$$(NF-1),$$NF)} \
+		/^root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]]+$(patsubst $(9_5_1_PREFIX)%,%,$@)\.net\.$$/{printf("%s\t%s\tIN\tNS\tns.%s\n",fqdn,$$2,fqdn)} \
+		' $(ROOT_SERVERS_NET_UNSIGNED) \
+	| ./replace-ips.sh \
+	| ldns-signzone  -i $(INCEPTION) -e $(EXPIRATION) -o $(patsubst $(9_5_1_PREFIX)%,%,$@) -f $@ - \
+		$(KEYS_DIR)/K$(patsubst $(9_5_1_PREFIX)%,%,$@).ksk $(KEYS_DIR)/K$(patsubst $(9_5_1_PREFIX)%,%,$@).zsk
 
 $(5_6_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	egrep -iv '^\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]][b-z]+\.root-servers\.net\.\B'  $(ROOT_UNSIGNED) \
@@ -410,6 +547,14 @@ $(5_6_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 $(5_6_ROOT): $(5_6_MKDIR) $(5_6_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_6_ROOT_UNSIGNED) $(ROOT_KEYS)
 
+$(9_6_ROOT_UNSIGNED): $(5_6_ROOT_UNSIGNED)
+	egrep -vi '^root-servers\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< >$@
+	egrep -i '^root-servers\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< \
+	| ./replace-ips.sh >> $@
+
+$(9_6_ROOT): $(5_6_MKDIR) $(9_6_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(9_6_ROOT_UNSIGNED) $(ROOT_KEYS)
+
 $(5_6_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 	egrep -iv '^\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+NS[[:space:]][b-z]+\.root-servers\.net\.\B'  $(ROOT_UNSIGNED) \
 	| sed -e 's/\b[a-z]\.root-servers\.net.\B/all-root-servers./g' \
@@ -423,6 +568,14 @@ $(5_6_1_ROOT_UNSIGNED): $(ROOT_UNSIGNED)
 
 $(5_6_1_ROOT): $(5_6_1_MKDIR) $(5_6_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
 	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(5_6_1_ROOT_UNSIGNED) $(ROOT_KEYS)
+
+$(9_6_1_ROOT_UNSIGNED): $(5_6_1_ROOT_UNSIGNED)
+	egrep -vi '^all-root-servers\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< >$@
+	egrep -i '^all-root-servers\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]+(A|AAAA)[[:space:]]' $< \
+	| ./replace-ips.sh >> $@
+
+$(9_6_1_ROOT): $(5_6_1_MKDIR) $(9_6_1_ROOT_UNSIGNED) $(ROOT_KEY_FILES)
+	ldns-signzone -i $(INCEPTION) -e $(EXPIRATION) -o . -f $@ $(9_6_1_ROOT_UNSIGNED) $(ROOT_KEYS)
 
 $(5_9_NET_UNSIGNED): $(5_2_NET_UNSIGNED)
 	egrep -iv '^([a-z]\.)?root-servers\.net\.[[:space:]]+[0-9]+[[:space:]]+IN[[:space:]]' $< > $@

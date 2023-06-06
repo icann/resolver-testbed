@@ -10,10 +10,18 @@
 - name: Set the zones for scenario 5 without real IPs (for aj)
   ansible.builtin.set_fact:
     zone_cfg:
-      - [".", "{{ ZONE_DIR }}/5/root.zone"]
-      - ["a.", "{{ ZONE_DIR }}/5/a.zone"]
-      - ["j.", "{{ ZONE_DIR }}/5/j.zone"]
+      - [".", "{{ ZONE_DIR }}/9.5-root"]
+      - ["a.", "{{ ZONE_DIR }}/9.5-a"]
+      - ["j.", "{{ ZONE_DIR }}/9.5-j"]
   when: letter == 'aj' and do_realips is defined and do_realips is false
+
+#- name: Set the zones for scenario 5 without real IPs (for aj)
+#  ansible.builtin.set_fact:
+#    zone_cfg:
+#      - [".", "{{ ZONE_DIR }}/5/root.zone"]
+#      - ["a.", "{{ ZONE_DIR }}/5/a.zone"]
+#      - ["j.", "{{ ZONE_DIR }}/5/j.zone"]
+#  when: letter == 'aj' and do_realips is defined and do_realips is false
 
 - name: Set the zones for scenario 5 with real IPs
   ansible.builtin.set_fact:
@@ -25,7 +33,14 @@
 - name: Set the zones for scenario 5 without real IPs
   ansible.builtin.set_fact:
     zone_cfg:
-      - [".", "{{ ZONE_DIR }}/5/root.zone"]
-      - ["{{ letter }}.", "{{ ZONE_DIR }}/5/{{ letter }}.zone"]
+      - [".", "{{ ZONE_DIR }}/9.5-root"]
+      - ["{{ letter }}.", "{{ ZONE_DIR }}/9.5-{{ letter }}"]
   when: letter != 'aj' and do_realips is defined and do_realips is false
 
+#- name: Set the zones for scenario 5 without real IPs
+#  ansible.builtin.set_fact:
+#    zone_cfg:
+#      - [".", "{{ ZONE_DIR }}/5/root.zone"]
+#      - ["{{ letter }}.", "{{ ZONE_DIR }}/5/{{ letter }}.zone"]
+#  when: letter != 'aj' and do_realips is defined and do_realips is false
+#

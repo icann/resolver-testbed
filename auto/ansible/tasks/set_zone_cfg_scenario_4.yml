@@ -9,7 +9,13 @@
 - name: Set the zones for scenario 4 without real IPs
   ansible.builtin.set_fact:
     zone_cfg:
-      - [".", "{{ ZONE_DIR }}/4/root.zone"]
-      - ["some-servers.", "{{ ZONE_DIR }}/4/some-servers.zone"]
+      - [".", "{{ ZONE_DIR }}/9.4-root"]
+      - ["root-servers.", "{{ ZONE_DIR }}/9.4-root-servers"]
   when: do_realips is defined and do_realips is false
 
+#- name: Set the zones for scenario 4 without real IPs
+#  ansible.builtin.set_fact:
+#    zone_cfg:
+#      - [".", "{{ ZONE_DIR }}/4/root.zone"]
+#      - ["some-servers.", "{{ ZONE_DIR }}/4/some-servers.zone"]
+#  when: do_realips is defined and do_realips is false

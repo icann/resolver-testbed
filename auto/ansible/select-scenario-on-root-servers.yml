@@ -1,4 +1,5 @@
-# Configure servers-vm with nameserver software and zone
+# Configure root-servers with zones for the given scenario
+# Also configures servers-vm for the .net zone when needed (scenatios 5.1 and 5.2)
 # ------------------------------------------------------
 # Required variables:
 #

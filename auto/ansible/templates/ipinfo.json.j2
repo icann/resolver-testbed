@@ -16,7 +16,7 @@
 {%  endfor %}
 {% endfor %}
 {% for letter, v in fake_ips.items() %}
-{%  set d = { 'host': 'gateway-vm', 'software': letter | upper, 'ipv4': v.ipv4, 'ipv6': v.ipv6 } %}
+{%  set d = { 'host': 'gateway-vm', 'software': 'New-' + letter | upper, 'ipv4': v.ipv4, 'ipv6': v.ipv6 } %}
 {%  set _dummy = ns.ips.update({ v.ipv4: d }) %}
 {%  set _dummy = ns.ips.update({ v.ipv6: d }) %}
 {% endfor %}

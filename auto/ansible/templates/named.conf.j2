@@ -8,7 +8,11 @@ options {
 };
 {% if scenario is defined %}
 {%   if scenario | int == 1 or scenario | int == 2 %}
+{%     if do_realips is not defined or do_realips is true %}
 zone "net." { type master; file "/root/scenarios/5.{{ scenario }}-net"; };
+{%     else %}
+zone "net." { type master; file "/root/scenarios/9.{{ scenario }}-net"; };
+{%     endif %}
 {%   endif %}
 zone "example." { type master; file "/root/scenarios/5.9-example"; };
 zone "example2." { type master; file "/root/scenarios/5.9-example2"; };

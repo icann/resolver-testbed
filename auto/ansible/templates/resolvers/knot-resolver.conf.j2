@@ -3,3 +3,8 @@ net.outgoing_v4('{{ outgoing_ipv4 }}')
 net.outgoing_v6('{{ outgoing_ipv6 }}')
 trust_anchors.add_file('/usr/share/dns/root.key', { readonly = true })
 modules.unload('ta_signal_query')
+{% if scenario is defined %}
+modules = { 'hints > iterate' }
+hints.root_file('/root/scenarios/{% if realips is defined and realips | bool is false %}9{% else %}5{% endif %}.{{ scenario }}{% if variant is defined and variant | bool is true %}.1{% endif %}-root.hints')
+{% endif %}
+

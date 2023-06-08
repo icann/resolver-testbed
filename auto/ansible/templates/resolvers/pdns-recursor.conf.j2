@@ -8,3 +8,7 @@ query-local-address={{ outgoing_ipv4 }},{{ outgoing_ipv6 }}
 {% endif %}
 lua-config-file=/usr/share/dns/pdns.lua
 security-poll-suffix=
+{% if scenario is defined %}
+hint-file=/root/scenarios/{% if realips is defined and realips | bool is false %}9{% else %}5{% endif %}.{{ scenario }}{% if variant is defined and variant | bool is true %}.1{% endif %}-root.hints
+{% endif %}
+

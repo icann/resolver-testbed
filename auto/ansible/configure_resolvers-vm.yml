@@ -10,6 +10,11 @@
   - ansible.builtin.import_tasks:
       file: tasks/read_build_configuration.yml
 
+  - name: Copying root zones scenarios
+    ansible.posix.synchronize:
+      src: files/scenarios/
+      dest: /root/scenarios
+
 - hosts: resolvers_vm_build_group
   gather_facts: false
   become: true

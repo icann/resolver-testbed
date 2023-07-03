@@ -77,7 +77,7 @@
 
     - name: Install trust anchor root.key
       ansible.builtin.copy:
-        src: "files/scenarios/keys/K.+008+47944.key"
+        src: "files/scenarios/keys/K.ksk.key"
         dest: "/usr/share/dns/root.key"
         owner: root
         group: root
@@ -85,7 +85,7 @@
 
     - name: Install trust anchors root.ds
       ansible.builtin.copy:
-        src: "files/scenarios/keys/K.+008+47944.ds"
+        src: "files/scenarios/keys/K.ksk.ds"
         dest: "/usr/share/dns/root.ds"
         owner: root
         group: root

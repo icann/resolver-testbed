@@ -10,14 +10,7 @@ name="{{ service_name }}"
 desc="{{ service_name }} startup script"
 rcvar="{{ service_name }}_enable"
 
-{% if system.package == 'netbsd' %}
-{# XXX: netbsd build cannot find libuv.so.1 in /usr/pkg/lib although #}
-{#      pkg-config does report on it during configure. #}
-{#      Easy fix for now. #}
-command="LD_LIBRARY_PATH='/usr/pkg/lib:/usr/lib' {{ software_target_dir }}/sbin/named"
-{% else %}
 command="{{ software_target_dir }}/sbin/named"
-{% endif %}
 command_args="-c {{ software_target_dir }}/etc/bind/bind.conf"
 pidfile="{{ software_target_dir }}/etc/bind/bind.pid"
 
@@ -25,4 +18,12 @@ load_rc_config ${name}
 
 {{ service_name }}_enable="YES"
 
+{% if system.package == 'netbsd' %}
+{# XXX: netbsd build cannot find libuv.so.1 in /usr/pkg/lib although #}
+{#      pkg-config does report on it during configure. #}
+{#      Easy fix for now. #}
+LD_LIBRARY_PATH='/usr/pkg/lib:/usr/lib' run_rc_command "$1"
+{% else %}
 run_rc_command "$1"
+{% endif %}
+

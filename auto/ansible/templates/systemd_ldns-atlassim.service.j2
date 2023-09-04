@@ -3,7 +3,7 @@ Description={{ service_name }} service
 After=syslog.target network-online.target
 
 [Service]
-ExecStart={{ software_target_dir }}/bin/ldns-testns -v {{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf
+ExecStart={{ software_target_dir }}/bin/ldns-testns {{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf
 
 [Install]
 WantedBy=multi-user.target

@@ -18,7 +18,7 @@ pidfile="{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.p
 
 {{ service_name }}_start()
 {
-	nohup {{ software_target_dir }}/bin/ldns-testns -v {{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf >>{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.log 2>&1 &
+	nohup {{ software_target_dir }}/bin/ldns-testns {{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf >>{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.log 2>&1 &
 	echo $! > ${pidfile}
 }
 

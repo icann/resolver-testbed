@@ -25,7 +25,7 @@ def get_glue(rr, fi, rs_names):
 	return txt
 	
 
-for fn in sorted(glob.glob('*-root')):
+for fn in sorted(glob.glob('.9.*-root')):
 	sc = fn.split('-')[0]
 	rs_files  = set(glob.glob(sc + '-*'))
 	rs_files -= { fn, sc + '-net', sc + '-root.hints' }
@@ -46,4 +46,4 @@ for fn in sorted(glob.glob('*-root')):
 			fi = iter(open(rs_file))
 			txt += get_glue(next_rr(fi), fi, rs_names)
 	
-	open(('9' if sc[0] == '5' else '5') + sc[1:] + '-root.hints', 'w').write(txt)
+	open('5' + sc[2:] + '-root.hints', 'w').write(txt)

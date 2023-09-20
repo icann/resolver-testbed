@@ -19,7 +19,7 @@ options {
 {% if scenario is defined %}
 zone "." {
   type hint;
-  file "/root/scenarios/{% if realips is defined and realips | bool is false %}9{% else %}5{% endif %}.{{ scenario }}{% if variant is defined and variant | bool is true %}.1{% endif %}-root.hints";
+  file "/root/scenarios/{% if realips is defined and realips | bool is false %}.9{% else %}5{% endif %}.{{ scenario }}{% if variant is defined and variant | bool is true %}.1{% endif %}-root.hints";
 };
 {% endif %}
 

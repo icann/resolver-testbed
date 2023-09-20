@@ -12,7 +12,7 @@
 #            Alternative for the naming scheme scenario. 
 #            Scenarios 3, 5 and 6 have a variant.
 #
-# - realips: [ *true* | false ]
+# - realips: [ true | *false* ]
 #            Use in the zones, the same IP addresses for the root servers
 #            as they currently use on the internet. Also the names in the
 #            zones match more closely the ones that were used in section 5
@@ -29,7 +29,7 @@
         - software is defined and software | lower in ['bind', 'nsd', 'knot']
         - variant is not defined or variant == 'false' or variant == 'true'
         - realips is not defined or realips == 'false' or realips == 'true'
-      fail_msg: "usage: ansible-playbook --extra-vars \"scenario=[1-6] software=[bind | nsd | knot] variant=[*false* | true] realips=[*true* | false]\""
+      fail_msg: "usage: ansible-playbook --extra-vars \"scenario=[1-6] software=[bind | nsd | knot] variant=[*false* | true] realips=[*false* | true]\""
 
   - name: Set variant to boolean value (if given)
     when: variant is defined
@@ -46,10 +46,10 @@
     ansible.builtin.set_fact:
       do_realips: "{{ realips | bool }}"
 
-  - name: Set realips to true (if not given)
+  - name: Set realips to false (if not given)
     when: realips is not defined
     ansible.builtin.set_fact:
-      do_realips: true
+      do_realips: false
 
   - debug:
       var: do_variant

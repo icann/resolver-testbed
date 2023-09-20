@@ -1,19 +1,19 @@
 ---
-- name: Set the zones for scenario 1 with real IPs
+- name: Set the zones for scenario 1 without real IPs
   ansible.builtin.set_fact:
     zone_cfg:
       - [".", "{{ ZONE_DIR }}/5.1-root"]
 #      - ["net.", "{{ ZONE_DIR }}/5.1-net"]
       - ["root-servers.net.", "{{ ZONE_DIR }}/5.1-root-servers.net"]
-  when: do_realips is not defined or do_realips is true
+  when: do_realips is not defined or do_realips is false
 
-- name: Set the zones for scenario 1 without real IPs
+- name: Set the zones for scenario 1 with real IPs
   ansible.builtin.set_fact:
     zone_cfg:
-      - [".", "{{ ZONE_DIR }}/9.1-root"]
+      - [".", "{{ ZONE_DIR }}/.9.1-root"]
 #      - ["net.", "{{ ZONE_DIR }}/9.1-net"]
-      - ["root-servers.net.", "{{ ZONE_DIR }}/9.1-root-servers.net"]
-  when: do_realips is defined and do_realips is false
+      - ["root-servers.net.", "{{ ZONE_DIR }}/.9.1-root-servers.net"]
+  when: do_realips is defined and do_realips is true
 
 #- name: Set the zones for scenario 1 without real IPs
 #  ansible.builtin.set_fact:

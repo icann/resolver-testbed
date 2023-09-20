@@ -1,0 +1,12 @@
+[Unit]
+Description={{ service_name }} service
+After=syslog.target network-online.target
+
+[Service]
+Type=notify
+WorkingDirectory={{ software_target_dir }}/etc/knot-resolver
+ExecStartPre=/usr/bin/rm -f {{ software_target_dir }}/etc/knot-resolver/data.mdb
+ExecStart={{ software_target_dir }}/sbin/kresd -c {{ software_target_dir }}/etc/knot-resolver/kresd.conf -n
+
+[Install]
+WantedBy=multi-user.target

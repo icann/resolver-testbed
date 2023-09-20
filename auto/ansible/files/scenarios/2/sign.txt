@@ -1,0 +1,2 @@
+ldns-signzone -i 20230101000000 -e 20300101000000 -o p53 -f p53.zone p53.zone.unsigned Kp53.+008+28021 Kp53.+008+32811
+ldns-signzone -i 20230101000000 -e 20300101000000 -n -a 1 -t 0 -p -s "" -o p53 -f p53.zone.current p53.zone.insecure Kp53.+008+28021 Kp53.+008+32811

@@ -1,0 +1,44 @@
+---
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Uninstall iptables.
+      ansible.builtin.apt:
+        pkg:
+          - iptables
+        state: absent
+        update_cache: yes
+
+    - name: Install nftables.
+      ansible.builtin.apt:
+        pkg:
+          - nftables
+          - nftlb
+        state: present
+
+    - ansible.builtin.include_tasks:
+        file: "tasks/network_provision_{{ system.network }}.yml"
+
+    - name: Copy over IP forwarding configuration.
+      ansible.builtin.copy:
+        src: files/gateway/rc.local
+        dest: /etc/rc.local
+        mode: "u+x"
+
+    - name: Apply IP forwarding configuration.
+      ansible.builtin.shell:
+        cmd: /etc/rc.local
+
+    - name: Copy over nftables configuration.
+      ansible.builtin.copy:
+        src: files/gateway/nftables.conf
+        dest: /etc/nftables.conf
+
+    - name: Restart nftables.
+      ansible.builtin.systemd:
+        name: nftables
+        state: restarted
+        enabled: true
+        daemon_reload: true

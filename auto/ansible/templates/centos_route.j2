@@ -1,0 +1,5 @@
+{% if 'v4' in item and 'static_routes' in item.v4 %}
+{% for r in item.v4.static_routes %}
+{{ r.network }} via {{ r.gateway }} dev {{ item.name }} metric 1
+{% endfor %}
+{% endif %}

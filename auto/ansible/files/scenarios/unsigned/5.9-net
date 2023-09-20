@@ -1,0 +1,22 @@
+net.	900	IN	SOA	a.some-servers.net. nstld.verisign-grs.com. 1684790106 1800 900 604800 86400
+net.	172800	IN	NS	a.some-servers.net.
+a.some-servers.net.	172800	IN	A	185.49.142.30
+a.some-servers.net.	172800	IN	AAAA	2a04:b907::30
+example.net.		172800	IN	NS	a.iana-servers.net.
+example.net.		172800	IN	NS	b.iana-servers.net.
+example.net.		86400	IN	DS	29511 13 2 306BAFA02D6A3CBBB182E53ECE8AF3D4141978A030F065971BDB076F 4DD6C0AF
+a.iana-servers.net.	172800	IN	A	199.43.135.53
+a.iana-servers.net.	172800	IN	AAAA	2001:500:8f::53
+b.iana-servers.net.	172800	IN	A	199.43.133.53
+b.iana-servers.net.	172800	IN	AAAA	2001:500:8d::53
+iana-servers.net.	172800	IN	NS	ns.icann.org.
+iana-servers.net.	172800	IN	NS	a.iana-servers.net.
+iana-servers.net.	172800	IN	NS	b.iana-servers.net.
+iana-servers.net.	172800	IN	NS	c.iana-servers.net.
+iana-servers.net.	86400	IN	DS	7474 8 2 893CC96419BA2F255A8C9BE913753AD2CA7265C67B9D1BAF3CD18AEC 4CBFEA9C
+a.iana-servers.net.	172800	IN	A	199.43.135.53
+a.iana-servers.net.	172800	IN	AAAA	2001:500:8f::53
+b.iana-servers.net.	172800	IN	A	199.43.133.53
+b.iana-servers.net.	172800	IN	AAAA	2001:500:8d::53
+c.iana-servers.net.	172800	IN	A	199.43.134.53
+c.iana-servers.net.	172800	IN	AAAA	2001:500:8e::53

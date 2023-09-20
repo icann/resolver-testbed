@@ -1,0 +1,6 @@
+---
+- ansible.builtin.include_tasks:
+    file: tasks/rssac028-appendix-a/do-scenario.yml
+  loop: "{{ scenarios }}"
+  loop_control:
+    loop_var: scenario

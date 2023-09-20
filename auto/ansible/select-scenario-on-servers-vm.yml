@@ -1,0 +1,96 @@
+# Configure servers-vm with nameserver software and zone
+# ------------------------------------------------------
+# Required variables:
+#
+# - scenario: The zones for the naming scheme scenario to configure [1-6]
+#
+# - software: The software to serve the zones [ bind | nsd | knot ]
+#
+# Optional variables:
+#
+# - variant: [ true | *false* ]
+#            Alternative for the naming scheme scenario. 
+#            Scenarios 3, 5 and 6 have a variant.
+#
+# - realips: [ true | *false* ]
+#            Use in the zones, the same IP addresses for the root servers
+#            as they currently use on the internet. Also the names in the
+#            zones match more closely the ones that were used in section 5
+#            of the RSSAC028 document.
+---
+- hosts: servers-vm
+  gather_facts: false
+  become: true
+  tasks:
+  - name: "Check that scenario and nameserver software is chosen"
+    assert:
+      that:
+        - scenario is defined and scenario in ['1', '2', '3', '4', '5', '6']
+        - software is defined and software | lower in ['bind', 'nsd', 'knot']
+        - variant is not defined or variant == 'false' or variant == 'true'
+        - realips is not defined or realips == 'false' or realips == 'true'
+      fail_msg: "usage: ansible-playbook --extra-vars \"scenario=[1-6] software=[bind | nsd | knot] variant=[*false* | true] realips=[*false* | true]\""
+
+  - name: Set variant to boolean value (if given)
+    when: variant is defined
+    ansible.builtin.set_fact:
+      do_variant: "{{ variant | bool }}"
+
+  - name: Set variant to false (if not given)
+    when: variant is not defined
+    ansible.builtin.set_fact:
+      do_variant: false
+
+  - name: Set realips to boolean value (if given)
+    when: realips is defined
+    ansible.builtin.set_fact:
+      do_realips: "{{ realips | bool }}"
+
+  - name: Set realips to false (if not given)
+    when: realips is not defined
+    ansible.builtin.set_fact:
+      do_realips: false
+
+  - debug:
+      var: do_variant
+
+  - debug:
+      var: do_realips
+
+  - name: Set implementation from software
+    when: item.name | lower == software | lower
+    ansible.builtin.set_fact:
+      implementation: '{{ item }}'
+    loop: "{{ nameservers }}"
+
+  - name: Copying root zones scenarios
+    ansible.posix.synchronize:
+      src: files/scenarios/
+      dest: /root/scenarios
+
+  - name: Is named running?
+    command: "pgrep -f /usr/local/sbin/named"
+    register: named_pid
+    failed_when: named_pid.rc > 1
+    changed_when: false
+
+  - name: Kill named if running
+    shell: "kill {{ named_pid.stdout_lines[0] }}"
+    when: named_pid.stdout_lines
+
+  - name: Stop any still running nameservers
+    ansible.builtin.service:
+      name: "{{ item.service }}"
+      state: 'stopped'
+    loop: "{{ nameservers }}"
+
+  - name: Configure {{ implementation.name }} for scenario 5.{{ scenario }}
+    ansible.builtin.template:
+      src: "templates/rssac028-appendix-a/{{ implementation.service }}.conf.j2"
+      dest: "{{ implementation.config_file }}"
+
+  - name: Start {{ implementation.name }}
+    ansible.builtin.service:
+      name: "{{ implementation.service }}"
+      state: 'started'
+

@@ -1,0 +1,25 @@
+---
+- name: Ubuntu network configuration.
+  block:
+  - name: (Ubuntu) Configure interfaces.
+    ansible.builtin.template:
+      src: templates/ubuntu_netplan.j2
+      dest: /etc/netplan/01-netcfg.yaml
+
+  - name: (Ubuntu) Check hostname.
+    ansible.builtin.shell:
+      cmd: "hostname"
+    register: hostname_out
+
+  - name: (Ubuntu) Set hostname.
+    ansible.builtin.shell:
+      cmd: "hostname {{ inventory_hostname }}"
+    when: hostname_out.stdout != inventory_hostname
+
+  - ansible.builtin.include_tasks:
+      file: tasks/network_restart_ubuntu.yml
+
+  - ansible.builtin.include_tasks:
+      file: "tasks/install_rc.local_{{ system.service }}.yml"
+    vars:
+      rc_template: "templates/rc.local_linux.j2"

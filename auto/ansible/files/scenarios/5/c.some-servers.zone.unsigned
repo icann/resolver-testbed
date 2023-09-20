@@ -1,0 +1,4 @@
+c.some-servers. 60 IN SOA ns1.c.some-servers. admin.ns1.c.some-servers. 123 1800 900 6054800 60
+c.some-servers. 60 IN NS ns1.c.some-servers.
+ns1.c.some-servers. 60 IN A 172.21.103.1
+ns1.c.some-servers. 60 IN AAAA fd00::21:103:1

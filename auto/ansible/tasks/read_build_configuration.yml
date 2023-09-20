@@ -1,0 +1,35 @@
+---
+- name: Check required variables for this task.
+  ansible.builtin.assert:
+    that:
+      - software_source_dir is defined
+      - software_target_dir is defined
+      - software_build_config is defined
+    fail_msg: "Not all required variables are defined!"
+
+- name: Add the build software as hosts.
+  ansible.builtin.add_host:
+    name: "{{ item.name }}"
+    groups: "{{ inventory_hostname | replace('-', '_') }}_build_group"
+    url: "{{ item.url }}"
+    make_str: "{{ software_build_config.templates[item.make_str] }}"
+    files_copy: "{{ ('files_copy' in item and item.files_copy) or [] }}"
+    listen_ipv4: "{{ 'listen_ipv4' in item and item.listen_ipv4 }}"
+    outgoing_ipv4: "{{ 'outgoing_ipv4' in item and item.outgoing_ipv4 }}"
+    outgoing_ipv6: "{{ 'outgoing_ipv6' in item and item.outgoing_ipv6 }}"
+    cfg: "{{ item.cfg | default({}) }}"
+    software_sname: "{{ item.name.rsplit('-', 1)[0] }}"
+    ready2run: "{{ item.name.rsplit('-', 1)[0] in ['bind', 'unbound', 'pdns-recursor', 'knot-resolver'] }}"
+    # This is needed when delegate_to is used to preserve the hostname
+    # since Ansible uses the delegate_to hostname as the inventory_hostname
+    software_name: "{{ item.name }}"
+    service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
+  loop: "{{ software_build_config.software }}"
+
+- name: Make sure the needed directories are there.
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ software_source_dir }}"
+    - "{{ software_target_dir }}"

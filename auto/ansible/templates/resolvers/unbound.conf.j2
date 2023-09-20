@@ -1,0 +1,15 @@
+server:
+	interface: {{ listen_ipv4 }}
+        outgoing-interface: {{ outgoing_ipv4 }}
+        outgoing-interface: {{ outgoing_ipv6 }}
+	access-control: 0.0.0.0/0 allow
+	chroot: ""
+	username: ""
+	trust-anchor-file: "/usr/share/dns/root.key"
+{% if not ((cfg.ta_signal | default(false)) and cfg.ta_signal == 'absent') %}
+        trust-anchor-signaling: {{ cfg.ta_signal | default('no') }}
+{% endif %}
+{% if scenario is defined %}
+	root-hints: "/root/scenarios/{% if realips is defined and realips | bool is false %}.9{% else %}5{% endif %}.{{ scenario }}{% if variant is defined and variant | bool is true %}.1{% endif %}-root.hints"
+{% endif %}
+

@@ -1,0 +1,13 @@
+[Unit]
+Description=nftlb daemon
+Documentation=man:nftlb(8) man:nft(8)
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/nftlb -6 -k "1234" -l 7 -c /etc/nftlb.conf
+Restart=on-failure
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

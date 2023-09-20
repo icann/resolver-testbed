@@ -1,0 +1,50 @@
+---
+- name: Check required variables for this task.
+  ansible.builtin.assert:
+    that:
+      - incept_title is defined
+      - incept_playbook is defined
+      - incept_task is defined
+      - incept_variables is defined
+    fail_msg: "Not all required variables present!"
+    quiet: true
+
+- name: Ensure local_ansible directory is there.
+  ansible.builtin.file:
+    path: /root/local_ansible
+    state: directory
+
+- name: Populate local_ansible.
+  ansible.posix.synchronize:
+    src: "{{ item }}/"
+    dest: "/root/local_ansible/{{ item }}"
+    delete: true
+    recursive: true
+  loop:
+    - files
+    - tasks
+    - templates
+
+- name: Copy over inception playbook.
+  ansible.builtin.copy:
+    src: "{{ incept_playbook }}"
+    dest: /root/local_ansible/inception_playbook.yml
+
+- name: Copy over inception task.
+  ansible.builtin.copy:
+    src: "{{ incept_task }}"
+    dest: /root/local_ansible/inception_task.yml
+
+- name: Write out variables.
+  ansible.builtin.template:
+    src: templates/inception_variables.yml.j2
+    dest: /root/local_ansible/inception_variables.yml
+
+- name: "{{ incept_title }} (Output per incepted host when done)"
+  ansible.builtin.shell:
+    cmd: "{{ ansible_playbook_path | default('ansible-playbook') }} -f {{ cpus }} /root/local_ansible/inception_playbook.yml"
+  environment:
+    # Easier to read the output when something goes wrong.
+    ANSIBLE_STDOUT_CALLBACK: yaml
+    # Explicitly set the locale in case the user passes something funny.
+    LC_ALL: 'en_US.UTF-8'

@@ -1,0 +1,19 @@
+options {
+  recursion no;
+  empty-zones-enable no;
+  pid-file "/var/run/named/named.pid";
+  directory "/usr/local/etc/namedb/working";
+  listen-on { {{ listen_addrs[0] }}; {{ listen_addrs[1] }}; };
+  listen-on-v6 { {{ listen_addrs_6[0] }}; {{ listen_addrs_6[1] }}; };
+};
+{% if scenario is defined %}
+{%   if scenario | int == 1 or scenario | int == 2 %}
+{%     if do_realips is not defined or do_realips is false %}
+zone "net." { type master; file "/root/scenarios/5.{{ scenario }}-net"; };
+{%     else %}
+zone "net." { type master; file "/root/scenarios/.9.{{ scenario }}-net"; };
+{%     endif %}
+{%   endif %}
+zone "example." { type master; file "/root/scenarios/5.9-example"; };
+zone "example2." { type master; file "/root/scenarios/5.9-example2"; };
+{% endif %}

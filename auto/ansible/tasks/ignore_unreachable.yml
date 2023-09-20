@@ -1,0 +1,13 @@
+---
+- block:
+    - name: Check if host is up
+      ansible.builtin.ping:
+      ignore_unreachable: yes
+      register: pong
+
+    - name: Host is down, probably from network provisioning
+      ansible.builtin.fail:
+      when: "pong is not reachable"
+  rescue:
+    - name: THIS IS FINE!
+      ansible.builtin.meta: end_play

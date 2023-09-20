@@ -5,7 +5,11 @@ See https://github.com/icann/resolver-testbed for more information
 Must be run in the same directory as the config files
 '''
 
-import os, subprocess, sys, time, tempfile
+import os
+import subprocess
+import sys
+import time
+import tempfile
 
 # Some program-wide constants
 PROG_DIR = os.path.abspath(os.getcwd())
@@ -17,11 +21,12 @@ this_log_f = open(this_log_filename, mode="wt")
 
 
 def log(in_str):
-	''' Prints a message , but only if the message is non-null; returns nothing '''
-	if not in_str:
-		return
-	out = "{}: {}\n".format(time.strftime("%H-%M-%S"), in_str)
-	this_log_f.write(out)
+    ''' Prints a message , but only if the message is non-null; returns nothing '''
+    if not in_str:
+        return
+    out = "{}: {}\n".format(time.strftime("%H-%M-%S"), in_str)
+    this_log_f.write(out)
+
 
 def die(in_str):
     ''' log then exit  '''
@@ -42,7 +47,7 @@ for this_dir in (SOURCE_DIR, TARGET_DIR):
     if not os.path.exists(this_dir):
         try:
             os.mkdir(this_dir)
-        except:
+        except Exception:
             die("Could not create {}.".format(this_dir))
 # Get the name to build
 package_name = sys.argv[1]
@@ -50,7 +55,7 @@ package_url = sys.argv[2]
 package_make_str = sys.argv[3]
 try:
     os.chdir(SOURCE_DIR)
-except:
+except Exception:
     die("Could not chdir to {}.".format(SOURCE_DIR))
 # Get the compressed file into SOURCE_DIR
 log("Getting {}".format(package_url))
@@ -70,7 +75,7 @@ if not os.path.exists(package_source_dir):
     die("Getting and expanding {} did not result in a directory {}.".format(package_url, package_source_dir))
 try:
     os.chdir(package_source_dir)
-except:
+except Exception:
     die("Could not chdir into {}".format(package_source_dir))
 # Change PREFIX_GOES_HERE in package_make_str into TARGET_DIR/package_name
 full_make_str = package_make_str.replace("PREFIX", "{}/{}".format(TARGET_DIR, package_source_dir))
@@ -84,7 +89,6 @@ log("## Finished run")
 this_log_f.close()
 try:
     os.remove(this_log_filename)
-except:
+except Exception:
     print("Weird, could not delete the log file")
 exit()
-

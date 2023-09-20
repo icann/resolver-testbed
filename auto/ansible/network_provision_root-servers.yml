@@ -1,0 +1,8 @@
+---
+- hosts: root_servers
+  gather_facts: false
+  become: true
+
+  tasks:
+    - ansible.builtin.include_tasks:
+        file: "tasks/network_provision_{{ system.network }}.yml"

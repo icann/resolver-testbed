@@ -1,0 +1,111 @@
+---
+- hosts: resolvers-vm
+  gather_subset: "!all,!min,distribution_release"
+  become: true
+
+  tasks:
+    - ansible.builtin.import_tasks:
+        file: tasks/install_generic_packages.yml
+
+    - name: Install VM specific packages (part I).
+      ansible.builtin.apt:
+        pkg:
+          - lsb-release
+          - ca-certificates
+          - python3-pip
+          - apt-transport-https
+          - ldnsutils
+        state: present
+        update_cache: yes
+
+    - name: Add CZ.nic apt key.
+      ansible.builtin.get_url:
+        url: https://deb.knot-dns.cz/apt.gpg
+        dest: /etc/apt/trusted.gpg.d/knot.gpg
+
+    - name: Add CZ.nic repository.
+      ansible.builtin.apt_repository:
+        repo: "deb https://deb.knot-dns.cz/knot-latest/ {{ ansible_distribution_release }} main"
+        filename: knot-latest.list
+        state: present
+        update_cache: yes
+
+    - name: Install VM specific packages (part II).
+      ansible.builtin.apt:
+        pkg:
+          - build-essential
+          - libssl-dev
+          - libcap-dev
+          - python3-ply
+          - pkg-config
+          - libuv1-dev
+          - libcmocka-dev
+          - libluajit-5.1-dev
+          - liblua5.1-0-dev
+          - autoconf
+          - libtool
+          - liburcu-dev
+          - libgnutls28-dev
+          - libedit-dev
+          - libldns-dev
+          - libexpat-dev
+          - libboost-dev
+          - libboost-system-dev
+          - libboost-thread-dev
+          - libboost-context-dev
+          - libknot-dev
+          - libsystemd-dev
+          - liblmdb-dev
+          - ninja-build
+          - luajit
+          - libboost-test-dev
+        state: present
+        update_cache: yes
+
+    - name: Install meson for Python3.
+      ansible.builtin.pip:
+        name: meson
+        executable: pip3
+
+    - name: Create directory trust anchors
+      file:
+        path: /usr/share/dns
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Install trust anchor root.key
+      ansible.builtin.copy:
+        src: "files/scenarios/keys/K.ksk.key"
+        dest: "/usr/share/dns/root.key"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Install trust anchors root.ds
+      ansible.builtin.copy:
+        src: "files/scenarios/keys/K.ksk.ds"
+        dest: "/usr/share/dns/root.ds"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Create trust anchors for bind and pdns
+      ansible.builtin.shell:
+        chdir: "/usr/share/dns"
+        cmd: |
+          awk '{printf("trusted-keys {\n  %s %s %s %s \"%s\";\n};\n", $1, $4, $5, $6, $7)}' root.key > bind.keys
+          awk '{printf("trust-anchors {\n  %s static-key %s %s %s \"%s\";\n};\n", $1, $4, $5, $6, $7)}' root.key > new-bind.keys
+          awk '{printf("addDS(\"%s\", \"%s %s %s %s\")\n", $1, $4, $5, $6, $7)}' root.ds > pdns.lua
+
+    - ansible.builtin.import_tasks:
+        file: tasks/inception/incept.yml
+      vars:
+        incept_title: "Incept parallel compilation."
+        incept_playbook: files/inception_playbook.yml
+        incept_task: tasks/inception/compile_software.yml
+        incept_variables:
+          software_source_dir: "{{ BUILD_SOURCE_DIR }}"
+          software_target_dir: "{{ BUILD_TARGET_DIR }}"
+          software_build_config: "{{ build_config }}"

@@ -1,0 +1,49 @@
+---
+# (Vagrant) box - change needs recreation
+box: "debian/bullseye64"
+
+# (Vagrant) cpus
+cpus: 2
+
+# (Vagrant) memory in MB
+memory: 1024
+
+# Information to help with system specific tasks
+system:
+  network: linux
+  package: linux
+  service: systemd
+
+# (Vagrant) network configuration
+network_configuration:
+  networks:
+    - name: enp0s8
+      v4:
+        type: static
+        addr: 192.168.57.20/24
+      vbox_arguments: ['--nic', 'hostonly', '--hostonlyadapter', 'HOSTONLY_NET']
+    - name: enp0s9
+      v4:
+        type: static
+        addr: 172.20.0.1/24
+      v6:
+        type: static
+        addr: fd00::20:0:1/96
+      vbox_arguments: ['--nic', 'intnet', '--intnet', 'RESOLVER_INTNET']
+    - name: enp0s10
+      v4:
+        type: static
+        addr: 172.21.0.1/16
+      v6:
+        type: static
+        addr: fd00::21:0:1/96
+      vbox_arguments: ['--nic', 'intnet', '--intnet', 'SERVER_INTNET']
+
+# (Vagrant) provision configuration
+provision:
+  #net_playbook: "ansible/network_provision_gateway-vm.yml"
+  #playbook: "ansible/provision_gateway-vm.yml"
+  shutdown_command: "shutdown -h now"
+
+# (Vagrant) any extra configuration for the 'vm' object
+extra: ""

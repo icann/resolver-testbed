@@ -1,0 +1,37 @@
+---
+- name: CentOS network configuration.
+  block:
+  - name: (CentOS) Disable SELinux.
+    ansible.posix.selinux:
+      state: disabled
+
+  - name: (CentOS) Configure interfaces.
+    ansible.builtin.template:
+      src: templates/centos_ifcfg.j2
+      dest: "/etc/sysconfig/network-scripts/ifcfg-{{item.name}}"
+    loop: "{{ network_configuration.networks }}"
+
+  - name: (CentOS) Configure IPv4 routing.
+    ansible.builtin.template:
+      src: templates/centos_route.j2
+      dest: "/etc/sysconfig/network-scripts/route-{{item.name}}"
+    loop: "{{ network_configuration.networks }}"
+
+  - name: (CentOS) Configure IPv6 routing.
+    ansible.builtin.template:
+      src: templates/centos_route6.j2
+      dest: "/etc/sysconfig/network-scripts/route6-{{item.name}}"
+    loop: "{{ network_configuration.networks }}"
+
+  - ansible.builtin.include_tasks:
+      file: tasks/network_restart_centos.yml
+
+  - name: (CentOS) Create /var/log/journal to circumvent broken systemd-journal-flush.service.
+    ansible.builtin.file:
+      path: /var/log/journal
+      state: directory
+
+  - ansible.builtin.include_tasks:
+      file: "tasks/install_rc.local_{{ system.service }}.yml"
+    vars:
+      rc_template: "templates/rc.local_linux.j2"

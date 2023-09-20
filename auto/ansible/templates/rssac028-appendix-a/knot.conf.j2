@@ -1,0 +1,101 @@
+{# Template for Knot-DNS config file
+ # ---------------------------------
+ # Required variables:
+ # 
+ # - scenario: The zones for the naming scheme scenario to configure [1-6]
+ #
+ # - do_variant: Boolean to select the alternative for the scenario.
+ #               Scenarios 3, 5 and 6 have a variant.
+ #
+ # - do_realips: Boolean. When true, the config will load zones with the same
+ #               IP addresses for the root servers as they currently use on the
+ #               internet. Also the names in the zones match more closely theo
+ #               ones that were used in section 5 of the RSSAC028 document.
+ #
+ # Optional variables:
+ #
+ # - letter: Load only the zone for the letter in scenario 5
+ #}
+# Knot config file for RSSAC028 Appendix A Scenario 5.{{ scenario }}
+#
+server:
+{% for address in listen_addrs +  listen_addrs_6 %}
+  listen: {{ address }}
+{% endfor %}
+
+zone:
+{% if do_realips %}
+{%   if scenario | int == 1 or scenario | int == 2 %}
+  - domain: "."
+    file: "/root/scenarios/5.{{ scenario }}-root"
+
+  - domain: "net"
+    file: "/root/scenarios/5.{{ scenario }}-net"
+
+  - domain: "root-servers.net"
+    file: "/root/scenarios/5.{{ scenario }}-root-servers.net"
+
+{%   else %}
+  - domain: "."
+    file: "/root/scenarios/5.{{ scenario }}{% if do_variant %}.1{% endif %}-root"
+
+{%   endif %}
+{%   if scenario | int == 4 %}
+  - domain: "some-servers"
+    file: "/root/scenarios/5.4-root-servers"
+
+{%   elif scenario | int == 5 %}
+{%     if letter is not defined %}
+{%       for letter in "abcdefghijklm" %}
+  - domain: "{{ letter }}{% if do_variant %}.root-servers{% endif %}"
+    file: "/root/scenarios/5.5{% if do_variant %}.1{% endif %}-{{ letter }}{% if do_variant %}.root-servers{% endif %}"
+
+{%       endfor %}
+{%     else %}{# if letter is not defined #}
+  - domain: "{{ letter }}{% if do_variant %}.root-servers{% endif %}"
+    file: "/root/scenarios/5.5{% if do_variant %}.1{% endif %}-{{ letter }}{% if do_variant %}.root-servers{% endif %}"
+
+{%     endif %}{# if letter is not defined #}
+{%   endif %}{# elif scenario | int == 5 #}
+{% else %}{# if do_realips #}
+{%   if scenario | int == 1 %}
+  - domain: "."
+    file: "/root/scenarios/2/root.zone"
+
+  - domain: "p53"
+    file: "/root/scenarios/2/p53.zone.current"
+
+  - domain: "some-servers.p53"
+    file: "/root/scenarios/2/some-servers.p53.zone.unsigned"
+
+{%   else %}
+  - domain: "."
+    file: "/root/scenarios/{{ scenario }}/root{% if do_variant %}_{% endif %}.zone"
+
+{%   endif %}
+{%   if scenario | int == 2 %}
+  - domain: "p53"
+    file: "/root/scenarios/2/p53.zone"
+
+  - domain: "some-servers.p53"
+    file: "/root/scenarios/2/some-servers.p53.zone"
+
+{%   elif scenario | int == 4 %}
+  - domain: "some-servers"
+    file: "/root/scenarios/4/some-servers.zone"
+
+{%   elif scenario | int == 5 %}
+{%     if letter is not defined %}
+{%       for letter in "abcdefghijklm" %}
+  - domain: "{{ letter }}{% if do_variant %}.some-servers{% endif %}"
+    file: "/root/scenarios/5/{{ letter }}{% if do_variant %}.some-servers{% endif %}.zone"
+
+{%       endfor %}
+{%     else %}{# if letter is not defined #}
+  - domain: "{{ letter }}{% if do_variant %}.some-servers{% endif %}"
+    file: "/root/scenarios/5/{{ letter }}{% if do_variant %}.some-servers{% endif %}.zone"
+
+{%     endif %}{# if letter is not defined #}
+{%   endif %}{# elif scenario | int == 5 #}
+{% endif %}{# if do_realips #}
+

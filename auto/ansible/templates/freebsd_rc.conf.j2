@@ -1,0 +1,60 @@
+# XXX from vagrant
+vboxguest_enable="YES"
+vboxservice_enable="YES"
+ifconfig_DEFAULT="SYNCDHCP"
+
+hostname="{{ inventory_hostname }}"
+{% if 'default_router' in network_configuration %}
+defaultrouter="{{ network_configuration.default_router }}"
+{% endif %}
+{% if 'default_router6' in network_configuration %}
+ipv6_defaultrouter="{{ network_configuration.default_router6 }}"
+{% endif %}
+
+{% for n in network_configuration.networks %}
+{% if 'v4' in n %}
+{% if 'addr' in n.v4 %}
+ifconfig_{{ n.name }}="inet {{ n.v4.addr }}"
+{% endif %}
+{% if 'alias' in n.v4 %}
+{% for a in n.v4.alias %}
+ifconfig_{{ n.name }}_alias{{ loop.index0 }}="inet {{ a }}"
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if 'v6' in n %}
+{% if 'addr' in n.v6 %}
+ifconfig_{{ n.name }}_ipv6="inet6 {{ n.v6.addr }}"
+{% endif %}
+{% if 'alias' in n.v6 %}
+{% for a in n.v6.alias %}
+ifconfig_{{ n.name }}_alias{{ loop.index0 }}_ipv6="inet6 {{ a }}"
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% endfor %}
+
+# XXX Explicit static route to resolvers.
+# Vagrant NAT replaces the configured default route.
+{% for r in network_configuration.static_routes %}
+{% if 'v4' in r %}
+static_routes="{{ r.name }}"
+route_{{ r.name }}="{{ r.v4 }}"
+{% endif %}
+{% if 'v6' in r %}
+ipv6_static_routes="{{ r.name }}"
+ipv6_route_{{ r.name }}="{{ r.v6 }}"
+{% endif %}
+
+{% endfor %}
+
+sendmail_submit_enable="NO"
+sendmail_outbound_enable="NO"
+sendmail_msp_queue_enable="NO"
+sshd_enable="YES"
+# XXX vagrant handles ssh, no root login necessary.
+#sshd_flags="-o PermitRootLogin=yes"
+firewall_enable="YES"
+firewall_type="open"
+dummynet_enable="YES"

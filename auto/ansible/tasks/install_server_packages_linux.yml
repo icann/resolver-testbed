@@ -1,0 +1,6 @@
+---
+- name: "(Linux) {{ task_title | default('Install packages') }}."
+  ansible.builtin.apt:
+    pkg: "{{ server_packages }}"
+    state: "{{ package_state | default('present') }}"
+    update_cache: yes

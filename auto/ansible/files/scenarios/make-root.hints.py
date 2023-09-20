@@ -46,4 +46,4 @@ for fn in sorted(glob.glob('*-root')):
 			fi = iter(open(rs_file))
 			txt += get_glue(next_rr(fi), fi, rs_names)
 	
-	open(sc + '-root.hints', 'w').write(txt)
+	open(('9' if sc[0] == '5' else '5') + sc[1:] + '-root.hints', 'w').write(txt)

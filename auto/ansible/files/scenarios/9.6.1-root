@@ -626,34 +626,34 @@ b0.nic.alipay.	172800	IN	A	65.22.129.25
 b0.nic.alipay.	172800	IN	AAAA	2a01:8840:7f::25
 c0.nic.alipay.	172800	IN	A	65.22.130.25
 c0.nic.alipay.	172800	IN	AAAA	2a01:8840:80::25
-all-root-servers.	518400	IN	A	185.49.142.101
-all-root-servers.	518400	IN	A	185.49.142.102
-all-root-servers.	518400	IN	A	185.49.142.103
-all-root-servers.	518400	IN	A	185.49.142.104
-all-root-servers.	518400	IN	A	185.49.142.105
-all-root-servers.	518400	IN	A	185.49.142.106
-all-root-servers.	518400	IN	A	185.49.142.107
-all-root-servers.	518400	IN	A	185.49.142.108
-all-root-servers.	518400	IN	A	185.49.142.109
-all-root-servers.	518400	IN	A	185.49.142.110
-all-root-servers.	518400	IN	A	185.49.142.111
-all-root-servers.	518400	IN	A	185.49.142.112
-all-root-servers.	518400	IN	A	185.49.142.113
-all-root-servers.	518400	IN	RRSIG	A 8 1 518400 20330101000000 20230101000000 4860 . SeKo7vfzO/tHdXYKGXl6GWqBuSzMUgwrLFiSXM87CBVE+mDDqHd+iiaV2UbcryrV37yr+f605Z4di+xCBpgASELQBGJEfKBmZqHnibdK0OBGtn/w1VU4zjlc0XSHtRpSHt3CK3kiWPta7DfQviAz7aX6oEiGSfr4oYZN+sPqoq0zQSghzKFQhuN5+/9Tmh9i5ojU6jAqpTLl+kEcHCQ4DNmHG1tBbh7Bf/+RvoRD6WB2ciZf6uiUX0hrPj+cmqf+oH3ZtHvwe28BYrNVJHDC40srxIx4lC232WNX0/lQwQkxefTV222OZlhT5gIHvP09lpq41BmsVJ3qzOYMTIymyg==
-all-root-servers.	518400	IN	AAAA	2a04:b907::101
-all-root-servers.	518400	IN	AAAA	2a04:b907::102
-all-root-servers.	518400	IN	AAAA	2a04:b907::103
-all-root-servers.	518400	IN	AAAA	2a04:b907::104
-all-root-servers.	518400	IN	AAAA	2a04:b907::105
-all-root-servers.	518400	IN	AAAA	2a04:b907::106
-all-root-servers.	518400	IN	AAAA	2a04:b907::107
-all-root-servers.	518400	IN	AAAA	2a04:b907::108
-all-root-servers.	518400	IN	AAAA	2a04:b907::109
-all-root-servers.	518400	IN	AAAA	2a04:b907::110
-all-root-servers.	518400	IN	AAAA	2a04:b907::111
-all-root-servers.	518400	IN	AAAA	2a04:b907::112
-all-root-servers.	518400	IN	AAAA	2a04:b907::113
-all-root-servers.	518400	IN	RRSIG	AAAA 8 1 518400 20330101000000 20230101000000 4860 . BUyWA7+FjMlm8kiB8g+3Z4VV6DkMLWBjJ7C1PVcY66lgOdP2KQEyEY+m6dg8jH548E76msNzpLYQcMInFpa/V5HAfADU8WKqR3JpYCgdj75Y8YDbr/oaWWxkBwvT4iLNYyMkWcG8I1o7ub7LX+OwUq0PVXvDsd8/7r3Hler14NR9lmWKGHMSCIrgMl4ctgs/Kaicp0EZAGHjYifKl7l9oCURWsSm2tdNWtaX4tt8INGfVYjwlIEzvO8DfL9DRgwBgKEPDQA/oVvFGIgEv3cyU/JD3sXe9VCGXrSQgR5QmyvS6sNdxUdhwLX31HBlgQHVmh6ctuXZ1xWDhYABiD75ww==
+all-root-servers.	518400	IN	A	192.5.5.241
+all-root-servers.	518400	IN	A	192.33.4.12
+all-root-servers.	518400	IN	A	192.36.148.17
+all-root-servers.	518400	IN	A	192.58.128.30
+all-root-servers.	518400	IN	A	192.112.36.4
+all-root-servers.	518400	IN	A	192.203.230.10
+all-root-servers.	518400	IN	A	193.0.14.129
+all-root-servers.	518400	IN	A	198.41.0.4
+all-root-servers.	518400	IN	A	198.97.190.53
+all-root-servers.	518400	IN	A	199.7.83.42
+all-root-servers.	518400	IN	A	199.7.91.13
+all-root-servers.	518400	IN	A	199.9.14.201
+all-root-servers.	518400	IN	A	202.12.27.33
+all-root-servers.	518400	IN	RRSIG	A 8 1 518400 20330101000000 20230101000000 4860 . L3CkMRywDKUWgLtvFeKqPLiEYKvVfDPL6gW3VOtY3i//xwnkgH3lHVEbIPCFB/8fveigb8G5Dulq1rEGO9yJymY2CUZpxV92zd7o8/7SxjDY1BmCWVNNSt6ZwyrZBBJpY2Tk4a7/l6hQQaL6m9jFnbCyMYvfBDp1X7XaDvy9fKrxBHsCi6qAVvjjSnYznbggLEWZxkc8++xaqXq2Gs0frTZpL43dg8aI0NzgeJrrHhiZlLU8TAdnteB7+srOC3bcFXU4V/IY/A7MEJB6TsDh/bv8eCeb8Nl2DAWEMMqIqIhf5uUBvwMSQmAoqosAfsw690HLGFi970I6aXXiaTVBEA==
+all-root-servers.	518400	IN	AAAA	2001:500:1::53
+all-root-servers.	518400	IN	AAAA	2001:500:2::c
+all-root-servers.	518400	IN	AAAA	2001:500:12::d0d
+all-root-servers.	518400	IN	AAAA	2001:500:2d::d
+all-root-servers.	518400	IN	AAAA	2001:500:2f::f
+all-root-servers.	518400	IN	AAAA	2001:500:9f::42
+all-root-servers.	518400	IN	AAAA	2001:500:a8::e
+all-root-servers.	518400	IN	AAAA	2001:500:200::b
+all-root-servers.	518400	IN	AAAA	2001:503:c27::2:30
+all-root-servers.	518400	IN	AAAA	2001:503:ba3e::2:30
+all-root-servers.	518400	IN	AAAA	2001:7fd::1
+all-root-servers.	518400	IN	AAAA	2001:7fe::53
+all-root-servers.	518400	IN	AAAA	2001:dc3::35
+all-root-servers.	518400	IN	RRSIG	AAAA 8 1 518400 20330101000000 20230101000000 4860 . bw4v9DVjhBhF0Y4eYe0LKcJnS8/RqmSlSkYYClrgSxVi9YjNeqL9cafg6O2hwWSFbebinwropArlkXmm9K0HRGqSmilVX1y5cYiMDwe2ozVAZ0hUihdWPenfgJsUhOXZliA6JGaUeqR3sUNp/XGsUo4eabPgodHpnu+lW/WGIncxR/ZDyIXzsFwenmsTi9KVm5VBeKL++jjvRnMFktl5Y+7/nU+ICdiyEHTmCDJk01CnpFq2MXQva6E3n73sbg3Aa1Zp9ttXvbXFhQby/lg2Hv+81IQb9uq3uwjeaIbeUkoOilwt0/U7w2vZN/LetdfGzMFL8Rr2nDT+wVJ7e/II8w==
 all-root-servers.	86400	IN	NSEC	allfinanz. A AAAA RRSIG NSEC 
 all-root-servers.	86400	IN	RRSIG	NSEC 8 1 86400 20330101000000 20230101000000 4860 . jbg9gFHZDBPb9hGSPppNAoM3Gf9SUKEaG/uNCT4IzDNeRhM3NKM6X/+nti469cayHF8JdBse3A1IQHUGUecIgy8fJE+B6Wdj8+WfKqufsouU/6730x8DDZsbvuEUoqfhyytSfgbJzeNlUYGfSgMWkQWHBzbUMVOF5lqDmfJHWN+yNrVz4PwEAJSyNN32vqHQBukmyvJHRxD5+vBiHUEEgoWzdykfrFMAGpWq80F8hQsAdhTKZdYi8tmF4png6Qo4WuCrGOyPtgJgb6ZEjH3GJKUeKuHeB1MPmM4hhaOl+7cMvy8XrAVhp0B4TwtY2IXLXdDWcfjmy9/5VGsHtMojwA==
 allfinanz.	172800	IN	NS	a.nic.allfinanz.

@@ -62,7 +62,7 @@
         software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.name }}"
         service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
       loop: "{{ build_config.software }}"
-      when: software_type in ('bind', 'ldns-cfsim', 'ldns-atlassim')
+      when: software_type in ('bind', 'ldns-testns-1', 'ldns-testns-2')
 
     - name: Set the scenario configuration if given.
       ansible.builtin.include_tasks:

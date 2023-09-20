@@ -1,0 +1,19 @@
+---
+- name: Configure {{ implementation.name }} for scenario 5.{{ scenario }}
+  ansible.builtin.template:
+    src: "templates/rssac028-appendix-a/{{ implementation.service }}.conf.j2"
+    dest: "{{ implementation.config_file }}"
+
+- name: Start {{ implementation.name }}
+  ansible.builtin.service:
+    name: "{{ implementation.service }}"
+    state: 'started'
+
+- ansible.builtin.include_tasks:
+    file: tasks/rssac028-appendix-a/do-queries.yml
+
+- name: Stop {{ implementation.name }}
+  ansible.builtin.service:
+    name: "{{ implementation.service }}"
+    state: 'stopped'
+

@@ -1,0 +1,11 @@
+[Unit]
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c '/root/rc.local'
+
+[Install]
+WantedBy=multi-user.target

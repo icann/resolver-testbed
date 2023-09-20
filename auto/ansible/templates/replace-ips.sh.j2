@@ -1,0 +1,13 @@
+#!/bin/sh
+
+sed \
+{% for letter, l in root_letters.items() %}
+{%  for ipv4 in l.ipv4 %}
+	-e 's/\b{{ ipv4 }}\b/{{ fake_ips[letter].ipv4 }}/g' \
+{%  endfor %}
+{%  for ipv6 in l.ipv6 %}
+	-e 's/\b{{ ipv6 }}\b/{{ fake_ips[letter].ipv6 }}/g' \
+{%  endfor %}
+{% endfor %}
+	$*
+

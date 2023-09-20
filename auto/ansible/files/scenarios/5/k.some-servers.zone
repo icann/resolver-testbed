@@ -1,0 +1,15 @@
+k.some-servers.	60	IN	SOA	ns1.k.some-servers. admin.ns1.k.some-servers. 123 1800 900 6054800 60
+k.some-servers.	60	IN	RRSIG	SOA 8 2 60 20300101000000 20230101000000 60291 k.some-servers. u+ojCjVbwUt+q/AH6svfW2MP13/pAtRkPtij5ztsBTrbBJEhwBKNBkxD/0aa256RC7Q4pbGOMLFjhHmyDFS7YmX3WR3tvNjlXmzR3oiTfnz5ftFTv0gPPYwVwcJjDbN/39ikKY/f0Yhg2zWUJ7CouR+vDYApZkQmWaFLQSjtNwY=
+k.some-servers.	60	IN	NS	ns1.k.some-servers.
+k.some-servers.	60	IN	RRSIG	NS 8 2 60 20300101000000 20230101000000 60291 k.some-servers. qdzjuUOSRUD4YCLnhomqL5tyzurXYVRW1Jsm/6ScYVvXRZh81Ul8fDeQAHPzhwOJRFctXDd0kEBRFP+EhUndF15X7aCvymivUtOrTTdfjiXZip2QFyfxbQleOTZ9xmUw1U7wJcn8ZGreyNl+KVwY/Qhw7xxOMpNyoRfswsYQRmE=
+k.some-servers.	60	IN	DNSKEY	256 3 8 AwEAAb2ei4sZkM4j92oqrymPoERWcaLsP0JHAjvmfuzphHSxvK1KE4xKhSMD2raraMmdAa7WnYZmINmKiHscOSqyDB4tsMJEA3d7jLpCcXpUK+znQdF4irgcv8giPvm13xetoDkw5XgE6MBggueqKeyedItPXAzchgyj2vaOlr3oLMp3 ;{id = 60291 (zsk), size = 1024b}
+k.some-servers.	60	IN	DNSKEY	257 3 8 AwEAAcvwhsbQMm2aO1b9qy9Koobfyq1Z7sCDn2JKJuTWGsauwEzQ4PFzZy/jtwunbEJ6OQgUYU84dbDvpKQ8W7zBRb+HUGoj09nKR/r2iyautv6hPGhLvfg7mZxew2Oah7xiEgGEq++x0661Y/c+pEZPtEFjupcGb+TGQH1tu5DAyluV ;{id = 30841 (ksk), size = 1024b}
+k.some-servers.	60	IN	RRSIG	DNSKEY 8 2 60 20300101000000 20230101000000 30841 k.some-servers. nVHm3SUAOqiQ8jvtzZrukvJ1DNyuJFfVBDgTpn4aU4H2MT6lnOT4Ofh/0GFVBk4wRuX8yrXudjCWOecnkS5LODcRSIyyflByLF23daRK6qKn8H1XJOHAIz2DvqaXkd2HOWxm3pl/fYXijlcdJMWiUzLW1BepHV7ex1p4GMHOd08=
+k.some-servers.	60	IN	NSEC	ns1.k.some-servers. NS SOA RRSIG NSEC DNSKEY 
+k.some-servers.	60	IN	RRSIG	NSEC 8 2 60 20300101000000 20230101000000 60291 k.some-servers. bykF3iDETSVrbljV9cj78FCJwCP1pR428vh0IEGvmqVrhH0Hl63IuKHF/Y8vU4dLkbL8G9BZkTYihlScyVJObc8BaNZUIQc22cS5hdCwJT7ynlEjEVGC7z1R2SwSiGwy2H2CFWcBhliLaLWIc9LEPqyIRLaMsUseRXXXWGpZsWk=
+ns1.k.some-servers.	60	IN	A	172.21.111.1
+ns1.k.some-servers.	60	IN	RRSIG	A 8 3 60 20300101000000 20230101000000 60291 k.some-servers. Pe+vfo7g4InVjgAkrBWb8ct3u7zK0iTeSF9FvFjUG9pag3p1T10sVu6Mifdh6jYhQwXeLOc81rGjYY/SSmPndk3iIcjiVNF2awXLh0npJZ3NRv718+xATntecNciFzVUfZb9HIR+XLMDij3a8+8Nv4N1nvQHU5yCGvRm/aAp9xs=
+ns1.k.some-servers.	60	IN	AAAA	fd00::21:111:1
+ns1.k.some-servers.	60	IN	RRSIG	AAAA 8 3 60 20300101000000 20230101000000 60291 k.some-servers. gEda6GQJr8EAAR5G59yZtpTtSbDHluUNlQ3Wlxpg/cyfpTBzJmWuLXp34Z2oAr67TbAvy6gpOVuM4u/zhQwyDl6aF6B/Qrfe7DFaeOB1GA0uvi5IOVKTlN6F//xSaaracb7L63OaLKt2plCqzAuPnen0+VetysVTrLYCvtfbrrE=
+ns1.k.some-servers.	60	IN	NSEC	k.some-servers. A AAAA RRSIG NSEC 
+ns1.k.some-servers.	60	IN	RRSIG	NSEC 8 3 60 20300101000000 20230101000000 60291 k.some-servers. CwsU/8muUtzZcyW0IbN1N0V1gJXR1VNUBZ3rhq/ay9MOcqgQkZY8Oe1nlnjMhGfxL8zplqLESsrR7wu+NUH/NT4ibNjcBi7SDb+D4bR4pjLzo/4ovAK28dJqFPSBdIk60ZQ8y58rwnAg8/j7y5D1atX0iYEjnX+bpeMW0nUNKck=

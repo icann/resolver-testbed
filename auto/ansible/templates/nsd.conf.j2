@@ -1,0 +1,31 @@
+server:
+    database: ""
+    username: ""
+    chroot: ""
+    version: "{{ software_name }}/{{ inventory_hostname }}"
+    hide-version: no
+{% for a in listen_addrs + listen_addrs_6 %}
+    interface: {{ a }}
+{% endfor %}
+{% if cfg.minimal_responses is defined %}
+    minimal-responses: {{ cfg.minimal_responses }}
+{% endif %}
+{% if cfg.cookie is defined %}
+    answer-cookie: {{ cfg.cookie }}
+    cookie-secret: "deadbeefdeadbeefdeadbeefdeadbeef"
+{% endif %}
+{% if cfg.v4_edns_size is defined %}
+    ipv4-edns-size: {{ cfg.v4_edns_size }}
+{% endif %}
+{% if cfg.v6_edns_size is defined %}
+    ipv6-edns-size: {{ cfg.v6_edns_size }}
+{% endif %}
+
+{% if zone_cfg is defined %}
+{% for zone, file in zone_cfg %}
+zone:
+    name: "{{ zone }}"
+    zonefile: "{{ file }}"
+
+{% endfor %}
+{% endif %}

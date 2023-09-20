@@ -1,0 +1,2 @@
+ldns-signzone -i 20230101000000 -e 20300101000000 -o . -f root.zone root.zone.unsigned K.+008+09646 K.+008+15873
+ldns-signzone -i 20230101000000 -e 20300101000000 -o . -f root_.zone root.zone.2.unsigned K.+008+09646 K.+008+15873

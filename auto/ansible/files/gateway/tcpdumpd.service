@@ -1,0 +1,14 @@
+[Unit]
+Description=tcpdumpd Service
+After=network.target
+
+[Service]
+Restart=always
+RestartSec=30
+Environment="TCPDUMP_FORMAT=%%Y-%%m-%%d__%%H-%%M-%%S"
+ExecStartPre=/bin/mkdir -p /var/log/tcpdumpd/
+ExecStart=/usr/bin/tcpdump -i any -s 65535 -G 3600 -w '/var/log/tcpdumpd/${TCPDUMP_FORMAT}.pcap' port 53 and not host 8.8.4.4
+ExecStop=/bin/kill -s HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,19 @@
+---
+- name: Create ports directory for Knot 2.2.1
+  ansible.builtin.file:
+    path: /usr/old/knot221
+    state: directory
+    mode: '0755'
+
+- name: Sparse checkout ports and build Knot 2.2.1 from it
+  ansible.builtin.shell:
+    chdir: /usr/old/knot221
+    cmd: |
+      git init
+      git remote add ports https://git.FreeBSD.org/ports.git
+      git sparse-checkout set "dns/knot2" "Mk" "Keywords" "Templates" "ports-mgmt/pkg" "devel/libevent"
+      git pull --depth=1 ports cf104c22325f11b4822eb56b71af6a169524c6b3
+      cd dns/knot2
+      git checkout cf104c22325f11b4822eb56b71af6a169524c6b3
+      env VALID_CATEGORIES=ipv6 BATCH=on make install-missing-packages
+      env VALID_CATEGORIES=ipv6 BATCH=on make build

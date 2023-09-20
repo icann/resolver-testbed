@@ -1,0 +1,251 @@
+---
+# (Vagrant) box - change needs recreation
+box: "debian/bullseye64"
+
+# (Vagrant) cpus
+cpus: 2
+
+# (Vagrant) memory in MB
+memory: 2048
+
+# Information to help with system specific tasks
+system:
+  network: linux
+  package: linux
+  service: systemd
+
+# (Vagrant) network configuration
+network_configuration:
+  networks:
+    - name: enp0s8
+      v4:
+        type: static
+        addr: 192.168.57.30/24
+      vbox_arguments: ['--nic', 'hostonly', '--hostonlyadapter', 'HOSTONLY_NET']
+    - name: enp0s9
+      v4:
+        type: static
+        addr: 172.20.0.2/24
+        alias: "{{ query('sequence', 'start=3 count=251 format=172.20.0.%d') }}"
+        static_routes:
+          - network: 172.21.0.0/16
+            gateway: 172.20.0.1
+          - network: default
+            gateway: 172.20.0.1
+      v6:
+        type: static
+        addr: fd00::20:0:2/96
+        alias: "{{ query('sequence', 'start=3 count=251 format=fd00::20:0:%x') }}"
+        static_routes:
+          - network: fd00::21:0:0/96
+            gateway: fd00::20:0:1
+          - network: default
+            gateway: fd00::20:0:1
+      vbox_arguments: ['--nic', 'intnet', '--intnet', 'RESOLVER_INTNET']
+
+# (Vagrant) provision configuration
+provision:
+  #net_playbook: "ansible/network_provision_resolvers-vm.yml"
+  #playbook: "ansible/provision_resolvers-vm.yml"
+  shutdown_command: "shutdown -h now"
+
+# (Vagrant) any extra configuration for the 'vm' object
+extra:
+
+# Resolvers to build
+build_config:
+  # Templates used in 'software' below
+  templates:
+    # {PREFIX} will be replaced by the actual prefix during the ansible run.
+    bind9make: "./configure --prefix={PREFIX} --disable-doh && make -j 2 && make install"
+    knotmake: "meson setup build_dir --prefix={PREFIX} --default-library=static -Dsystemd_files=enabled && ninja -C build_dir && ninja install -C build_dir"
+    pdns4make_st: "./configure && SYSCONFDIR={PREFIX}/etc/powerdns make -e && DESTDIR={PREFIX} make -e install"
+    pdns4make: "./configure && SYSCONFDIR={PREFIX}/etc/powerdns make -e -j 2 && DESTDIR={PREFIX} make -e install"
+    unboundmake: "./configure --prefix={PREFIX} && make -j 2 && make install"
+  # Collection of software to build
+  software:
+    - name: bind-9.9.11
+      url: "https://ftp.isc.org/isc/bind9/9.9.11/bind-9.9.11.tar.gz"
+      make_str: "bind9make"
+      listen_ipv4: 172.20.0.23
+      outgoing_ipv4: 172.20.0.23
+      outgoing_ipv6: fd00::20:0:23
+    - name: bind-9.10.8
+      url: "https://ftp.isc.org/isc/bind9/9.10.8/bind-9.10.8.tar.gz"
+      make_str: "bind9make"
+      listen_ipv4: 172.20.0.24
+      outgoing_ipv4: 172.20.0.24
+      outgoing_ipv6: fd00::20:0:24
+    - name: bind-9.11.6
+      url: "https://ftp.isc.org/isc/bind9/9.11.6/bind-9.11.6.tar.gz"
+      make_str: "bind9make"
+      listen_ipv4: 172.20.0.25
+      outgoing_ipv4: 172.20.0.25
+      outgoing_ipv6: fd00::20:0:25
+    - name: bind-9.12.4
+      url: "https://ftp.isc.org/isc/bind9/9.12.4/bind-9.12.4.tar.gz"
+      make_str: "bind9make"
+      listen_ipv4: 172.20.0.26
+      outgoing_ipv4: 172.20.0.26
+      outgoing_ipv6: fd00::20:0:26
+    - name: bind-9.13.7
+      url: "https://ftp.isc.org/isc/bind9/9.13.7/bind-9.13.7.tar.gz"
+      make_str: "bind9make"
+      listen_ipv4: 172.20.0.27
+      outgoing_ipv4: 172.20.0.27
+      outgoing_ipv6: fd00::20:0:27
+    - name: bind-9.14.10
+      url: "https://ftp.isc.org/isc/bind9/9.14.10/bind-9.14.10.tar.gz"
+      make_str: "bind9make"
+      listen_ipv4: 172.20.0.28
+      outgoing_ipv4: 172.20.0.28
+      outgoing_ipv6: fd00::20:0:28
+    - name: bind-9.15.8
+      url: "https://ftp.isc.org/isc/bind9/9.15.8/bind-9.15.8.tar.xz"
+      make_str: "bind9make"
+      listen_ipv4: 172.20.0.29
+      outgoing_ipv4: 172.20.0.29
+      outgoing_ipv6: fd00::20:0:29
+    - name: bind-9.16.41
+      url: "https://ftp.isc.org/isc/bind9/9.16.41/bind-9.16.41.tar.xz"
+      make_str: "bind9make"
+      listen_ipv4: 172.20.0.30
+      outgoing_ipv4: 172.20.0.30
+      outgoing_ipv6: fd00::20:0:30
+    - name: bind-9.18.15
+      url: "https://ftp.isc.org/isc/bind9/9.18.15/bind-9.18.15.tar.xz"
+      make_str: "bind9make"
+      listen_ipv4: 172.20.0.31
+      outgoing_ipv4: 172.20.0.31
+      outgoing_ipv6: fd00::20:0:31
+    - name: bind-9.19.13
+      url: "https://ftp.isc.org/isc/bind9/9.19.13/bind-9.19.13.tar.xz"
+      make_str: "bind9make"
+      listen_ipv4: 172.20.0.32
+      outgoing_ipv4: 172.20.0.32
+      outgoing_ipv6: fd00::20:0:32
+# XXX Does not build; needs older version dependencies
+#    - name: knot-resolver-5.2.1
+#      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.2.1.tar.xz"
+#      make_str: "knotmake"
+# XXX Does not build; needs older version dependencies
+#    - name: knot-resolver-5.3.2
+#      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.3.2.tar.xz"
+#      make_str: "knotmake"
+# XXX Does not build; needs older version dependencies
+#    - name: knot-resolver-5.4.4
+#      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.4.4.tar.xz"
+#      make_str: "knotmake"
+    - name: knot-resolver-5.5.3
+      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.5.3.tar.xz"
+      make_str: "knotmake"
+      listen_ipv4: 172.20.0.63
+      outgoing_ipv4: 172.20.0.63
+      outgoing_ipv6: fd00::20:0:63
+    - name: knot-resolver-5.6.0
+      url: "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.6.0.tar.xz"
+      make_str: "knotmake"
+      listen_ipv4: 172.20.0.64
+      outgoing_ipv4: 172.20.0.64
+      outgoing_ipv6: fd00::20:0:64
+    - name: pdns-recursor-4.0.9
+      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.0.9.tar.bz2"
+      make_str: "pdns4make"
+      files_copy:
+        - src: "files/pdns_patches/4_0_9/webserver.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_0_9/ws-recursor.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_0_9/reqresp.cpp"
+          dest: "./ext/yahttp/yahttp/"
+      listen_ipv4: 172.20.0.43
+      outgoing_ipv4: 172.20.0.43
+      outgoing_ipv6: fd00::20:0:43
+    - name: pdns-recursor-4.1.15
+      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.1.15.tar.bz2"
+      make_str: "pdns4make"
+      files_copy:
+        - src: "files/pdns_patches/4_1_15/webserver.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_1_15/ws-recursor.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_1_15/reqresp.cpp"
+          dest: "./ext/yahttp/yahttp/"
+      listen_ipv4: 172.20.0.44
+      outgoing_ipv4: 172.20.0.44
+      outgoing_ipv6: fd00::20:0:44
+    - name: pdns-recursor-4.2.1
+      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.2.1.tar.bz2"
+      make_str: "pdns4make"
+      files_copy:
+        - src: "files/pdns_patches/4_2_1/webserver.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_2_1/ws-recursor.cc"
+          dest: "."
+        - src: "files/pdns_patches/4_2_1/reqresp.cpp"
+          dest: "./ext/yahttp/yahttp/"
+      listen_ipv4: 172.20.0.45
+      outgoing_ipv4: 172.20.0.45
+      outgoing_ipv6: fd00::20:0:45
+    - name: pdns-recursor-4.7.5
+      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.7.5.tar.bz2"
+      make_str: "pdns4make"
+      listen_ipv4: 172.20.0.46
+      outgoing_ipv4: 172.20.0.46
+      outgoing_ipv6: fd00::20:0:46
+    - name: pdns-recursor-4.8.4
+      url: "https://downloads.powerdns.com/releases/pdns-recursor-4.8.4.tar.bz2"
+      make_str: "pdns4make"
+      listen_ipv4: 172.20.0.47
+      outgoing_ipv4: 172.20.0.47
+      outgoing_ipv6: fd00::20:0:47
+    - name: unbound-1.5.10
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.5.10.tar.gz"
+      make_str: "unboundmake"
+      cfg:
+        ta_signal: 'absent'
+      listen_ipv4: 172.20.0.3
+      outgoing_ipv4: 172.20.0.3
+      outgoing_ipv6: fd00::20:0:3
+    - name: unbound-1.6.8
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.6.8.tar.gz"
+      make_str: "unboundmake"
+      listen_ipv4: 172.20.0.4
+      outgoing_ipv4: 172.20.0.4
+      outgoing_ipv6: fd00::20:0:4
+    - name: unbound-1.7.3
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.7.3.tar.gz"
+      make_str: "unboundmake"
+      listen_ipv4: 172.20.0.5
+      outgoing_ipv4: 172.20.0.5
+      outgoing_ipv6: fd00::20:0:5
+    - name: unbound-1.8.3
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.8.3.tar.gz"
+      make_str: "unboundmake"
+      listen_ipv4: 172.20.0.6
+      outgoing_ipv4: 172.20.0.6
+      outgoing_ipv6: fd00::20:0:6
+    - name: unbound-1.9.6
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.9.6.tar.gz"
+      make_str: "unboundmake"
+      listen_ipv4: 172.20.0.7
+      outgoing_ipv4: 172.20.0.7
+      outgoing_ipv6: fd00::20:0:7
+    - name: unbound-1.13.0
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.13.0.tar.gz"
+      make_str: "unboundmake"
+      listen_ipv4: 172.20.0.8
+      outgoing_ipv4: 172.20.0.8
+      outgoing_ipv6: fd00::20:0:8
+    - name: unbound-1.14.0
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.14.0.tar.gz"
+      make_str: "unboundmake"
+      listen_ipv4: 172.20.0.9
+      outgoing_ipv4: 172.20.0.9
+      outgoing_ipv6: fd00::20:0:9
+    - name: unbound-1.17.1
+      url: "https://www.nlnetlabs.nl/downloads/unbound/unbound-1.17.1.tar.gz"
+      make_str: "unboundmake"
+      listen_ipv4: 172.20.0.10
+      outgoing_ipv4: 172.20.0.10
+      outgoing_ipv6: fd00::20:0:10

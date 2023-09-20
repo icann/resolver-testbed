@@ -2,43 +2,47 @@
 '''
 Testbed for DNS resolvers
 See https://github.com/icann/resolver-testbed for more information
-Must be run in the same directory as the config files 
+Must be run in the same directory as the config files
 '''
 
-import os, subprocess, sys, time, logging, json
+import os
+import subprocess
+import sys
+import time
+import logging
+import json
 import fabric
 
 # Some program-wide constants
 ROOT_PASS = "BadPassword"
 GUESTCONTROL_TEMPLATE = "VBoxManage --nologo guestcontrol {} --username root --password PASSWORD_GOES_HERE".replace("PASSWORD_GOES_HERE", ROOT_PASS)
 RESOLVER_LIBRARIES = [
-"apt update",
-"apt install -y build-essential",
-"apt install -y libssl-dev libcap-dev python3-ply dnsutils",
-"apt install -y pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
-"apt install -y libldns-dev libexpat-dev libboost-dev libboost-system-dev libboost-thread-dev libboost-context-dev",
-"apt install -y python3-pip",
-"pip3 install meson",
-"apt-get -y install apt-transport-https lsb-release ca-certificates wget",
-"wget -O /etc/apt/trusted.gpg.d/knot-latest.gpg https://deb.knot-dns.cz/knot-latest/apt.gpg",
-"sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
-"apt update",
-"apt install -y libknot-dev liblmdb-dev ninja-build"
+    "apt update",
+    "apt install -y build-essential",
+    "apt install -y libssl-dev libcap-dev python3-ply dnsutils",
+    "apt install -y pkg-config libuv1-dev libcmocka-dev libluajit-5.1-dev liblua5.1-0-dev autoconf libtool liburcu-dev libgnutls28-dev libedit-dev",
+    "apt install -y libldns-dev libexpat-dev libboost-dev libboost-system-dev libboost-thread-dev libboost-context-dev",
+    "apt install -y python3-pip",
+    "pip3 install meson",
+    "apt-get -y install apt-transport-https lsb-release ca-certificates wget",
+    "wget -O /etc/apt/trusted.gpg.d/knot.gpg https://deb.knot-dns.cz/apt.gpg",
+    "sh -c 'echo \"deb https://deb.knot-dns.cz/knot-latest/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/knot-latest.list'",
+    "apt update",
+    "apt install -y libknot-dev liblmdb-dev ninja-build"
 ]
 REMOTE_REPO = "/root/resolver-testbed-master"
 
 VM_INFO = {
-"gateway-vm": { "control_addr": "192.168.56.20" },
-"resolvers-vm": { "control_addr": "192.168.56.30" },
-"servers-vm": { "control_addr": "192.168.56.40" }
+    "gateway-vm": {"control_addr": "192.168.56.20"},
+    "resolvers-vm": {"control_addr": "192.168.56.30"},
+    "servers-vm": {"control_addr": "192.168.56.40"}
 }
 
 CLI_COMMANDS = [
-"help",
-"initial_vm_config",
-"make_resolvers",
-"refresh_repo",
-"run_test"
+    "help",
+    "make_resolvers",
+    "refresh_repo",
+    "run_test"
 ]
 
 HELP_TEXT = '''
@@ -58,13 +62,15 @@ LOG = logging.getLogger()
 LOG.setLevel(logging.INFO)
 LOG.addHandler(LOG_HANDLER)
 
+
 def log(in_str):
-	''' Prints a message and logs it, but only if the message is non-null; returns nothing '''
-	if not in_str:
-		return
-	out = "{}: {}".format(time.strftime("%H-%M-%S"), in_str)
-	LOG.info(out)
-	print(out)
+    ''' Prints a message and logs it, but only if the message is non-null; returns nothing '''
+    if not in_str:
+        return
+    out = "{}: {}".format(time.strftime("%H-%M-%S"), in_str)
+    LOG.info(out)
+    print(out)
+
 
 def die(in_str):
     ''' log then exit  '''
@@ -72,18 +78,20 @@ def die(in_str):
     log(err_str)
     sys.exit(1)
 
+
 def show_help():
     print(HELP_TEXT)
 
+
 def ssh_cmd_to_vm(cmd_to_run, vm_name):
     ''' Runs a command on a named VM. Returns success_boolean, output_text '''
-    if not vm_name in VM_INFO:
+    if vm_name not in VM_INFO:
         die("Attempt to run on {}, which is not a valid VM".format(vm_name))
     is_vm_running(vm_name)
     this_control_address = (rt_config["vm_info"][vm_name]).get("control_addr")
     if not this_control_address:
         die("There was no address for {}".format(vm_name))
-    fabconn = fabric.Connection(host=this_control_address, user="root", connect_kwargs= {"password": ROOT_PASS})
+    fabconn = fabric.Connection(host=this_control_address, user="root", connect_kwargs={"password": ROOT_PASS})
     try:
         fabconn.open()
     except Exception as this_e:
@@ -96,30 +104,33 @@ def ssh_cmd_to_vm(cmd_to_run, vm_name):
     else:
         return True, ret_main_cmd.stdout.strip()
 
+
 def cp_from_vm(file_to_get, dest_dir, vm_name):
     ''' Gets a file from a named VM. Returns success_boolean, output_text '''
-    if not vm_name in VM_INFO:
+    if vm_name not in VM_INFO:
         die("Attempt to run on {}, which is not a valid VM".format(vm_name))
     is_vm_running(vm_name)
     this_control_address = (rt_config["vm_info"][vm_name]).get("control_addr")
     if not this_control_address:
         die("There was no address for {}".format(vm_name))
-    fabconn = fabric.Connection(host=this_control_address, user="root", connect_kwargs= {"password": ROOT_PASS})
+    fabconn = fabric.Connection(host=this_control_address, user="root", connect_kwargs={"password": ROOT_PASS})
     try:
         fabconn.open()
     except Exception as this_e:
         die("Could not open an SSH connection to {} on {}: '{}'.".format(vm_name, this_control_address, this_e))
-    dest_file = "{}/{}".format(dest_dir, os.path.basename(file_to_get))    
+    dest_file = "{}/{}".format(dest_dir, os.path.basename(file_to_get))
     # Get the file
     try:
         fabconn.get(file_to_get, local=dest_file)
-    except:
-        log("Could not get {} from {}. Continuing.")
+    except Exception:
+        log("Could not get {} from {}. Continuing.".format(
+            file_to_get, vm_name))
     fabconn.close()
+
 
 def is_vm_running(vm_name):
     ''' Check if the VM is running; die if not '''
-    p = subprocess.Popen("VBoxManage --nologo list runningvms", stdout=subprocess.PIPE, shell=True)  
+    p = subprocess.Popen("VBoxManage --nologo list runningvms", stdout=subprocess.PIPE, shell=True)
     ret_val = p.wait()
     if ret_val > 0:
         die("VBoxManage runningvms failed to run.")
@@ -127,13 +138,14 @@ def is_vm_running(vm_name):
     running_vms = []
     for this_line in running_vms_lines:
         running_vms.append(this_line[1:this_line.find('"', 2)])
-    if not vm_name in running_vms:
+    if vm_name not in running_vms:
         log("{} is not in the list of running VMs: '{}'.".format(vm_name, " ".join(running_vms)))
         log("Attempting to start {}".format(vm_name))
-        p = subprocess.Popen("VBoxManage --nologo startvm {} --type headless".format(vm_name), stdout=subprocess.PIPE, shell=True)  
+        p = subprocess.Popen("VBoxManage --nologo startvm {} --type headless".format(vm_name), stdout=subprocess.PIPE, shell=True)
         ret_val = p.wait()
         if ret_val > 0:
-            die("VBoxManage startvm did not start {}: {}.".format(vm_name, (p.stdout.read()).decode("latin-1")))      
+            die("VBoxManage startvm did not start {}: {}.".format(vm_name, (p.stdout.read()).decode("latin-1")))
+
 
 def startup_and_config_general():
     ''' Make sure everything on the control host is set up correctly, and die if it is not; returns local configuration '''
@@ -154,11 +166,11 @@ def startup_and_config_general():
     # Add build_config_file to the local configuration
     try:
         build_f = open(build_config_file, mode="rt")
-    except:
+    except Exception:
         die("Could not find {}".format(build_config_file))
     try:
         build_input = json.load(build_f, strict=False)
-    except:
+    except Exception:
         die("The JSON in {} is broken.".format(build_config_file))
     # Sanity check the input
     if not (("builds" in build_input) and ("templates" in build_input)):
@@ -167,6 +179,7 @@ def startup_and_config_general():
     # Finish up initialization
     return this_local_config
 
+
 def do_make_resolvers():
     ''' Make the resolvers_vm '''
     # Build all the resolvers on resolvers-vm
@@ -174,7 +187,7 @@ def do_make_resolvers():
     this_ret, this_str = ssh_cmd_to_vm("apt list --installed", "resolvers-vm")
     if not this_ret:
         die("Could not run 'apt list' on resolvers-vm.")
-    if not "build-essential" in this_str:
+    if "build-essential" not in this_str:
         log("Did not find build-essential on servers-vm, so installing libraries.")
         for this_line in RESOLVER_LIBRARIES:
             log("Running {}".format(this_line))
@@ -196,10 +209,12 @@ def do_make_resolvers():
                     build_make_str = rt_config["build_info"]["templates"][build_make_str]
                 else:
                     die("{} has a make string of {}, but there is no equivalent for that.".format(this_build, build_make_str))
-            this_ret, this_str = ssh_cmd_to_vm("cd {}; ./build_from_source.py '{}' '{}' '{}'"\
+            this_ret, this_str = ssh_cmd_to_vm(
+                "cd {}; ./build_from_source.py '{}' '{}' '{}'"
                 .format(REMOTE_REPO, this_build, build_url, build_make_str), "resolvers-vm")
             if not this_ret:
                 log("Could not build {}:\n{}\nContinuing".format(this_build, this_str))
+
 
 def do_refresh_repo():
     ''' Refresh the repo software on all three VMs'''
@@ -218,6 +233,7 @@ def do_refresh_repo():
         if not this_ret:
             die("Could not remove master.zip: {}".format(this_str))
 
+
 def start_tcpdump_on_gateway(tcpdump_filename):
     ''' Starts tcpdump for a test run; takes the name of the file to create in /tmp '''
     this_cmd = "dtach -n /tmp/tmpsocket tcpdump -i enp0s8 -n -w /tmp/{}".format(tcpdump_filename)
@@ -225,7 +241,8 @@ def start_tcpdump_on_gateway(tcpdump_filename):
     if not this_ret:
         die("Starting tcpdump on gateway-vm with '{}' returned '{}'.".format(this_cmd, this_str))
     return
-    
+
+
 def stop_tcpdump_on_gateway():
     ''' Gracefully stops any tcpdump running on gateway-vm '''
     this_ret, this_str = ssh_cmd_to_vm("ps ax | grep tcpdump", "gateway-vm")
@@ -247,6 +264,7 @@ def stop_tcpdump_on_gateway():
         die("Killing tcpdump running on gateway-vm failed in ps: '{}'".format(this_str))
     return
 
+
 def get_pid_of_resolver(this_resolver):
     ''' Returns the PID of the named resolver running on resolvers-vm; returns nothing if it failed '''
     this_ret, this_str = ssh_cmd_to_vm("ps ax | grep Target", "resolvers-vm")
@@ -266,6 +284,7 @@ def get_pid_of_resolver(this_resolver):
     ps_parts = (ps_lines[0]).strip().split()
     return ps_parts[0]
 
+
 def do_run_test(test_name):
     ''' Run the named test against all resolvers'''
     # Read the test description
@@ -280,11 +299,11 @@ def do_run_test(test_name):
     test_file_f = open(test_file_name, mode="rt")
     try:
         test_description = json.load(test_file_f)
-    except:
+    except Exception:
         log("Bad JSON found in {}".format(test_file_name))
         return
     # Find the target resolvers to send the queries
-    if (test_description.get("targets") == None) or (test_description.get("targets") == [ "all" ]):
+    if (test_description.get("targets") is None) or (test_description.get("targets") == ["all"]):
         these_targets = []
         for this_target in rt_config["build_info"]["builds"]:
             if test_name in rt_config["build_info"]["builds"][this_target].get("use_in_all"):
@@ -293,7 +312,7 @@ def do_run_test(test_name):
     else:
         these_targets = test_description["targets"]
         for named_target in these_targets:
-            if not named_target in rt_config["build_info"]["builds"]:
+            if named_target not in rt_config["build_info"]["builds"]:
                 die("Found target named '{}', but that doesn't exist in the main configuration.".format(named_target))
         log("Testing {} targets".format(len(these_targets)))
     # Save the filenames on gateway-vm to retrieve when done
@@ -340,12 +359,12 @@ def do_run_test(test_name):
             # Wait for the given time; this somewhat assumes that each query takes zero time to complete
             try:
                 time_as_int = int(this_time)
-            except:
+            except Exception:
                 die("In the test file, a time was not convertable to an int.")
             time.sleep(time_as_int)
             # Use "dig" to send a query to 127.0.0.1
             this_dig = "dig @127.0.0.1 {} {} +short".format(this_qname, this_qtype)
-            this_ret, this_str =  ssh_cmd_to_vm(this_dig, "resolvers-vm")
+            this_ret, this_str = ssh_cmd_to_vm(this_dig, "resolvers-vm")
             if not this_ret:
                 log("Dig for time {} failed. Continuing.".format(this_time))
             # Maybe process this_answer in a later version of the testbed
@@ -364,6 +383,7 @@ def do_run_test(test_name):
         cp_from_vm("/tmp/{}".format(this_to_get), test_dir, "gateway-vm")
     log("Got pcaps in {}".format(test_dir))
 
+
 # Run the main program
 if __name__ == "__main__":
     log("## Starting run on date {}".format(time.strftime("%Y-%m-%d")))
@@ -376,7 +396,7 @@ if __name__ == "__main__":
     cmd = sys.argv[1]
     cmd_args = sys.argv[2:]
     log("Command was {} {}".format(cmd, " ".join(cmd_args)))
-    if not cmd in CLI_COMMANDS:
+    if cmd not in CLI_COMMANDS:
         show_help()
         die("{} is not valid command.".format(cmd))
     # Figure out which command it was
@@ -390,7 +410,7 @@ if __name__ == "__main__":
         log("Done refreshing the software on the VMs")
     elif cmd == "run_test":
         if len(sys.argv) < 3:
-            die("Need to give a name for the test to run.") 
+            die("Need to give a name for the test to run.")
         test_name = sys.argv[2]
         do_run_test(test_name)
         log("Done running test {}".format(test_name))

@@ -1,0 +1,33 @@
+---
+- name: Set immutable resolv.conf in linux.
+  block:
+  - name: Try writing resolv.conf.
+    ansible.builtin.copy:
+      src: ../files/resolv-with-8844
+      dest: /etc/resolv.conf
+      attr: "+i"
+  rescue:
+    - name: Make sure the file is mutable.
+      ansible.builtin.file:
+        path: /etc/resolv.conf
+        attr: "-i"
+
+    - name: Try writing resolv.conf (again).
+      ansible.builtin.copy:
+        src: ../files/resolv-with-8844
+        dest: /etc/resolv.conf
+        attr: "+i"
+  when: system.network in ['linux', 'ubuntu', 'centos']
+
+- name: Set resolv.conf in FreeBSD/NetBSD.
+  block:
+  - name: Disable resolvconf.
+    ansible.builtin.copy:
+      content: 'resolvconf=NO\n'
+      dest: /etc/resolvconf.conf
+
+  - name: Write resolv.conf.
+    ansible.builtin.copy:
+      src: ../files/resolv-with-8844
+      dest: /etc/resolv.conf
+  when: system.network in ['freebsd', 'netbsd']

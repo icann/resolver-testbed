@@ -1,0 +1,13 @@
+---
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+
+  tasks:
+    - ansible.builtin.import_tasks:
+        file: tasks/install_generic_packages.yml
+
+    - name: Install tcpdump service file
+      ansible.builtin.copy:
+        src: files/gateway/tcpdumpd.service
+        dest: /lib/systemd/system

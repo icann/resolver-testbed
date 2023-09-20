@@ -1,0 +1,53 @@
+---
+- hosts: resolvers-vm
+  gather_facts: false
+  become: true
+
+  tasks:
+    # V4
+    - ansible.builtin.include_tasks:
+        file: tasks/net_ping.yml
+      vars:
+        version: 4
+        destinations: "{% set output = [] %}\
+                       {% for n in hostvars['servers-vm']['network_configuration']['networks'] %}\
+                       {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
+                       {{ output.append(n['v4']['addr'] | dirname) }}\
+                       {{ output.extend(n['v4']['alias'] | map('dirname')) }}\
+                       {% endif %}\
+                       {% endfor %}\
+                       {{ output }}"
+
+      loop: "{% set output = [] %}\
+             {% for n in network_configuration['networks'] %}\
+             {% if n.vbox_arguments[3] == 'RESOLVER_INTNET' %}\
+             {{ output.append(n['v4']['addr'] | dirname) }}\
+             {% endif %}\
+             {% endfor %}\
+             {{ output }}"
+      loop_control:
+        loop_var: src
+
+    # V6
+    - ansible.builtin.include_tasks:
+        file: tasks/net_ping.yml
+      vars:
+        version: 6
+        destinations: "{% set output = [] %}\
+                       {% for n in hostvars['servers-vm']['network_configuration']['networks'] %}\
+                       {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
+                       {{ output.append(n['v6']['addr'] | dirname) }}\
+                       {{ output.extend(n['v6']['alias'] | map('dirname')) }}\
+                       {% endif %}\
+                       {% endfor %}\
+                       {{ output }}"
+
+      loop: "{% set output = [] %}\
+             {% for n in network_configuration['networks'] %}\
+             {% if n.vbox_arguments[3] == 'RESOLVER_INTNET' %}\
+             {{ output.append(n['v6']['addr'] | dirname) }}\
+             {% endif %}\
+             {% endfor %}\
+             {{ output }}"
+      loop_control:
+        loop_var: src

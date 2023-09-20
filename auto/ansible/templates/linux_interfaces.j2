@@ -1,0 +1,54 @@
+auto lo
+iface lo inet loopback
+
+# Vagrant NAT
+auto eth0
+iface eth0 inet dhcp
+metric 100  # Low preference on this default route (NAT)
+
+{% for n in network_configuration.networks %}
+auto {{ n.name }}
+{% if 'v4' in n %}
+iface {{ n.name }} inet {{ n.v4.type }}
+{% if 'addr' in n.v4 %}
+address {{ n.v4.addr }}
+{% endif %}
+{% if 'metric' in n.v4 %}
+metric {{ n.v4.metric }}
+{% endif %}
+{% if 'static_routes' in n.v4 %}
+{% for r in n.v4.static_routes %}
+up ip route add {{ r.network }} via {{ r.gateway }}
+down ip route del {{ r.network }} via {{ r.gateway }}
+{% endfor %}
+{% endif %}
+{% if 'alias' in n.v4 %}
+{% for a in n.v4.alias %}
+iface {{ n.name }} inet {{ n.v4.type }}
+address {{ a }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if 'v6' in n %}
+iface {{ n.name }} inet6 {{ n.v6.type }}
+{% if 'addr' in n.v6 %}
+address {{ n.v6.addr }}
+{% endif %}
+{% if 'metric' in n.v6 %}
+metric {{ n.v6.metric }}
+{% endif %}
+{% if 'static_routes' in n.v6 %}
+{% for r in n.v6.static_routes %}
+up ip route add {{ r.network }} via {{ r.gateway }}
+down ip route del {{ r.network }} via {{ r.gateway }}
+{% endfor %}
+{% endif %}
+{% if 'alias' in n.v6 %}
+{% for a in n.v6.alias %}
+iface {{ n.name }} inet6 {{ n.v6.type }}
+address {{ a }}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% endfor %}

@@ -1,0 +1,5 @@
+example.	900	IN	SOA	ns.example. hostmaster.example. 1685627115 1800 900 604800 86400
+example.	172800	IN	NS	ns.example.
+example.	172800	IN	A	185.49.142.42
+ns.example.	172800	IN	A	185.49.142.30
+ns.example.	172800	IN	AAAA	2a04:b907::30

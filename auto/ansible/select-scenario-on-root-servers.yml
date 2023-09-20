@@ -1,0 +1,144 @@
+# Configure root-servers with zones for the given scenario
+# Also configures servers-vm for the .net zone when needed (scenatios 5.1 and 5.2)
+# ------------------------------------------------------
+# Required variables:
+#
+# - scenario: The zones for the naming scheme scenario to configure [1-6]
+#
+# Optional variables:
+#
+# - variant: [ true | *false* ]
+#            Alternative for the naming scheme scenario.
+#            Scenarios 3, 5 and 6 have a variant.
+#
+# - realips: [ true | *false* ]
+#            Use in the zones, the same IP addresses for the root servers
+#            as they currently use on the internet. Also the names in the
+#            zones match more closely the ones that were used in section 5
+#            of the RSSAC028 document.
+---
+- hosts: servers-vm
+  gather_facts: false
+  become: true
+
+  tasks:
+  - name: "Check that scenario and nameserver software is chosen"
+    assert:
+      that:
+        - scenario is defined and scenario in ['1', '2', '3', '4', '5', '6']
+        - variant is not defined or variant == 'false' or variant == 'true'
+        - realips is not defined or realips == 'false' or realips == 'true'
+      fail_msg: "usage: ansible-playbook --extra-vars \"scenario=[1-6] variant=[*false* | true] realips=[*false* | true]\""
+
+  - name: Set variant to boolean value (if given)
+    when: variant is defined
+    ansible.builtin.set_fact:
+      do_variant: "{{ variant | bool }}"
+
+  - name: Set variant to false (if not given)
+    when: variant is not defined
+    ansible.builtin.set_fact:
+      do_variant: false
+
+  - name: Set realips to boolean value (if given)
+    when: realips is defined
+    ansible.builtin.set_fact:
+      do_realips: "{{ realips | bool }}"
+
+  - name: Set realips to false (if not given)
+    when: realips is not defined
+    ansible.builtin.set_fact:
+      do_realips: false
+
+  - name: Copying root zones scenarios
+    ansible.posix.synchronize:
+      src: files/scenarios/
+      dest: /root/scenarios
+
+  - name: Configure bind on servers-vm for .net and example. zone
+    ansible.builtin.template:
+      src: "templates/named.conf.j2"
+      dest: /usr/local/etc/namedb/named.conf
+
+  - name: Stop nameservers on servers-vm
+    ansible.builtin.service:
+      name: "{{ item }}"
+      state: stopped
+    loop: [ 'knot', 'nsd', 'named' ]
+
+  - name: Start bind on servers-vm for .net and example. zone
+    ansible.builtin.service:
+      name: named
+      state: started
+
+- hosts: root_servers
+  gather_facts: false
+  become: true
+
+  tasks:
+  - name: "Check that scenario and nameserver software is chosen"
+    assert:
+      that:
+        - scenario is defined and scenario in ['1', '2', '3', '4', '5', '6']
+        - variant is not defined or variant == 'false' or variant == 'true'
+        - realips is not defined or realips == 'false' or realips == 'true'
+      fail_msg: "usage: ansible-playbook --extra-vars \"scenario=[1-6] variant=[*false* | true] realips=[*false* | true]\""
+
+  - name: Set variant to boolean value (if given)
+    when: variant is defined
+    ansible.builtin.set_fact:
+      do_variant: "{{ variant | bool }}"
+
+  - name: Set variant to false (if not given)
+    when: variant is not defined
+    ansible.builtin.set_fact:
+      do_variant: false
+
+  - name: Set realips to boolean value (if given)
+    when: realips is defined
+    ansible.builtin.set_fact:
+      do_realips: "{{ realips | bool }}"
+
+  - name: Set realips to false (if not given)
+    when: realips is not defined
+    ansible.builtin.set_fact:
+      do_realips: false
+
+  - name: Set the scenario configuration
+    ansible.builtin.include_tasks:
+      file: "tasks/set_zone_cfg_scenario_{{ scenario }}.yml"
+    vars:
+      letter: "{{ inventory_hostname.split('-') | first }}"
+    when: do_variant is not defined or do_variant is false
+
+  - name: Set the alternative (variant) scenario configuration
+    ansible.builtin.include_tasks:
+      file: "tasks/set_zone_cfg_scenario_{{ scenario }}.1.yml"
+    vars:
+      letter: "{{ inventory_hostname.split('-') | first }}"
+    when: do_variant is defined and do_variant is true
+
+  - name: Copy configuration
+    ansible.builtin.template:
+      src: "templates/{{ software_type }}.conf.j2"
+      dest: "{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf"
+    vars:
+      software_name: "{{ item.0.name }}"
+      software_type: "{{ item.0.name.rsplit('-', 1)[0] }}"
+      software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.0.name }}"
+      cfg: "{{ item.0.cfg }}"
+      listen_addrs:
+        - "{{ item.1.0 }}"
+      listen_addrs_6:
+        - "{{ item.1.1 }}"
+    loop: "{% set ips = network_configuration.networks.0.v4.alias | map('dirname') | zip(network_configuration.networks.0.v6.alias | map('dirname')) %}\
+           {{ build_config.software | zip(ips) }}"
+
+  - name: (Re)Start name servers.
+    ansible.builtin.service:
+      name: "{{ service_name }}"
+      state: restarted
+    vars:
+      service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
+    loop: "{{ build_config.software }}"
+

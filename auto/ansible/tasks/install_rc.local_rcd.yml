@@ -1,0 +1,11 @@
+---
+  - name: (Rc.d) Set rc.local.
+    ansible.builtin.template:
+      src: "{{ rc_template }}"
+      dest: /etc/rc.local
+      owner: root
+      mode: "u+x"
+
+  - name: (Rc.d) Source rc.local.
+    ansible.builtin.shell:
+      cmd: ". /etc/rc.local"

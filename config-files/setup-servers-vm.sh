@@ -7,7 +7,7 @@ cp /root/resolver-testbed-master/config-files/servers-rc.conf /etc/rc.conf  || e
 echo "Set the resolver"
 cp /root/resolver-testbed-master/config-files/resolv-with-8844 /etc/resolv.conf || exit
 echo "Installing from pkg"
-pkg install -y bind914 wget nano ca_root_nss  || exit
+pkg install -y bind916 wget nano ca_root_nss  || exit
 echo "Making the bind-configs"
 mkdir /root/bind-configs || exit
 echo "Copying root files"

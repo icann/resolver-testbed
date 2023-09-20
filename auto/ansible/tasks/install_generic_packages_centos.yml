@@ -1,0 +1,46 @@
+---
+- name: (CentOS) Install EPEL.
+  ansible.builtin.yum:
+    name:
+      - epel-release
+    state: present
+
+- name: (CentOS) Install generic packages.
+  ansible.builtin.yum:
+    name:
+      - tar
+      - tree
+      - wget
+      - vim
+      - tmux
+      - bind-utils
+      - htop
+      - rsync
+      - tcpdump
+    state: present
+
+- name: (CentOS) Install system ansible.
+  ansible.builtin.yum:
+    name:
+      - ansible
+    state: present
+  when: system_ansible is true
+
+- block:
+  - name: (CentOS) Remove unwanted packages.
+    ansible.builtin.yum:
+      name:
+        - ansible
+      state: absent
+
+  - name: (CentOS) Get latest pip.
+    ansible.builtin.pip:
+      name: "{{ 'pip=={}'.format(pip_version) if pip_version else 'pip' }}"
+      state: "{{ 'present' if pip_version else 'latest' }}"
+      executable: "{{ pip_executable }}"
+
+  - name: (CentOS) Install Ansible with pip.
+    ansible.builtin.pip:
+      name: ansible==4.2.0
+      executable: "{{ pip_executable }}"
+  when: system_ansible is false

@@ -1,0 +1,137 @@
+---
+- hosts: resolvers-vm
+  gather_subset: "!all,!min,distribution_release"
+  become: true
+  vars:
+    software_source_dir: "{{ BUILD_SOURCE_DIR }}"
+    software_target_dir: "{{ BUILD_TARGET_DIR }}"
+    software_build_config: "{{ build_config }}"
+  tasks:
+    - ansible.builtin.import_tasks:
+        file: tasks/read_build_configuration.yml
+
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Stop tcpdump service
+      ansible.builtin.service:
+        name: tcpdumpd
+        state: stopped
+
+- hosts: resolvers_vm_build_group 
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Stop {{ software_name }}
+    ansible.builtin.service:
+      name: "{{ service_name }}"
+      state: stopped
+    when: ready2run
+    delegate_to: resolvers-vm
+
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Start tcpdump service
+    ansible.builtin.service:
+      name: tcpdumpd
+      state: started
+
+- hosts: resolvers_vm_build_group 
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Start {{ software_name }}
+    ansible.builtin.service:
+      name: "{{ service_name }}"
+      state: started
+    when: ready2run
+    delegate_to: resolvers-vm
+
+- hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait a five seconds
+    command: sleep 5
+
+- hosts: resolvers_vm_build_group 
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Do query
+    ansible.builtin.shell:
+      cmd: dig @{{ listen_ipv4 }} example. +timeout=15
+    when: ready2run
+    delegate_to: gateway-vm
+
+- hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait a five seconds
+    command: sleep 5
+
+- hosts: resolvers_vm_build_group 
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Do a second query
+    ansible.builtin.shell:
+      cmd: dig @{{ listen_ipv4 }} example2. AAAA +timeout=15
+    when: ready2run
+    delegate_to: gateway-vm
+
+- hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+  - name: Wait a five seconds
+    command: sleep 5
+
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Stop tcpdump service
+    ansible.builtin.service:
+      name: tcpdumpd
+      state: stopped
+
+- hosts: resolvers_vm_build_group 
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Stop {{ software_name }}
+    ansible.builtin.service:
+      name: "{{ service_name }}"
+      state: stopped
+    when: ready2run
+    delegate_to: resolvers-vm
+
+- hosts: gateway-vm
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Get packet captures
+    ansible.builtin.find:
+      paths: /var/log/tcpdumpd
+      patterns: '*.pcap'
+    register: files
+
+  - name: Fetch latest capture (generic)
+    ansible.builtin.fetch:
+      src: '{{ (files.files | sort(attribute="mtime", reverse=true) | first).path }}'
+      dest: 'captures/{{ (files.files | sort(attribute="mtime", reverse=true) | first).path | basename | splitext | first }}.pcap'
+      flat: true
+    when: files.files|count > 0 and cap_name is not defined
+
+  - name: Fetch latest capture
+    ansible.builtin.fetch:
+      src: '{{ (files.files | sort(attribute="mtime", reverse=true) | first).path }}'
+      dest: 'captures/{{ (files.files | sort(attribute="mtime", reverse=true) | first).path | basename | splitext | first }}__{{ cap_name }}.pcap'
+      flat: true
+    when: files.files|count > 0 and cap_name is defined
+

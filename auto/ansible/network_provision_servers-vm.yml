@@ -1,0 +1,77 @@
+---
+- hosts: servers-vm
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Install packages.
+      community.general.pkgng:
+        name:
+          - bind916
+          - wget
+          - nano
+          - vim
+          - tmux
+          - htop
+          - rsync
+          - ca_root_nss
+        state: present
+
+    - ansible.builtin.include_tasks:
+        file: "tasks/network_provision_{{ system.network }}.yml"
+
+    - name: Making the bind-configs directory.
+      ansible.builtin.file:
+        path: /root/bind-configs
+        state: directory
+
+    - name: Copying the root files.
+      ansible.posix.synchronize:
+        src: files/root-zone-basic/
+        dest: /root/bind-configs
+
+    - name: Copying the configuration.
+      ansible.builtin.template:
+        src: templates/named.conf.j2
+        dest: /root/bind-configs/named.conf
+      vars:
+        listen_addrs: "\
+          {% set output = [] %}\
+          {% for n in network_configuration['networks'] %}\
+          {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
+          {{ output.extend(n['v4']['alias'] | map('dirname')) }}\
+          {% endif %}\
+          {% endfor %}\
+          {{ output }}"
+        listen_addrs_6: "\
+          {% set output = [] %}\
+          {% for n in network_configuration['networks'] %}\
+          {% if n.vbox_arguments[3] == 'SERVER_INTNET' %}\
+          {{ output.extend(n['v6']['alias'] | map('dirname')) }}\
+          {% endif %}\
+          {% endfor %}\
+          {{ output }}"
+
+    # FIXME This replaces the rc.local from the network provisioning task.
+    #       For now this is fine since that rc.local file is about MTU and MSS
+    #       network settings that this VM does not have.
+    #       The generic rc.local logic in network provision could change to
+    #       source different script files instead
+    - name: rc.local for named and ipfw init.
+      ansible.builtin.copy:
+        src: files/servers-rc.local
+        dest: /etc/rc.local
+
+    - name: Copy ipfw configuration.
+      ansible.builtin.copy:
+        src: files/servers-ipfw-long-to-short.sh
+        dest: /root/servers-ipfw-long-to-short.sh
+        mode: "a+x"
+
+    - name: Restart network.
+      ansible.builtin.include_tasks:
+        file: "tasks/network_restart_{{ system.network }}.yml"
+
+    - name: Activate ipfw configuration.
+      ansible.builtin.shell:
+        cmd: /root/servers-ipfw-long-to-short.sh

@@ -1,0 +1,17 @@
+---
+- name: Provisioning done; shutting down.
+  ansible.builtin.command:
+    cmd: "{{ provision['shutdown_command'] }}"
+  ignore_errors: true
+  ignore_unreachable: true
+  no_log: true
+
+- name: Wait for SSH port to disappear.
+  ansible.builtin.wait_for:
+    # DISABLED: delegate_to changes the ansible host to 127.0.0.1 but this
+    #           is fine; Vagrant also uses the same for SSH NAT'ing.
+    #host: "{{ ansible_ssh_host|default(ansible_host) }}"
+    port: "{{ ansible_ssh_port|default(ansible_port) }}"
+    state: "stopped"
+  delegate_to: "localhost"
+  become: false

@@ -1,0 +1,69 @@
+---
+# IP of the Virtual Box host
+ansible_ssh_host: 127.0.0.1
+
+# (Vagrant) Optional bridge network
+# To be updated with local configuration if needed
+bridge_net: ""
+
+# (Vagrant) Resolver internal network
+resolver_intnet: "restest"
+
+# (Vagrant) Server internal network
+server_intnet: "servtest"
+
+# Desired configuration for hostonly interface
+vbox_hostonlyif_name: vboxnet1
+vbox_hostonlyif_ip: 192.168.57.1
+vbox_hostonlyif_netmask: 255.255.255.0
+
+# Desired configuration for the DHCP server on the interface
+vbox_dhcp_ip: 192.168.57.1
+vbox_dhcp_lowerip: 192.168.57.2
+vbox_dhcp_upperip: 192.168.57.254
+vbox_dhcp_netmask: 255.255.255.0
+
+# Tool configuration follows; SHOULD NOT EDIT
+
+# Regex for hostonly interface creation
+# Output of 'VBoxManage hostonlyif create'
+vbox_hostonlyif_create_regex: "^Interface '(.*)'"
+
+# Regex for hostonly interface name listing
+# Output of 'VBoxManage list hostonlyifs'
+vbox_hostonlyif_name_regex: "^Name:\\s*(.*)"
+
+# Regex for hostonly interface IP listing
+# Output of 'VBoxManage list hostonlyifs'
+vbox_hostonlyif_ip_regex: "^IPAddress:\\s*(.*)"
+
+# Regex for hostonly interface network mask listing
+# Output of 'VBoxManage list hostonlyifs'
+vbox_hostonlyif_netmask_regex: "^NetworkMask:\\s*(.*)"
+
+# Regex for hostonly interface network name listing
+# Output of 'VBoxManage list hostonlyifs'
+vbox_hostonlyif_netname_regex: "^VBoxNetworkName:\\s*(.*)"
+
+# Regex for DHCP server network name listing
+# Output of 'VBoxManage list dhcpservers'
+vbox_dhcp_netname_regex: "^NetworkName:\\s*(.*)"
+
+# Regex for DHCP server IP listing
+# Output of 'VBoxManage list dhcpservers'
+vbox_dhcp_ip_regex: "^Dhcpd IP:\\s*(.*)"
+vbox_dhcp_ip_regex_alt: "^IP:\\s*(.*)"
+
+# Regex for DHCP server network mask listing
+# Output of 'VBoxManage list dhcpservers'
+vbox_dhcp_netmask_regex: "^NetworkMask:\\s*(.*)"
+
+# Regex for DHCP server lower IP listing
+# Output of 'VBoxManage list dhcpservers'
+vbox_dhcp_lower_regex: "^LowerIPAddress:\\s*(.*)"
+vbox_dhcp_lower_regex_alt: "^lowerIPAddress:\\s*(.*)"
+
+# Regex for DHCP server upper IP listing
+# Output of 'VBoxManage list dhcpservers'
+vbox_dhcp_upper_regex: "^UpperIPAddress:\\s*(.*)"
+vbox_dhcp_upper_regex_alt: "^upperIPAddress:\\s*(.*)"

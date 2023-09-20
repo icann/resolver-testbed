@@ -1,0 +1,94 @@
+---
+- hosts: servers-vm
+  gather_facts: false
+  become: true
+  vars:
+    scenarios: [ 1, 2, 3, 4, 5, 6 ]
+    #scenarios: [ 1 ]
+
+  tasks:
+
+  - name: Install packages.
+    community.general.pkgng:
+      name:
+        - rsync
+        - git
+        - wget
+        - bind918
+        - knot3
+      state: present
+
+  - name: Is NSD build from ports?
+    ansible.builtin.stat:
+      path: "/usr/ports/dns/nsd/work/.build_done.nsd._usr_local"
+    register: nsd_is_build
+  
+  - ansible.builtin.include_tasks:
+      file: tasks/rssac028-appendix-a/ports-install-nsd.yml
+    when: not nsd_is_build.stat.exists
+
+  - name: Is NSD 4.1.3 build from ports?
+    ansible.builtin.stat:
+      path: "/usr/old/nsd413/dns/nsd/work/.build_done.nsd._usr_local"
+    register: nsd413_is_build
+  
+  - ansible.builtin.include_tasks:
+      file: tasks/rssac028-appendix-a/ports-build-nsd413.yml
+    when: not nsd413_is_build.stat.exists
+
+  - name: Is Knot 2.2.1 build from ports?
+    ansible.builtin.stat:
+      path: "/usr/old/knot221/dns/knot2/work/.build_done.knot._usr_local"
+    register: knot221_is_build
+  
+  - ansible.builtin.include_tasks:
+      file: tasks/rssac028-appendix-a/ports-build-knot221.yml
+    when: not knot221_is_build.stat.exists
+
+  - name: Is Knot 2.30 build from ports?
+    ansible.builtin.stat:
+      path: "/usr/old/knot230/dns/knot2/work/.build_done.knot._usr_local"
+    register: knot230_is_build
+  
+  - ansible.builtin.include_tasks:
+      file: tasks/rssac028-appendix-a/ports-build-knot230.yml
+    when: not knot230_is_build.stat.exists
+
+  - name: Is BIND 9.10.3 build from ports?
+    ansible.builtin.stat:
+      path: "/usr/old/bind9103/dns/bind910/work/.build_done.bind._usr_local"
+    register: bind9103_is_build
+  
+  - ansible.builtin.include_tasks:
+      file: tasks/rssac028-appendix-a/ports-build-bind9103.yml
+    when: not bind9103_is_build.stat.exists
+
+  - name: Copying root zones scenarios
+    ansible.posix.synchronize:
+      src: files/scenarios/
+      dest: /root/scenarios
+
+  - name: Is named running?
+    command: "pgrep -f /usr/local/sbin/named"
+    register: named_pid
+    failed_when: named_pid.rc > 1
+    changed_when: false
+
+  - name: Kill named if running
+    shell: "kill {{ named_pid.stdout_lines[0] }}"
+    when: named_pid.stdout_lines
+
+  - name: Stop any still running nameservers
+    ansible.builtin.service:
+      name: "{{ implementation.service }}"
+      state: 'stopped'
+    loop: "{{ nameservers }}"
+    loop_control:
+      loop_var: implementation
+
+  - ansible.builtin.include_tasks:
+      file: tasks/rssac028-appendix-a/do-scenarios.yml
+    loop: "{{ nameservers }}"
+    loop_control:
+      loop_var: implementation
+

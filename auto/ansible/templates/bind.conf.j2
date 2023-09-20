@@ -1,0 +1,26 @@
+options {
+recursion no;
+empty-zones-enable no;
+listen-on { {{ listen_addrs | join(';') }}; };
+listen-on-v6 { {{ listen_addrs_6 | join(';') }}; };
+pid-file "{{ software_target_dir }}/etc/bind/bind.pid";
+directory "{{ software_target_dir }}/etc/bind/";
+allow-transfer { any; };
+version "{{ software_name }}/{{ inventory_hostname }}";
+{% if cfg.minimal_responses is defined %}
+minimal-responses {{ cfg.minimal_responses }};
+{% endif %}
+{% if cfg.cookie is defined %}
+answer-cookie {{ cfg.cookie }};
+cookie-secret "deadbeefdeadbeefdeadbeefdeadbeef";
+{% endif %}
+{% if cfg.v4_edns_size is defined %}
+max-udp-size {{ cfg.v4_edns_size }};
+{% endif %}
+};
+
+{% if zone_cfg is defined %}
+{% for zone, file in zone_cfg %}
+zone "{{ zone }}" { type master; file "{{ file }}"; };
+{% endfor %}
+{% endif %}

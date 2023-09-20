@@ -1,0 +1,103 @@
+---
+- hosts: root_servers
+  gather_facts: false
+  become: true
+
+  tasks:
+    - ansible.builtin.include_tasks:
+        file: "tasks/install_server_packages_{{ system.package }}.yml"
+      vars:
+        server_packages: "{{ build_config.packages }}"
+        enablerepo: "{{ build_config.enablerepo | default([]) }}"
+        task_title: "Install packages for building"
+
+    - ansible.builtin.import_tasks:
+        file: tasks/install_generic_packages.yml
+
+    - ansible.builtin.include_tasks:
+        file: "tasks/install_server_packages_{{ system.package }}.yml"
+      vars:
+        server_packages:
+          - iptables
+          - nftables
+        package_state: absent
+        enablerepo: "{{ build_config.enablerepo | default([]) }}"
+        task_title: "Remove unwanted packages"
+
+    - name: Make sure the zone configuration directory is there.
+      ansible.builtin.file:
+        path: "{{ ZONE_DIR }}"
+        state: directory
+
+    - name: Copy over zone configuration.
+      ansible.posix.synchronize:
+        src: files/scenarios/
+        dest: "{{ ZONE_DIR }}"
+
+    - ansible.builtin.import_tasks:
+        file: tasks/inception/incept.yml
+      vars:
+        incept_title: "Incept parallel compilation."
+        incept_playbook: files/inception_playbook.yml
+        incept_task: tasks/inception/compile_software.yml
+        incept_variables:
+          software_source_dir: "{{ BUILD_SOURCE_DIR }}"
+          software_target_dir: "{{ BUILD_TARGET_DIR }}"
+          software_build_config: "{{ build_config }}"
+
+    - ansible.builtin.include_tasks:
+        file: "tasks/install_server_service_{{ system.service }}.yml"
+      vars:
+        software_type: "{{ item.name.rsplit('-', 1)[0] }}"
+        software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.name }}"
+        service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
+      loop: "{{ build_config.software }}"
+
+    - name: For bind create etc/bind directory.
+      ansible.builtin.file:
+        path: "{{ software_target_dir }}/etc/{{ software_type }}"
+        state: directory
+      vars:
+        software_type: "{{ item.name.rsplit('-', 1)[0] }}"
+        software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.name }}"
+        service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
+      loop: "{{ build_config.software }}"
+      when: software_type in ('bind', 'ldns-testns-1', 'ldns-testns-2')
+
+    - name: Set the scenario configuration if given.
+      ansible.builtin.include_tasks:
+        file: "tasks/set_zone_cfg_scenario_{{ scenario }}.yml"
+      vars:
+        letter: "{{ inventory_hostname.split('-') | first }}"
+      when: scenario is defined and (do_variant is not defined or do_variant is false)
+
+    - name: Set the alternative (variant) scenario configuration if given.
+      ansible.builtin.include_tasks:
+        file: "tasks/set_zone_cfg_scenario_{{ scenario }}.1.yml"
+      vars:
+        letter: "{{ inventory_hostname.split('-') | first }}"
+      when: scenario is defined and do_variant is defined and do_variant is true
+
+    - name: Copy configuration.
+      ansible.builtin.template:
+        src: "templates/{{ software_type }}.conf.j2"
+        dest: "{{ software_target_dir }}/etc/{{ software_type }}/{{ software_type }}.conf"
+      vars:
+        software_name: "{{ item.0.name }}"
+        software_type: "{{ item.0.name.rsplit('-', 1)[0] }}"
+        software_target_dir: "{{ BUILD_TARGET_DIR }}/{{ item.0.name }}"
+        cfg: "{{ item.0.cfg }}"
+        listen_addrs:
+          - "{{ item.1.0 }}"
+        listen_addrs_6:
+          - "{{ item.1.1 }}"
+      loop: "{% set ips = network_configuration.networks.0.v4.alias | map('dirname') | zip(network_configuration.networks.0.v6.alias | map('dirname')) %}\
+             {{ build_config.software | zip(ips) }}"
+
+    - name: (Re)Start name servers.
+      ansible.builtin.service:
+        name: "{{ service_name }}"
+        state: restarted
+      vars:
+        service_name: "{{ item.name | replace('-', '') | replace ('.', '') }}"
+      loop: "{{ build_config.software }}"

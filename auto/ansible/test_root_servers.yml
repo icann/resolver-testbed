@@ -1,0 +1,42 @@
+---
+- hosts: root_servers
+  gather_facts: false
+  become: true
+
+  tasks:
+# Test that the nameserver software is up and identifies itself.
+    - block:
+      - ansible.builtin.include_tasks:
+          file: tasks/dig_version_check.yml
+        vars:
+          destinations: "{{ item.1 }}"
+          expect: "{{ item.0.name }}"
+        loop: "{{ build_config.software | zip((network_configuration.networks.0.v4.alias | map('dirname')) | zip(network_configuration.networks.0.v6.alias | map('dirname'))) }}"
+      delegate_to: resolvers-vm
+
+# Test that the root servers' MTU settings (if any) are applied correctly.
+    - block:
+      - ansible.builtin.include_tasks:
+          file: tasks/net_ping.yml
+        vars:
+          title: "Test v{{ version }} exact MTU."
+          mtu: "{{ this_mtu }}"
+        loop: [4, 6]
+        loop_control:
+          loop_var: version
+
+      - ansible.builtin.include_tasks:
+          file: tasks/net_ping.yml
+        vars:
+          title: "Test v{{ version }} larger MTU."
+          mtu: "{{ (this_mtu | int) + 1 }}"
+          must_fail: true
+        loop: [4, 6]
+        loop_control:
+          loop_var: version
+
+      vars:
+        this_mtu: "{{ network_configuration.networks.0['v' ~ version].mtu - (version == 4 and 28 or 48) }}"
+        destinations:
+          - "{{ hostvars['gateway-vm'].network_configuration.networks.1['v' ~ version].addr | dirname }}"
+      when: "network_configuration.networks.0['v' ~ version].mtu is defined"

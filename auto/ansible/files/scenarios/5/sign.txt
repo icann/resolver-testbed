@@ -1,0 +1,29 @@
+ldns-signzone -i 20230101000000 -e 20300101000000 -o . -f root.zone root.zone.unsigned K.+008+09646 K.+008+15873
+ldns-signzone -i 20230101000000 -e 20300101000000 -o a -f a.zone a.zone.unsigned Ka.+008+01532
+ldns-signzone -i 20230101000000 -e 20300101000000 -o b -f b.zone b.zone.unsigned Kb.+008+63724
+ldns-signzone -i 20230101000000 -e 20300101000000 -o c -f c.zone c.zone.unsigned Kc.+008+24170
+ldns-signzone -i 20230101000000 -e 20300101000000 -o d -f d.zone d.zone.unsigned Kd.+008+12800
+ldns-signzone -i 20230101000000 -e 20300101000000 -o e -f e.zone e.zone.unsigned Ke.+008+36355
+ldns-signzone -i 20230101000000 -e 20300101000000 -o f -f f.zone f.zone.unsigned Kf.+008+42200
+ldns-signzone -i 20230101000000 -e 20300101000000 -o g -f g.zone g.zone.unsigned Kg.+008+40147
+ldns-signzone -i 20230101000000 -e 20300101000000 -o h -f h.zone h.zone.unsigned Kh.+008+27814
+ldns-signzone -i 20230101000000 -e 20300101000000 -o i -f i.zone i.zone.unsigned Ki.+008+31900
+ldns-signzone -i 20230101000000 -e 20300101000000 -o j -f j.zone j.zone.unsigned Kj.+008+33065
+ldns-signzone -i 20230101000000 -e 20300101000000 -o k -f k.zone k.zone.unsigned Kk.+008+19417
+ldns-signzone -i 20230101000000 -e 20300101000000 -o l -f l.zone l.zone.unsigned Kl.+008+10751
+ldns-signzone -i 20230101000000 -e 20300101000000 -o m -f m.zone m.zone.unsigned Km.+008+39182
+
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o . -f root_.zone root.zone.2.unsigned K.+008+09646 K.+008+15873
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o a.some-servers -f a.some-servers.zone a.some-servers.zone.unsigned Ka.some-servers.+008+27874 Ka.some-servers.+008+61791
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o b.some-servers -f b.some-servers.zone b.some-servers.zone.unsigned Kb.some-servers.+008+17970 Kb.some-servers.+008+18631
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o c.some-servers -f c.some-servers.zone c.some-servers.zone.unsigned Kc.some-servers.+008+38628 Kc.some-servers.+008+44585
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o d.some-servers -f d.some-servers.zone d.some-servers.zone.unsigned Kd.some-servers.+008+35440 Kd.some-servers.+008+38701
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o e.some-servers -f e.some-servers.zone e.some-servers.zone.unsigned Ke.some-servers.+008+45180 Ke.some-servers.+008+62245
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o f.some-servers -f f.some-servers.zone f.some-servers.zone.unsigned Kf.some-servers.+008+12238 Kf.some-servers.+008+41911
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o g.some-servers -f g.some-servers.zone g.some-servers.zone.unsigned Kg.some-servers.+008+10470 Kg.some-servers.+008+10894
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o h.some-servers -f h.some-servers.zone h.some-servers.zone.unsigned Kh.some-servers.+008+24721 Kh.some-servers.+008+25601
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o i.some-servers -f i.some-servers.zone i.some-servers.zone.unsigned Ki.some-servers.+008+28839 Ki.some-servers.+008+29311
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o j.some-servers -f j.some-servers.zone j.some-servers.zone.unsigned Kj.some-servers.+008+19471 Kj.some-servers.+008+27314
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o k.some-servers -f k.some-servers.zone k.some-servers.zone.unsigned Kk.some-servers.+008+30841 Kk.some-servers.+008+60291
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o l.some-servers -f l.some-servers.zone l.some-servers.zone.unsigned Kl.some-servers.+008+41582 Kl.some-servers.+008+51771
+# ldns-signzone -i 20230101000000 -e 20300101000000 -o m.some-servers -f m.some-servers.zone m.some-servers.zone.unsigned Km.some-servers.+008+38394 Km.some-servers.+008+42494

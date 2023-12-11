@@ -162,6 +162,7 @@ Vagrant.configure(2) do |config|
         # XXX DISABLED: Ansible will read the environment variable if present
         #ansible.config_file = ansible_cfg
         ansible.playbook = 'ansible/dummy_vagrant_provision.yml'
+	ansible.compatibility_mode = '2.0'
       end
 
       # ... and shutdown
